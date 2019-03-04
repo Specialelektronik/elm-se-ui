@@ -1,0 +1,16 @@
+{
+  "name": "se-style",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "node-elm-compiler": "^5.0.1",
+    "sass": "^1.17.2"
+  }
+}
