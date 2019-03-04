@@ -8,6 +8,7 @@ import Html.Styled.Events exposing (onClick)
 import SE.Framework.Button exposing (button)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
+import SE.Framework.Form exposing (InputRecord, input)
 import SE.Framework.Modifiers exposing (Modifier(..))
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Section exposing (section)
@@ -40,7 +41,12 @@ view model =
                 ]
             ]
         , section []
-            [ content
+            [ input
+                { placeholder = "Hello world"
+                , modifiers = []
+                }
+                InputMsg
+            , text model.input
             ]
         ]
 
@@ -56,17 +62,25 @@ main =
 
 update : Msg -> Model -> Model
 update msg model =
-    model
+    case msg of
+        DoSomething ->
+            model
+
+        InputMsg s ->
+            { model | input = s }
 
 
 type Msg
     = DoSomething
+    | InputMsg String
 
 
 type alias Model =
-    ()
+    { input : String
+    }
 
 
 initialModel : Model
 initialModel =
-    ()
+    { input = ""
+    }

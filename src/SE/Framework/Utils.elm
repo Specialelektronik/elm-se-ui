@@ -1,4 +1,4 @@
-module SE.Framework.Utils exposing (desktop, desktopWidth, gap)
+module SE.Framework.Utils exposing (desktop, desktopWidth, gap, radius)
 
 import Css exposing (Style, px)
 import Css.Media as Media exposing (minWidth, only, screen)
@@ -23,3 +23,8 @@ desktopWidth =
 desktop : List Style -> Style
 desktop =
     Media.withMedia [ only screen [ minWidth (px desktopWidth) ] ]
+
+
+radius : Css.Px
+radius =
+    px 4
