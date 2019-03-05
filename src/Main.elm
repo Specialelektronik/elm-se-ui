@@ -8,7 +8,7 @@ import Html.Styled.Events exposing (onClick)
 import SE.Framework.Button exposing (button)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
-import SE.Framework.Form exposing (InputRecord, input)
+import SE.Framework.Form as Form exposing (InputRecord, control, field, input)
 import SE.Framework.Modifiers exposing (Modifier(..))
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Section exposing (section)
@@ -41,13 +41,31 @@ view model =
                 ]
             ]
         , section []
-            [ input
-                { placeholder = "Hello world"
-                , modifiers = []
-                }
-                InputMsg
-            , text model.input
-            ]
+            ([ field
+                [ input
+                    { placeholder = "Input"
+                    , modifiers = []
+                    }
+                    InputMsg
+                    model.input
+                ]
+             ]
+                ++ List.map
+                    (\m ->
+                        field
+                            [ control False
+                                [ input
+                                    { placeholder = "Input"
+                                    , modifiers = m :: []
+                                    }
+                                    InputMsg
+                                    model.input
+                                ]
+                            ]
+                    )
+                    [ Form.Primary, Form.Info, Form.Success, Form.Warning, Form.Danger ]
+                ++ [ text model.input ]
+            )
         ]
 
 

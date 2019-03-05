@@ -1,7 +1,9 @@
-module SE.Framework.Utils exposing (desktop, desktopWidth, gap, radius)
+module SE.Framework.Utils exposing (desktop, desktopWidth, gap, loader, radius)
 
-import Css exposing (Style, px)
+import Css exposing (Style, block, deg, em, infinite, ms, pct, px, relative, rotate, solid, transparent)
+import Css.Animations exposing (Keyframes, keyframes)
 import Css.Media as Media exposing (minWidth, only, screen)
+import SE.Framework.Colors exposing (light)
 
 
 {-| Pixel value
@@ -28,3 +30,36 @@ desktop =
 radius : Css.Px
 radius =
     px 4
+
+
+loader : Style
+loader =
+    Css.batch
+        [ Css.animationName spinAround
+        , Css.animationDuration (ms 500)
+        , Css.property "animation-iteration-count" "infinite"
+        , Css.property "animation-timing-function" "linear"
+        , Css.border3 (px 2) solid light
+        , Css.borderRadius (pct 50)
+        , Css.borderRightColor transparent
+        , Css.borderTopColor transparent
+        , Css.property "content" "\"\""
+        , Css.display block
+        , Css.height (em 1)
+        , Css.position relative
+        , Css.width (em 1)
+        ]
+
+
+spinAround : Keyframes {}
+spinAround =
+    keyframes
+        [ ( 0
+          , [ Css.Animations.transform [ rotate (deg 0) ]
+            ]
+          )
+        , ( 100
+          , [ Css.Animations.transform [ rotate (deg 359) ]
+            ]
+          )
+        ]

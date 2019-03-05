@@ -1,11 +1,12 @@
-module SE.Framework.Form exposing (InputModifier, InputRecord, input)
+module SE.Framework.Form exposing (InputModifier(..), InputRecord, control, field, input)
 
-import Css exposing (Style, block, bold, calc, center, em, flexStart, inlineFlex, minus, none, pseudoClass, px, relative, rem, solid, top, transparent)
+import Css exposing (Style, absolute, active, block, bold, borderBox, calc, center, em, flexStart, focus, hover, important, inlineFlex, int, left, minus, none, pct, pseudoClass, pseudoElement, px, relative, rem, rgba, solid, top, transparent)
+import Css.Global exposing (descendants, each)
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (placeholder)
 import Html.Styled.Events exposing (onInput)
-import SE.Framework.Colors exposing (black, darker, light, lighter, lightest, linkDark, primary, white)
-import SE.Framework.Utils exposing (radius)
+import SE.Framework.Colors exposing (base, black, danger, darker, info, light, lighter, lightest, link, linkDark, primary, success, warning, white)
+import SE.Framework.Utils exposing (loader, radius)
 
 
 {-| Label
@@ -36,7 +37,6 @@ type
     InputModifier
     -- Colors
     = Primary
-    | Link
     | Info
     | Success
     | Warning
@@ -47,7 +47,6 @@ type
       -- | Medium
       -- | Large
       -- State
-    | Loading
     | Disabled
     | ReadOnly
     | Static
@@ -56,12 +55,65 @@ type
 {-| Input
 TODO add size modifier?
 -}
-input : InputRecord -> (String -> msg) -> Html msg
-input rec onInput =
+input : InputRecord -> (String -> msg) -> String -> Html msg
+input rec onInput val =
     styled Html.Styled.input
-        inputStyle
-        [ Html.Styled.Events.onInput onInput, placeholder rec.placeholder ]
+        (inputStyle
+            ++ List.map inputModifierStyle
+                rec.modifiers
+        )
+        [ Html.Styled.Events.onInput onInput, Html.Styled.Attributes.placeholder rec.placeholder, Html.Styled.Attributes.value val ]
         []
+
+
+
+--   // Colors
+--   @each $name, $pair in $colors
+--     $color: nth($pair, 1)
+--     &.is-#{$name}
+--       border-color: $color
+--       &:focus,
+--       &.is-focused,
+--       &:active,
+--       &.is-active
+--         box-shadow: $input-focus-box-shadow-size rgba($color, 0.25)
+
+
+inputModifierStyle : InputModifier -> Style
+inputModifierStyle modifier =
+    let
+        style color prop =
+            Css.batch
+                [ Css.borderColor color
+                , focus [ prop, Css.borderColor color ]
+                , active [ prop, Css.borderColor color ]
+                , hover [ Css.borderColor color ]
+                ]
+    in
+    case modifier of
+        Primary ->
+            style primary (Css.property "box-shadow" "0 0 0 0.125em rgba(53, 157, 55, 0.25)")
+
+        Info ->
+            style info (Css.property "box-shadow" "0 0 0 0.125em rgba(50, 115, 220, 0.25)")
+
+        Success ->
+            style success (Css.property "box-shadow" "0 0 0 0.125em rgba(35, 209, 96, 0.25)")
+
+        Warning ->
+            style warning (Css.property "box-shadow" "0 0 0 0.125em rgba(255,221,87, 0.25)")
+
+        Danger ->
+            style danger (Css.property "box-shadow" "0 0 0 0.125em rgba(255,56,96, 0.25)")
+
+        Static ->
+            Css.batch []
+
+        Disabled ->
+            Css.batch []
+
+        ReadOnly ->
+            Css.batch []
 
 
 
@@ -75,8 +127,6 @@ input rec onInput =
 -- $input-hover-border-color: $grey-light !default
 -- $input-focus-color: $grey-darker !default
 -- $input-focus-border-color: $link !default
--- $input-focus-box-shadow-size: 0 0 0 0.125em !default
--- $input-focus-box-shadow-color: rgba($link, 0.25) !default
 -- $input-disabled-color: $text-light !default
 -- $input-disabled-background-color: $background !default
 -- $input-disabled-border-color: $background !default
@@ -106,16 +156,6 @@ input rec onInput =
 --   width: 100%
 --   &[readonly]
 --     box-shadow: none
---   // Colors
---   @each $name, $pair in $colors
---     $color: nth($pair, 1)
---     &.is-#{$name}
---       border-color: $color
---       &:focus,
---       &.is-focused,
---       &:active,
---       &.is-active
---         box-shadow: $input-focus-box-shadow-size rgba($color, 0.25)
 --   // Sizes
 --   &.is-small
 --     +control-small
@@ -159,26 +199,39 @@ input rec onInput =
 
 inputStyle : List Style
 inputStyle =
-    [ controlStyle
-    , Css.backgroundColor white
+    [ inputControlStyle
     , Css.borderColor light
     , Css.color darker
+    , Css.maxWidth (pct 100)
+    , Css.width (pct 100)
+    , placeholder
+        [ Css.color (rgba 96 111 123 0.3)
+        ]
+    , hover
+        [ Css.borderColor base
+        ]
+    , focus
+        [ Css.borderColor link
+        , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
+        ]
+    , active
+        [ Css.borderColor link
+        , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
+        ]
     ]
+
+
+placeholder : List Style -> Style
+placeholder c =
+    Css.batch
+        [ pseudoElement "placeholder" c
+        , pseudoElement "-webkit-input-placeholder" c
+        , pseudoElement "-ms-input-placeholder" c
+        ]
 
 
 
 -- =input
---   +placeholder
---     color: $input-placeholder-color
---   &:hover,
---   &.is-hovered
---     border-color: $input-hover-border-color
---   &:focus,
---   &.is-focused,
---   &:active,
---   &.is-active
---     border-color: $input-focus-border-color
---     box-shadow: $input-focus-box-shadow-size $input-focus-box-shadow-color
 --   &[disabled],
 --   fieldset[disabled] &
 --     background-color: $input-disabled-background-color
@@ -189,8 +242,8 @@ inputStyle =
 --       color: $input-disabled-placeholder-color
 
 
-controlStyle : Style
-controlStyle =
+inputControlStyle : Style
+inputControlStyle =
     Css.batch
         [ Css.property "-moz-appearance" "none"
         , Css.property "-webkit-appearance" "none"
@@ -209,17 +262,18 @@ controlStyle =
         , Css.property "padding-top" "calc(0.375em - 1px)"
         , Css.position relative
         , Css.verticalAlign top
+        , Css.active
+            [ Css.outline none
+            ]
+        , Css.focus
+            [ Css.outline none
+            ]
         ]
 
 
 
 -- =control
 --   // States
---   &:focus,
---   &.is-focused,
---   &:active,
---   &.is-active
---     outline: none
 --   &[disabled],
 --   fieldset[disabled] &
 --     cursor: not-allowed
@@ -231,3 +285,42 @@ controlStyle =
 --   font-size: $size-medium
 -- =control-large
 --   font-size: $size-large
+
+
+field : List (Html msg) -> Html msg
+field =
+    styled Html.Styled.div
+        [ pseudoClass "not(:last-child)"
+            [ Css.marginBottom (rem 0.75)
+            ]
+        ]
+        []
+
+
+control : Bool -> List (Html msg) -> Html msg
+control loading =
+    let
+        loadingStyle =
+            if loading then
+                [ Css.after
+                    [ loader
+                    , important (Css.position absolute)
+                    , Css.right (em 0.625)
+                    , Css.top (em 0.625)
+                    , Css.zIndex (int 4)
+                    ]
+                ]
+
+            else
+                []
+    in
+    styled Html.Styled.div
+        ([ Css.boxSizing borderBox
+         , Css.property "clear" "both"
+         , Css.fontSize (rem 1)
+         , Css.position relative
+         , Css.textAlign left
+         ]
+            ++ loadingStyle
+        )
+        []
