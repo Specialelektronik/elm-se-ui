@@ -8,7 +8,7 @@ import Html.Styled.Events exposing (onClick)
 import SE.Framework.Button exposing (button)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
-import SE.Framework.Form as Form exposing (InputRecord, control, field, input)
+import SE.Framework.Form as Form exposing (InputRecord, control, field, input, select, textarea)
 import SE.Framework.Modifiers exposing (Modifier(..))
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Section exposing (section)
@@ -66,6 +66,51 @@ view model =
                     [ Form.Primary, Form.Info, Form.Success, Form.Warning, Form.Danger ]
                 ++ [ text model.input ]
             )
+        , section []
+            ([ field
+                [ control True
+                    [ textarea
+                        { placeholder = "Input"
+                        , modifiers = []
+                        , rows = 3
+                        }
+                        InputMsg
+                        model.input
+                    ]
+                ]
+             ]
+                ++ List.map
+                    (\m ->
+                        field
+                            [ control False
+                                [ textarea
+                                    { placeholder = "Input"
+                                    , modifiers = m :: []
+                                    , rows = 3
+                                    }
+                                    InputMsg
+                                    model.input
+                                ]
+                            ]
+                    )
+                    [ Form.Primary, Form.Info, Form.Success, Form.Warning, Form.Danger ]
+                ++ [ text model.input ]
+            )
+        , section []
+            [ container [ isFluid ]
+                [ select
+                    { placeholder = "Select dropdown"
+                    , modifiers = []
+                    , options =
+                        [ { value = "Value 1"
+                          , label = "Label 1"
+                          }
+                        ]
+                    }
+                    InputMsg
+                    "Value 2"
+                ]
+            ]
         ]
 
 

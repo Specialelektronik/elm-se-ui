@@ -1,12 +1,12 @@
-module SE.Framework.Form exposing (InputModifier(..), InputRecord, control, field, input)
+module SE.Framework.Form exposing (InputModifier(..), InputRecord, control, field, input, select, textarea)
 
-import Css exposing (Style, absolute, active, block, bold, borderBox, calc, center, em, flexStart, focus, hover, important, inlineFlex, int, left, minus, none, pct, pseudoClass, pseudoElement, px, relative, rem, rgba, solid, top, transparent)
-import Css.Global exposing (descendants, each)
+import Css exposing (Style, absolute, active, block, bold, borderBox, calc, center, em, flexStart, focus, hover, important, initial, inlineFlex, int, left, minus, none, pct, pseudoClass, pseudoElement, px, relative, rem, rgba, solid, top, transparent, vertical)
+import Css.Global exposing (descendants, each, withAttribute)
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (placeholder)
 import Html.Styled.Events exposing (onInput)
 import SE.Framework.Colors exposing (base, black, danger, darker, info, light, lighter, lightest, link, linkDark, primary, success, warning, white)
-import SE.Framework.Utils exposing (loader, radius)
+import SE.Framework.Utils as Utils exposing (loader, radius)
 
 
 {-| Label
@@ -30,6 +30,24 @@ label s =
 type alias InputRecord =
     { placeholder : String
     , modifiers : List InputModifier
+    }
+
+
+type alias TextareaRecord a =
+    { a
+        | rows : Int
+    }
+
+
+type alias SelectRecord a =
+    { a
+        | options : List Option
+    }
+
+
+type alias Option =
+    { label : String
+    , value : String
     }
 
 
@@ -66,17 +84,19 @@ input rec onInput val =
         []
 
 
-
---   // Colors
---   @each $name, $pair in $colors
---     $color: nth($pair, 1)
---     &.is-#{$name}
---       border-color: $color
---       &:focus,
---       &.is-focused,
---       &:active,
---       &.is-active
---         box-shadow: $input-focus-box-shadow-size rgba($color, 0.25)
+textarea : TextareaRecord InputRecord -> (String -> msg) -> String -> Html msg
+textarea rec onInput val =
+    styled Html.Styled.textarea
+        (textareaStyle
+            ++ List.map inputModifierStyle
+                rec.modifiers
+        )
+        [ Html.Styled.Events.onInput onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value val
+        , Html.Styled.Attributes.rows rec.rows
+        ]
+        []
 
 
 inputModifierStyle : InputModifier -> Style
@@ -116,87 +136,6 @@ inputModifierStyle modifier =
             Css.batch []
 
 
-
--- $input-color: $grey-darker !default
--- $input-background-color: $white !default
--- $input-border-color: $grey-lighter !default
--- $input-height: $control-height !default
--- $input-shadow: inset 0 1px 2px rgba($black, 0.1) !default
--- $input-placeholder-color: rgba($input-color, 0.3) !default
--- $input-hover-color: $grey-darker !default
--- $input-hover-border-color: $grey-light !default
--- $input-focus-color: $grey-darker !default
--- $input-focus-border-color: $link !default
--- $input-disabled-color: $text-light !default
--- $input-disabled-background-color: $background !default
--- $input-disabled-border-color: $background !default
--- $input-disabled-placeholder-color: rgba($input-disabled-color, 0.3) !default
--- $input-arrow: $link !default
--- $input-icon-color: $grey-lighter !default
--- $input-icon-active-color: $grey !default
--- $input-radius: $radius !default
--- $file-border-color: $border !default
--- $file-radius: $radius !default
--- $file-cta-background-color: $white-ter !default
--- $file-cta-color: $grey-dark !default
--- $file-cta-hover-color: $grey-darker !default
--- $file-cta-active-color: $grey-darker !default
--- $file-name-border-color: $border !default
--- $file-name-border-style: solid !default
--- $file-name-border-width: 1px 1px 1px 0 !default
--- $file-name-max-width: 16em !default
--- $label-color: $grey-darker !default
--- $label-weight: $weight-bold !default
--- $help-size: $size-small !default
--- .input,
--- .textarea
---   +input
---   box-shadow: $input-shadow
---   max-width: 100%
---   width: 100%
---   &[readonly]
---     box-shadow: none
---   // Sizes
---   &.is-small
---     +control-small
---   &.is-medium
---     +control-medium
---   &.is-large
---     +control-large
---   // Modifiers
---   &.is-fullwidth
---     display: block
---     width: 100%
---   &.is-inline
---     display: inline
---     width: auto
--- .input
---   &.is-rounded
---     border-radius: $radius-rounded
---     padding-left: 1em
---     padding-right: 1em
---   &.is-static
---     background-color: transparent
---     border-color: transparent
---     box-shadow: none
---     padding-left: 0
---     padding-right: 0
--- .textarea
---   display: block
---   max-width: 100%
---   min-width: 100%
---   padding: 0.625em
---   resize: vertical
---   &:not([rows])
---     max-height: 600px
---     min-height: 120px
---   &[rows]
---     height: initial
---   // Modifiers
---   &.has-fixed-size
---     resize: none
-
-
 inputStyle : List Style
 inputStyle =
     [ inputControlStyle
@@ -221,6 +160,24 @@ inputStyle =
     ]
 
 
+textareaStyle : List Style
+textareaStyle =
+    inputStyle
+        ++ [ Css.display block
+           , Css.maxWidth (pct 100)
+           , Css.minWidth (pct 100)
+           , Css.padding (em 0.625)
+           , Css.resize vertical
+           , pseudoClass "not([rows])"
+                [ Css.maxHeight (px 600)
+                , Css.minHeight (px 120)
+                ]
+           , withAttribute "rows"
+                [ Css.height initial
+                ]
+           ]
+
+
 placeholder : List Style -> Style
 placeholder c =
     Css.batch
@@ -228,18 +185,6 @@ placeholder c =
         , pseudoElement "-webkit-input-placeholder" c
         , pseudoElement "-ms-input-placeholder" c
         ]
-
-
-
--- =input
---   &[disabled],
---   fieldset[disabled] &
---     background-color: $input-disabled-background-color
---     border-color: $input-disabled-border-color
---     box-shadow: none
---     color: $input-disabled-color
---     +placeholder
---       color: $input-disabled-placeholder-color
 
 
 inputControlStyle : Style
@@ -269,22 +214,6 @@ inputControlStyle =
             [ Css.outline none
             ]
         ]
-
-
-
--- =control
---   // States
---   &[disabled],
---   fieldset[disabled] &
---     cursor: not-allowed
--- // The controls sizes use mixins so they can be used at different breakpoints
--- =control-small
---   border-radius: $control-radius-small
---   font-size: $size-small
--- =control-medium
---   font-size: $size-medium
--- =control-large
---   font-size: $size-large
 
 
 field : List (Html msg) -> Html msg
@@ -324,3 +253,22 @@ control loading =
             ++ loadingStyle
         )
         []
+
+
+select : SelectRecord InputRecord -> (String -> msg) -> String -> Html msg
+select rec onChange val =
+    styled Html.Styled.div
+        []
+        []
+        [ Html.Styled.select [ Utils.onChange onChange ] (option val { label = rec.placeholder, value = "" } :: List.map (option val) rec.options)
+        ]
+
+
+option : String -> Option -> Html msg
+option val o =
+    Html.Styled.option
+        [ Html.Styled.Attributes.value o.value
+        , Html.Styled.Attributes.selected
+            (o.value == val)
+        ]
+        [ text o.label ]

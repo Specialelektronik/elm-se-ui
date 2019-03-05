@@ -1,8 +1,11 @@
-module SE.Framework.Utils exposing (desktop, desktopWidth, gap, loader, radius)
+module SE.Framework.Utils exposing (desktop, desktopWidth, gap, loader, onChange, radius)
 
 import Css exposing (Style, block, deg, em, infinite, ms, pct, px, relative, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
 import Css.Media as Media exposing (minWidth, only, screen)
+import Html.Styled exposing (Attribute)
+import Html.Styled.Events exposing (on)
+import Json.Decode as Json
 import SE.Framework.Colors exposing (light)
 
 
@@ -63,3 +66,8 @@ spinAround =
             ]
           )
         ]
+
+
+onChange : (String -> msg) -> Html.Styled.Attribute msg
+onChange handler =
+    on "change" <| Json.map handler <| Json.at [ "target", "value" ] Json.string
