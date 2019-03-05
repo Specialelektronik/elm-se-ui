@@ -8,7 +8,7 @@ import Html.Styled.Events exposing (onClick)
 import SE.Framework.Button exposing (button)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
-import SE.Framework.Form as Form exposing (InputRecord, control, field, input, select, textarea)
+import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
 import SE.Framework.Modifiers exposing (Modifier(..))
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Section exposing (section)
@@ -115,6 +115,11 @@ view model =
                     "Value 2"
                 ]
             ]
+        , section []
+            [ container [ isFluid ]
+                [ checkbox "Checkbox" model.checked CheckBox
+                ]
+            ]
         ]
 
 
@@ -136,18 +141,24 @@ update msg model =
         InputMsg s ->
             { model | input = s }
 
+        CheckBox ->
+            { model | checked = not model.checked }
+
 
 type Msg
     = DoSomething
     | InputMsg String
+    | CheckBox
 
 
 type alias Model =
     { input : String
+    , checked : Bool
     }
 
 
 initialModel : Model
 initialModel =
     { input = ""
+    , checked = False
     }

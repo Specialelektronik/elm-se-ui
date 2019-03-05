@@ -1,6 +1,6 @@
-module SE.Framework.Form exposing (InputModifier(..), InputRecord, control, field, input, select, textarea)
+module SE.Framework.Form exposing (InputModifier(..), InputRecord, checkbox, control, field, input, select, textarea)
 
-import Css exposing (Style, absolute, active, block, bold, borderBox, calc, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, minus, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, solid, top, transparent, vertical, zero)
+import Css exposing (Style, absolute, active, auto, block, bold, borderBox, calc, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, middle, minus, noRepeat, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, scale, solid, sub, top, transparent, url, vertical, zero)
 import Css.Global exposing (descendants, each, withAttribute)
 import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
@@ -334,4 +334,48 @@ arrow =
         , Css.top (pct 50)
         , Css.transform (rotate (deg -45))
         , Css.width (em 0.625)
+        ]
+
+
+checkbox : String -> Bool -> msg -> Html msg
+checkbox l checked onClick =
+    let
+        checkedInt =
+            if checked then
+                1
+
+            else
+                0
+    in
+    styled Html.Styled.div
+        [ Css.cursor pointer ]
+        [ Html.Styled.Events.onClick onClick ]
+        [ styled Html.Styled.span
+            (inputStyle
+                ++ [ Css.width (rem 0.875)
+                   , Css.height (rem 0.875)
+                   , Css.padding zero
+                   , Css.verticalAlign middle
+                   , Css.marginBottom (px 2)
+                   , Css.property "margin-right" "calc(0.625em - 1px)"
+                   , Css.before
+                        [ Css.display block
+                        , Css.property "content" "\"\""
+                        , Css.width (rem 0.875)
+                        , Css.height (rem 0.875)
+                        , Css.backgroundImage (url "/images/tick.svg")
+                        , Css.backgroundRepeat noRepeat
+                        , Css.backgroundPosition center
+                        , Css.backgroundSize2 (rem 0.5) auto
+                        , Css.transform (scale checkedInt)
+                        , Css.Transitions.transition
+                            [ Css.Transitions.transform 100
+                            ]
+                        ]
+                   ]
+            )
+            []
+            []
+        , text
+            l
         ]
