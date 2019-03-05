@@ -6,6 +6,7 @@ import Html.Styled exposing (Attribute, Html, div, hr, img, nav, styled, text, t
 import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Button exposing (button)
+import SE.Framework.Columns exposing (column, columns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
@@ -118,6 +119,16 @@ view model =
         , section []
             [ container [ isFluid ]
                 [ checkbox "Checkbox" model.checked CheckBox
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ columns
+                    [ column [ text "Column 1" ]
+                    , column [ text "Column 2" ]
+                    , column [ text "Column 3" ]
+                    , column [ text "Column 4" ]
+                    ]
                 ]
             ]
         ]

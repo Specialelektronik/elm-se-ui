@@ -1,8 +1,8 @@
-module SE.Framework.Utils exposing (desktop, desktopWidth, gap, loader, onChange, radius)
+module SE.Framework.Utils exposing (desktop, desktopWidth, gap, loader, onChange, radius, tablet, tabletWidth)
 
 import Css exposing (Style, block, deg, em, infinite, ms, pct, px, relative, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
-import Css.Media as Media exposing (minWidth, only, screen)
+import Css.Media as Media exposing (all, minWidth, only, print, screen)
 import Html.Styled exposing (Attribute)
 import Html.Styled.Events exposing (on)
 import Json.Decode as Json
@@ -21,6 +21,11 @@ desktopWidth =
     960 + (2 * gap)
 
 
+tabletWidth : Float
+tabletWidth =
+    769
+
+
 
 -- @media screen and (min-width: $desktop)
 
@@ -28,6 +33,13 @@ desktopWidth =
 desktop : List Style -> Style
 desktop =
     Media.withMedia [ only screen [ minWidth (px desktopWidth) ] ]
+
+
+{-| TODO add support for print to this since Bulma has it
+-}
+tablet : List Style -> Style
+tablet =
+    Media.withMedia [ only screen [ minWidth (px tabletWidth) ] ]
 
 
 radius : Css.Px
