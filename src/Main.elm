@@ -41,66 +41,70 @@ view model =
                 ]
             ]
         , section []
-            ([ field
-                [ input
-                    { placeholder = "Input"
-                    , modifiers = []
-                    }
-                    InputMsg
-                    model.input
-                ]
-             ]
-                ++ List.map
-                    (\m ->
-                        field
-                            [ control False
-                                [ input
-                                    { placeholder = "Input"
-                                    , modifiers = m :: []
-                                    }
-                                    InputMsg
-                                    model.input
-                                ]
-                            ]
-                    )
-                    [ Form.Primary, Form.Info, Form.Success, Form.Warning, Form.Danger ]
-                ++ [ text model.input ]
-            )
-        , section []
-            ([ field
-                [ control True
-                    [ textarea
+            [ container [ isFluid ]
+                ([ field
+                    [ input
                         { placeholder = "Input"
                         , modifiers = []
-                        , rows = 3
                         }
                         InputMsg
                         model.input
                     ]
-                ]
-             ]
-                ++ List.map
-                    (\m ->
-                        field
-                            [ control False
-                                [ textarea
-                                    { placeholder = "Input"
-                                    , modifiers = m :: []
-                                    , rows = 3
-                                    }
-                                    InputMsg
-                                    model.input
+                 ]
+                    ++ List.map
+                        (\m ->
+                            field
+                                [ control False
+                                    [ input
+                                        { placeholder = "Input"
+                                        , modifiers = m :: []
+                                        }
+                                        InputMsg
+                                        model.input
+                                    ]
                                 ]
-                            ]
-                    )
-                    [ Form.Primary, Form.Info, Form.Success, Form.Warning, Form.Danger ]
-                ++ [ text model.input ]
-            )
+                        )
+                        [ Form.Primary, Form.Info, Form.Success, Form.Warning, Form.Danger ]
+                    ++ [ text model.input ]
+                )
+            ]
+        , section []
+            [ container [ isFluid ]
+                ([ field
+                    [ control True
+                        [ textarea
+                            { placeholder = "Input"
+                            , modifiers = []
+                            , rows = 3
+                            }
+                            InputMsg
+                            model.input
+                        ]
+                    ]
+                 ]
+                    ++ List.map
+                        (\m ->
+                            field
+                                [ control False
+                                    [ textarea
+                                        { placeholder = "Input"
+                                        , modifiers = m :: []
+                                        , rows = 3
+                                        }
+                                        InputMsg
+                                        model.input
+                                    ]
+                                ]
+                        )
+                        [ Form.Primary, Form.Info, Form.Success, Form.Warning, Form.Danger ]
+                    ++ [ text model.input ]
+                )
+            ]
         , section []
             [ container [ isFluid ]
                 [ select
                     { placeholder = "Select dropdown"
-                    , modifiers = []
+                    , modifiers = [ Form.Warning ]
                     , options =
                         [ { value = "Value 1"
                           , label = "Label 1"

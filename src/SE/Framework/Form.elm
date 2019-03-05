@@ -1,7 +1,8 @@
 module SE.Framework.Form exposing (InputModifier(..), InputRecord, control, field, input, select, textarea)
 
-import Css exposing (Style, absolute, active, block, bold, borderBox, calc, center, em, flexStart, focus, hover, important, initial, inlineFlex, int, left, minus, none, pct, pseudoClass, pseudoElement, px, relative, rem, rgba, solid, top, transparent, vertical)
+import Css exposing (Style, absolute, active, block, bold, borderBox, calc, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, minus, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, solid, top, transparent, vertical, zero)
 import Css.Global exposing (descendants, each, withAttribute)
+import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (placeholder)
 import Html.Styled.Events exposing (onInput)
@@ -65,6 +66,7 @@ type
       -- | Medium
       -- | Large
       -- State
+    | Loading
     | Disabled
     | ReadOnly
     | Static
@@ -125,6 +127,9 @@ inputModifierStyle modifier =
 
         Danger ->
             style danger (Css.property "box-shadow" "0 0 0 0.125em rgba(255,56,96, 0.25)")
+
+        Loading ->
+            Css.batch []
 
         Static ->
             Css.batch []
@@ -257,10 +262,49 @@ control loading =
 
 select : SelectRecord InputRecord -> (String -> msg) -> String -> Html msg
 select rec onChange val =
+    let
+        after =
+            if List.member Loading rec.modifiers then
+                [ loader
+                , Css.marginTop zero
+                , Css.position absolute
+                , Css.right (em 0.625)
+                , Css.top (em 0.625)
+                , Css.transform none
+                ]
+
+            else
+                [ arrow
+                , Css.borderColor darker
+                , Css.right (em 1.125)
+                , Css.zIndex (int 4)
+                ]
+    in
     styled Html.Styled.div
+        [ Css.display inlineBlock
+        , Css.maxWidth (pct 100)
+        , Css.position relative
+        , Css.verticalAlign top
+        , Css.height (em 2.25)
+        , Css.after after
+        ]
         []
-        []
-        [ Html.Styled.select [ Utils.onChange onChange ] (option val { label = rec.placeholder, value = "" } :: List.map (option val) rec.options)
+        [ styled Html.Styled.select
+            (inputStyle
+                ++ [ Css.cursor pointer
+                   , Css.display block
+                   , Css.fontSize (em 1)
+                   , Css.maxWidth (pct 100)
+                   , Css.outline none
+                   , Css.paddingRight (em 2.5)
+                   , pseudoElement "ms-expand" [ Css.display none ]
+                   ]
+                ++ List.map inputModifierStyle
+                    rec.modifiers
+            )
+            [ Utils.onChange onChange
+            ]
+            (option val { label = rec.placeholder, value = "" } :: List.map (option val) rec.options)
         ]
 
 
@@ -272,3 +316,22 @@ option val o =
             (o.value == val)
         ]
         [ text o.label ]
+
+
+arrow : Style
+arrow =
+    Css.batch
+        [ Css.border3 (px 3) solid link
+        , Css.borderRadius (px 2)
+        , Css.borderRight zero
+        , Css.borderTop zero
+        , Css.property "content" "\"\""
+        , Css.display block
+        , Css.height (em 0.625)
+        , Css.marginTop (em -0.4375)
+        , Css.pointerEvents none
+        , Css.position absolute
+        , Css.top (pct 50)
+        , Css.transform (rotate (deg -45))
+        , Css.width (em 0.625)
+        ]
