@@ -14,6 +14,7 @@ import SE.Framework.Modifiers exposing (Modifier(..))
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
 import SE.Framework.Section exposing (section)
+import SE.Framework.Table as Table exposing (body, foot, head, headCell, table)
 import SE.Framework.Title as Title
 
 
@@ -142,6 +143,17 @@ view model =
                 , Title.title4 "Det här är en titel4"
                 , Title.title5 "Det här är en titel5"
                 , Title.title6 "Det här är en titel6"
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ table
+                    (head
+                        [ headCell (text "Tabellrubrik")
+                        ]
+                    )
+                    (foot [])
+                    (body [])
                 ]
             ]
         ]
