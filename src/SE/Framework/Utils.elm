@@ -1,4 +1,4 @@
-module SE.Framework.Utils exposing (block, desktop, desktopWidth, gap, loader, onChange, radius, tablet, tabletWidth, unselectable)
+module SE.Framework.Utils exposing (block, desktop, desktopWidth, gap, loader, onChange, overflowTouch, radius, tablet, tabletWidth, unselectable)
 
 import Css exposing (Style, block, deg, em, infinite, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
@@ -101,3 +101,8 @@ unselectable =
         , Css.property "-ms-user-select" "none"
         , Css.property "user-select" "none"
         ]
+
+
+overflowTouch : Style
+overflowTouch =
+    Css.property "-webkit-overflow-scrolling" "touch"

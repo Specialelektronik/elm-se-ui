@@ -14,7 +14,7 @@ import SE.Framework.Modifiers exposing (Modifier(..))
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
 import SE.Framework.Section exposing (section)
-import SE.Framework.Table as Table exposing (body, foot, head, headCell, table)
+import SE.Framework.Table as Table exposing (body, cell, foot, head, headCell, row, table)
 import SE.Framework.Title as Title
 
 
@@ -147,13 +147,44 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ table
+                [ table [ Table.Bordered, Table.Fullwidth, Table.Hoverable, Table.Striped, Table.Mobilefriendly, Table.Narrow ]
                     (head
-                        [ headCell (text "Tabellrubrik")
+                        [ headCell (text "Tabellrubrik 1")
+                        , headCell (text "Tabellrubrik 2")
+                        , headCell (text "Tabellrubrik 3")
+                        , headCell (text "Tabellrubrik 4")
+                        , headCell (text "Tabellrubrik 5")
+                        , headCell (text "Tabellrubrik 6")
                         ]
                     )
                     (foot [])
-                    (body [])
+                    (body
+                        [ row
+                            [ cell (text "Tabellcell 1")
+                            , cell (text "Tabellcell 2")
+                            , cell (text "Tabellcell 3")
+                            , cell (text "Tabellcell 4")
+                            , cell (text "Tabellcell 5")
+                            , cell (text "Tabellcell 6")
+                            ]
+                        , row
+                            [ cell (text "Tabellcell 1 rad 2")
+                            , cell (text "Tabellcell 2 rad 2")
+                            , cell (text "Tabellcell 3 rad 2")
+                            , cell (text "Tabellcell 4 rad 2")
+                            , cell (text "Tabellcell 5 rad 2")
+                            , cell (text "Tabellcell 6 rad 2")
+                            ]
+                        , row
+                            [ cell (text "Tabellcell 1 rad 3")
+                            , cell (text "Tabellcell 2 rad 3")
+                            , cell (text "Tabellcell 3 rad 3")
+                            , cell (text "Tabellcell 4 rad 3")
+                            , cell (text "Tabellcell 5 rad 3")
+                            , cell (text "Tabellcell 6 rad 3")
+                            ]
+                        ]
+                    )
                 ]
             ]
         ]
