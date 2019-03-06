@@ -12,6 +12,7 @@ import SE.Framework.Content exposing (content)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
 import SE.Framework.Modifiers exposing (Modifier(..))
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
+import SE.Framework.Notification as Notification
 import SE.Framework.Section exposing (section)
 
 
@@ -123,15 +124,24 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ columns
-                    [ column [ text "Column 1" ]
-                    , column [ text "Column 2" ]
-                    , column [ text "Column 3" ]
-                    , column [ text "Column 4" ]
-                    ]
+                [ message Notification.primary model.message
+                , message Notification.link model.message
+                , message Notification.info model.message
+                , message Notification.success model.message
+                , message Notification.warning model.message
+                , message Notification.danger model.message
                 ]
             ]
         ]
+
+
+message : (Maybe Msg -> List (Html Msg) -> Html Msg) -> String -> Html Msg
+message f m =
+    if String.isEmpty m then
+        text ""
+
+    else
+        f (Just ClearMessage) [ text m ]
 
 
 main : Program () Model Msg
@@ -155,16 +165,21 @@ update msg model =
         CheckBox ->
             { model | checked = not model.checked }
 
+        ClearMessage ->
+            { model | message = "" }
+
 
 type Msg
     = DoSomething
     | InputMsg String
     | CheckBox
+    | ClearMessage
 
 
 type alias Model =
     { input : String
     , checked : Bool
+    , message : String
     }
 
 
@@ -172,4 +187,5 @@ initialModel : Model
 initialModel =
     { input = ""
     , checked = False
+    , message = "Här är ett meddelande"
     }

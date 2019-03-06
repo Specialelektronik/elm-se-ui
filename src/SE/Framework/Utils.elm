@@ -1,6 +1,6 @@
-module SE.Framework.Utils exposing (desktop, desktopWidth, gap, loader, onChange, radius, tablet, tabletWidth)
+module SE.Framework.Utils exposing (block, desktop, desktopWidth, gap, loader, onChange, radius, tablet, tabletWidth, unselectable)
 
-import Css exposing (Style, block, deg, em, infinite, ms, pct, px, relative, rotate, solid, transparent)
+import Css exposing (Style, block, deg, em, infinite, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
 import Css.Media as Media exposing (all, minWidth, only, print, screen)
 import Html.Styled exposing (Attribute)
@@ -59,7 +59,7 @@ loader =
         , Css.borderRightColor transparent
         , Css.borderTopColor transparent
         , Css.property "content" "\"\""
-        , Css.display block
+        , Css.display Css.block
         , Css.height (em 1)
         , Css.position relative
         , Css.width (em 1)
@@ -83,3 +83,21 @@ spinAround =
 onChange : (String -> msg) -> Html.Styled.Attribute msg
 onChange handler =
     on "change" <| Json.map handler <| Json.at [ "target", "value" ] Json.string
+
+
+block : Style
+block =
+    pseudoClass "not(:last-child)"
+        [ Css.marginBottom (rem 1.5)
+        ]
+
+
+unselectable : Style
+unselectable =
+    Css.batch
+        [ Css.property "-webkit-touch-callout" "none"
+        , Css.property "-webkit-user-select" "none"
+        , Css.property "-moz-user-select" "none"
+        , Css.property "-ms-user-select" "none"
+        , Css.property "user-select" "none"
+        ]
