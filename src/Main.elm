@@ -14,6 +14,7 @@ import SE.Framework.Modifiers exposing (Modifier(..))
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
 import SE.Framework.Section exposing (section)
+import SE.Framework.Title as Title
 
 
 view : Model -> Html Msg
@@ -130,6 +131,17 @@ view model =
                 , message Notification.success model.message
                 , message Notification.warning model.message
                 , message Notification.danger model.message
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Det här är en titel samma som title3"
+                , Title.title1 "Det här är en titel1"
+                , Title.title2 "Det här är en titel2"
+                , Title.title3 "Det här är en titel3"
+                , Title.title4 "Det här är en titel4"
+                , Title.title5 "Det här är en titel5"
+                , Title.title6 "Det här är en titel6"
                 ]
             ]
         ]
