@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Css exposing (..)
-import Html.Styled exposing (Attribute, Html, div, hr, img, nav, styled, text, toUnstyled)
+import Html.Styled exposing (Attribute, Html, div, hr, img, nav, p, styled, text, toUnstyled)
 import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Button exposing (button)
@@ -10,6 +10,7 @@ import SE.Framework.Columns exposing (column, columns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
+import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
 import SE.Framework.Modifiers exposing (Modifier(..))
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
@@ -185,6 +186,27 @@ view model =
                             ]
                         ]
                     )
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Ikoner"
+                , p []
+                    [ icon Icon.Home
+                    , text "Regular"
+                    ]
+                , p []
+                    [ smallIcon Icon.Home
+                    , text "Small"
+                    ]
+                , p []
+                    [ mediumIcon Icon.Home
+                    , text "Medium"
+                    ]
+                , p []
+                    [ largeIcon Icon.Home
+                    , text "Large"
+                    ]
                 ]
             ]
         ]
