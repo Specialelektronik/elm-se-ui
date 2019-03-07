@@ -1,4 +1,4 @@
-module SE.Framework.Colors exposing (Color(..), background, backgroundActive, backgroundHover, base, black, border, color, danger, dangerDark, dark, darker, darkest, info, infoDark, light, lighter, lightest, link, linkDark, primary, primaryDark, success, successDark, text, warning, warningDark, white)
+module SE.Framework.Colors exposing (Color(..), background, backgroundActive, backgroundHover, base, black, border, color, danger, dangerDark, dark, darker, darkest, info, infoDark, light, lighter, lightest, link, linkDark, linkHover, primary, primaryDark, success, successDark, text, warning, warningDark, white)
 
 import Css exposing (hsl, rgba)
 
@@ -70,6 +70,11 @@ primaryDark =
 link : Css.Color
 link =
     Css.hex "#3273dc"
+
+
+linkHover : Css.Color
+linkHover =
+    darker
 
 
 linkDark : Css.Color

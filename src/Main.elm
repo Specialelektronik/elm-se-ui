@@ -2,9 +2,10 @@ module Main exposing (main)
 
 import Browser
 import Css
-import Html.Styled exposing (Attribute, Html, div, hr, img, nav, p, styled, text, toUnstyled)
+import Html.Styled exposing (Attribute, Html, div, hr, img, nav, p, span, styled, text, toUnstyled)
 import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
+import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
 import SE.Framework.Button exposing (button)
 import SE.Framework.Columns exposing (column, columns)
 import SE.Framework.Container exposing (container, isFluid)
@@ -258,6 +259,26 @@ view model =
                     , tags [ Tag.Addons ]
                         [ tag [ Tag.Link ] "65\""
                         , deleteTag DoSomething
+                        ]
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Breadcrumbs"
+                , breadcrumb
+                    [ Breadcrumb.link "/"
+                        [ icon Icon.Home
+                        , span [] [ text "Bulma" ]
+                        ]
+                    , Breadcrumb.link "/"
+                        [ text "Documentation"
+                        ]
+                    , Breadcrumb.link "/"
+                        [ text "Components"
+                        ]
+                    , Breadcrumb.activeLink "/"
+                        [ text "Breadcrumb"
                         ]
                     ]
                 ]
