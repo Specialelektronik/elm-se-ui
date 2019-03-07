@@ -39,7 +39,7 @@ breadcrumb links =
 linkToHtml : Link msg -> Html msg
 linkToHtml (Link isActive url html) =
     styled Html.Styled.li
-        (liStyles isActive)
+        liStyles
         []
         [ styled
             Html.Styled.a
@@ -67,8 +67,8 @@ ulStyles =
     ]
 
 
-liStyles : IsActive -> List Style
-liStyles isActive =
+liStyles : List Style
+liStyles =
     [ Css.alignItems center
     , Css.displayFlex
     , Css.firstChild
@@ -88,21 +88,6 @@ liStyles isActive =
                 ]
             ]
         ]
-    , if isActive then
-        Css.batch
-            [ descendants
-                [ typeSelector "a"
-                    [ Css.color Colors.darkest
-                    , Css.cursor
-                        default
-                    , Css.pointerEvents
-                        none
-                    ]
-                ]
-            ]
-
-      else
-        Css.batch []
     ]
 
 
@@ -116,4 +101,15 @@ aStyles isActive =
     , hover
         [ Css.color Colors.linkHover
         ]
+    , if isActive then
+        Css.batch
+            [ Css.color Colors.darkest
+            , Css.cursor
+                default
+            , Css.pointerEvents
+                none
+            ]
+
+      else
+        Css.batch []
     ]
