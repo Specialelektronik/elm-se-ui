@@ -17,6 +17,7 @@ import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
 import SE.Framework.Section exposing (section)
 import SE.Framework.Table as Table exposing (body, cell, foot, head, headCell, row, table)
+import SE.Framework.Tabs as Tabs exposing (tabs)
 import SE.Framework.Tag as Tag exposing (deleteTag, tag, tags)
 import SE.Framework.Title as Title
 
@@ -279,6 +280,26 @@ view model =
                         ]
                     , Breadcrumb.activeLink "/"
                         [ text "Breadcrumb"
+                        ]
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Tabs"
+                , tabs [ Tabs.Medium ]
+                    [ Tabs.link "/"
+                        [ mediumIcon Icon.Home
+                        , span [] [ text "Bulma" ]
+                        ]
+                    , Tabs.link "/"
+                        [ text "Documentation"
+                        ]
+                    , Tabs.link "/"
+                        [ text "Components"
+                        ]
+                    , Tabs.activeLink "/"
+                        [ text "Tabs"
                         ]
                     ]
                 ]
