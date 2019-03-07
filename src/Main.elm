@@ -6,13 +6,12 @@ import Html.Styled exposing (Attribute, Html, div, hr, img, nav, p, span, styled
 import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
-import SE.Framework.Button exposing (button)
+import SE.Framework.Button as Button exposing (button)
 import SE.Framework.Columns exposing (column, columns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
-import SE.Framework.Modifiers exposing (Modifier(..))
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
 import SE.Framework.Section exposing (section)
@@ -40,13 +39,28 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ button [ Primary ] (Just DoSomething) "Primary"
-                , button [ Link ] (Just DoSomething) "Link"
-                , button [ Info ] (Just DoSomething) "Info"
-                , button [ Success ] (Just DoSomething) "Success"
-                , button [ Warning ] (Just DoSomething) "Warning"
-                , button [ Danger ] (Just DoSomething) "Danger"
-                ]
+                (List.map
+                    (\( mods, label ) ->
+                        button mods (Just DoSomething) [ text label ]
+                    )
+                    [ ( [], "Button" )
+                    , ( [ Button.Primary ], "Primary" )
+                    , ( [ Button.Link ], "Link" )
+                    , ( [ Button.Info ], "Info" )
+                    , ( [ Button.Success ], "Success" )
+                    , ( [ Button.Warning ], "Warning" )
+                    , ( [ Button.Danger ], "Danger" )
+                    , ( [ Button.White ], "White" )
+                    , ( [ Button.Lightest ], "Lightest" )
+                    , ( [ Button.Lighter ], "Lighter" )
+                    , ( [ Button.Light ], "Light" )
+                    , ( [ Button.Dark ], "Dark" )
+                    , ( [ Button.Darker ], "Darker" )
+                    , ( [ Button.Darkest ], "Darkest" )
+                    , ( [ Button.Black ], "Black" )
+                    , ( [ Button.Text ], "Text" )
+                    ]
+                )
             ]
         , section []
             [ container [ isFluid ]

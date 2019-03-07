@@ -1,6 +1,6 @@
-module SE.Framework.Utils exposing (block, desktop, desktopWidth, gap, loader, onChange, overflowTouch, radius, tablet, tabletWidth, unselectable)
+module SE.Framework.Utils exposing (block, centerEm, desktop, desktopWidth, gap, loader, onChange, overflowTouch, radius, tablet, tabletWidth, unselectable)
 
-import Css exposing (Style, block, deg, em, infinite, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
+import Css exposing (Style, absolute, block, calc, deg, em, infinite, minus, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
 import Css.Media as Media exposing (all, minWidth, only, print, screen)
 import Html.Styled exposing (Attribute)
@@ -106,3 +106,18 @@ unselectable =
 overflowTouch : Style
 overflowTouch =
     Css.property "-webkit-overflow-scrolling" "touch"
+
+
+centerEm : Float -> Float -> Style
+centerEm width height =
+    Css.batch
+        [ Css.position absolute
+        , Css.left (calc (pct 50) minus (em (width / 2)))
+        , Css.top
+            (if height /= 0 then
+                calc (pct 50) minus (em (height / 2))
+
+             else
+                calc (pct 50) minus (em (width / 2))
+            )
+        ]
