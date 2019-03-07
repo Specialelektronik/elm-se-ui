@@ -6,17 +6,7 @@ import Css.Global exposing (blockquote, dd, descendants, dl, each, h1, h2, h3, h
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (href)
 import SE.Framework.Colors as Colors exposing (black, lighter, lightest)
-
-
-{-| TODO Block
--}
-
-
-
--- =block
---   &:not(:last-child)
---     margin-bottom: 1.5rem
---$content-heading-color
+import SE.Framework.Utils exposing (block)
 
 
 headingColor : Css.Color
@@ -34,10 +24,11 @@ headingLineHeight =
     rem 1.125
 
 
-content : Html msg
+content : List (Html.Styled.Attribute msg) -> List (Html msg) -> Html msg
 content =
     styled Html.Styled.div
-        [ descendants
+        [ block
+        , descendants
             -- Inline
             [ typeSelector "li + li"
                 [ Css.marginTop (em 0.25)
@@ -184,5 +175,3 @@ content =
                 ]
             ]
         ]
-        []
-        []

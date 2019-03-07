@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Css exposing (..)
+import Css
 import Html.Styled exposing (Attribute, Html, div, hr, img, nav, p, styled, text, toUnstyled)
 import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
@@ -16,6 +16,7 @@ import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
 import SE.Framework.Section exposing (section)
 import SE.Framework.Table as Table exposing (body, cell, foot, head, headCell, row, table)
+import SE.Framework.Tag as Tag exposing (deleteTag, tag, tags)
 import SE.Framework.Title as Title
 
 
@@ -206,6 +207,58 @@ view model =
                 , p []
                     [ largeIcon Icon.Home
                     , text "Large"
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Tags"
+                , div []
+                    (List.map (\( t, mods ) -> field [ tag mods t ])
+                        [ ( "Tag label", [] )
+                        , ( "Primary label", [ Tag.Primary ] )
+                        , ( "Link label", [ Tag.Link ] )
+                        , ( "Info label", [ Tag.Info ] )
+                        , ( "Success label", [ Tag.Success ] )
+                        , ( "Warning label", [ Tag.Warning ] )
+                        , ( "Danger label", [ Tag.Danger ] )
+                        , ( "Normal Link label", [ Tag.Normal, Tag.Link ] )
+                        , ( "Medium Info label", [ Tag.Medium, Tag.Info ] )
+                        , ( "Large Success label", [ Tag.Large, Tag.Success ] )
+                        ]
+                    )
+                , Title.title5 "List of tags"
+                , field
+                    [ tags []
+                        (List.map (\( t, mods ) -> tag mods t)
+                            [ ( "Tag label", [] )
+                            , ( "Primary label", [ Tag.Primary ] )
+                            , ( "Link label", [ Tag.Link ] )
+                            , ( "Info label", [ Tag.Info ] )
+                            , ( "Success label", [ Tag.Success ] )
+                            , ( "Warning label", [ Tag.Warning ] )
+                            , ( "Danger label", [ Tag.Danger ] )
+                            , ( "Normal Link label", [ Tag.Normal, Tag.Link ] )
+                            , ( "Medium Info label", [ Tag.Medium, Tag.Info ] )
+                            , ( "Large Success label", [ Tag.Large, Tag.Success ] )
+                            ]
+                        )
+                    ]
+                , field
+                    [ content [] [ p [] [ text "Attach tags with Addons modifier" ] ]
+                    , tags [ Tag.Addons ]
+                        (List.map (\( t, mods ) -> tag mods t)
+                            [ ( "Tag label", [ Tag.Black ] )
+                            , ( "Tag label", [ Tag.Info ] )
+                            ]
+                        )
+                    ]
+                , field
+                    [ content [] [ p [] [ text "Delete tag" ] ]
+                    , tags [ Tag.Addons ]
+                        [ tag [ Tag.Link ] "65\""
+                        , deleteTag DoSomething
+                        ]
                     ]
                 ]
             ]

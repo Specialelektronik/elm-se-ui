@@ -1,4 +1,4 @@
-module SE.Framework.Colors exposing (Color(..), background, base, black, border, color, danger, dangerDark, dark, darker, darkest, info, infoDark, light, lighter, lightest, link, linkDark, primary, primaryDark, success, successDark, warning, warningDark, white)
+module SE.Framework.Colors exposing (Color(..), background, backgroundActive, backgroundHover, base, black, border, color, danger, dangerDark, dark, darker, darkest, info, infoDark, light, lighter, lightest, link, linkDark, primary, primaryDark, success, successDark, text, warning, warningDark, white)
 
 import Css exposing (hsl, rgba)
 
@@ -125,6 +125,21 @@ border =
 background : Css.Color
 background =
     lightest
+
+
+backgroundHover : Css.Color
+backgroundHover =
+    lighter
+
+
+backgroundActive : Css.Color
+backgroundActive =
+    light
+
+
+text : Css.Color
+text =
+    darkest
 
 
 color : Color -> Css.Color
