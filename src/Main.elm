@@ -7,10 +7,11 @@ import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
 import SE.Framework.Button as Button exposing (button)
-import SE.Framework.Columns exposing (column, columns)
+import SE.Framework.Columns as Columns exposing (column, columns, defaultColumn, defaultColumns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
+import Dict
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
@@ -315,6 +316,17 @@ view model =
                     , Tabs.activeLink "/"
                         [ text "Tabs"
                         ]
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Columns"
+                , defaultColumns
+                    [ column (Dict.singleton Columns.All Columns.Half) [ Notification.primary Nothing [ text "column 1" ] ]
+                    , defaultColumn [ Notification.primary Nothing [ text "column 2" ] ]
+                    , defaultColumn [ Notification.primary Nothing [ text "column 3" ] ]
+                    , defaultColumn [ Notification.primary Nothing [ text "column 4" ] ]
                     ]
                 ]
             ]
