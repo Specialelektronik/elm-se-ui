@@ -1,11 +1,14 @@
-module SE.Framework.Button exposing (Modifier(..), button)
+module SE.Framework.Buttons exposing (ButtonsModifier(..), Modifier(..), button, buttons)
 
-import Css exposing (Style, absolute, active, bold, center, em, focus, hover, important, noWrap, none, pointer, px, rem, rgba, transparent, underline, zero)
+import Css exposing (Style, absolute, active, bold, center, em, flexEnd, flexStart, focus, hover, important, noWrap, none, pointer, pseudoClass, px, rem, rgba, transparent, underline, wrap, zero)
+import Css.Global exposing (descendants, typeSelector)
+import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
+import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Colors as Colors
-import SE.Framework.Control exposing (control)
-import SE.Framework.Utils exposing (centerEm, loader)
+import SE.Framework.Control exposing (controlStyle)
+import SE.Framework.Utils exposing (centerEm, loader, smallRadius)
 
 
 type
@@ -38,6 +41,24 @@ type
     | Disabled
 
 
+type ButtonsModifier
+    = Attached
+    | Centered
+    | Right
+
+
+buttonShadow : Style
+buttonShadow =
+    --Css.boxShadow4 zero (px 2) (px 3) (rgba 135 149 161 0.2)
+    Css.boxShadow none
+
+
+buttonShadowHover : Style
+buttonShadowHover =
+    --Css.boxShadow4 zero (px 2) (px 3) (rgba 135 149 161 0.2)
+    Css.boxShadow none
+
+
 {-| A reusable button which has some styles pre-applied to it.
 -}
 button : List Modifier -> Maybe msg -> List (Html msg) -> Html msg
@@ -57,9 +78,14 @@ button modifiers onPress html =
         html
 
 
+buttons : List ButtonsModifier -> List (Html msg) -> Html msg
+buttons mods btns =
+    styled Html.Styled.div (buttonsStyles mods) [] btns
+
+
 buttonStyles : List Modifier -> List Style
 buttonStyles modifiers =
-    [ control
+    [ controlStyle
     , Css.backgroundColor Colors.white
     , Css.borderColor Colors.light
     , Css.borderWidth (px 1)
@@ -68,10 +94,17 @@ buttonStyles modifiers =
     , Css.justifyContent center
     , Css.textAlign center
     , Css.whiteSpace noWrap
-    , Css.boxShadow5 zero (px 2) (px 4) zero (rgba 0 0 0 0.1)
-    , Css.marginRight (rem 0.5)
+    , buttonShadow
     , hover
         [ Css.borderColor Colors.base
+        , buttonShadowHover
+        , Css.Transitions.transition
+            [ Css.Transitions.backgroundColor 250
+            , Css.Transitions.boxShadow 250
+            ]
+        ]
+    , active
+        [ Css.borderColor Colors.dark
         ]
     , buttonModifiers buttonModifier modifiers
     ]
@@ -92,8 +125,11 @@ buttonModifier modifier =
                 , Css.borderColor transparent
                 , hover
                     [ Css.color Colors.white
-                    , Css.backgroundColor Colors.primaryDark
+                    , Css.backgroundColor Colors.primaryHover
                     , Css.borderColor transparent
+                    ]
+                , active
+                    [ Css.backgroundColor Colors.primaryActive
                     ]
                 ]
 
@@ -104,8 +140,11 @@ buttonModifier modifier =
                 , Css.borderColor transparent
                 , hover
                     [ Css.color Colors.white
-                    , Css.backgroundColor Colors.linkDark
+                    , Css.backgroundColor Colors.linkHover
                     , Css.borderColor transparent
+                    ]
+                , active
+                    [ Css.backgroundColor Colors.linkActive
                     ]
                 ]
 
@@ -116,8 +155,11 @@ buttonModifier modifier =
                 , Css.borderColor transparent
                 , hover
                     [ Css.color Colors.white
-                    , Css.backgroundColor Colors.infoDark
+                    , Css.backgroundColor Colors.infoHover
                     , Css.borderColor transparent
+                    ]
+                , active
+                    [ Css.backgroundColor Colors.infoActive
                     ]
                 ]
 
@@ -128,8 +170,11 @@ buttonModifier modifier =
                 , Css.borderColor transparent
                 , hover
                     [ Css.color Colors.white
-                    , Css.backgroundColor Colors.successDark
+                    , Css.backgroundColor Colors.successHover
                     , Css.borderColor transparent
+                    ]
+                , active
+                    [ Css.backgroundColor Colors.successActive
                     ]
                 ]
 
@@ -138,8 +183,11 @@ buttonModifier modifier =
                 [ Css.backgroundColor Colors.warning
                 , Css.borderColor transparent
                 , hover
-                    [ Css.backgroundColor Colors.warningDark
+                    [ Css.backgroundColor Colors.warningHover
                     , Css.borderColor transparent
+                    ]
+                , active
+                    [ Css.backgroundColor Colors.warningActive
                     ]
                 ]
 
@@ -150,19 +198,11 @@ buttonModifier modifier =
                 , Css.borderColor transparent
                 , hover
                     [ Css.color Colors.white
-                    , Css.backgroundColor Colors.dangerDark
+                    , Css.backgroundColor Colors.dangerHover
                     , Css.borderColor transparent
                     ]
-                ]
-
-        Loading ->
-            Css.batch
-                [ important (Css.color transparent)
-                , Css.pointerEvents none
-                , important (Css.position absolute)
-                , Css.after
-                    [ loader
-                    , centerEm 1 1
+                , active
+                    [ Css.backgroundColor Colors.dangerActive
                     ]
                 ]
 
@@ -174,6 +214,9 @@ buttonModifier modifier =
                     [ Css.backgroundColor Colors.lightest
                     , Css.borderColor transparent
                     ]
+                , active
+                    [ Css.backgroundColor Colors.lighter
+                    ]
                 ]
 
         Lightest ->
@@ -183,6 +226,9 @@ buttonModifier modifier =
                 , hover
                     [ Css.backgroundColor Colors.lighter
                     , Css.borderColor transparent
+                    ]
+                , active
+                    [ Css.backgroundColor Colors.light
                     ]
                 ]
 
@@ -194,6 +240,9 @@ buttonModifier modifier =
                     [ Css.backgroundColor Colors.light
                     , Css.borderColor transparent
                     ]
+                , active
+                    [ Css.backgroundColor Colors.base
+                    ]
                 ]
 
         Light ->
@@ -203,6 +252,9 @@ buttonModifier modifier =
                 , hover
                     [ Css.backgroundColor Colors.base
                     , Css.borderColor transparent
+                    ]
+                , active
+                    [ Css.backgroundColor Colors.dark
                     ]
                 ]
 
@@ -215,6 +267,9 @@ buttonModifier modifier =
                     [ Css.backgroundColor Colors.darker
                     , Css.borderColor transparent
                     ]
+                , active
+                    [ Css.backgroundColor Colors.darkest
+                    ]
                 ]
 
         Darker ->
@@ -225,6 +280,9 @@ buttonModifier modifier =
                 , hover
                     [ Css.backgroundColor Colors.darkest
                     , Css.borderColor transparent
+                    ]
+                , active
+                    [ Css.backgroundColor Colors.black
                     ]
                 ]
 
@@ -252,19 +310,15 @@ buttonModifier modifier =
 
         Text ->
             Css.batch
-                [ Css.color Colors.text
+                [ Css.textDecoration underline
                 , Css.backgroundColor transparent
                 , Css.borderColor transparent
-                , Css.textDecoration underline
-                , Css.boxShadow none
                 , hover
                     [ Css.backgroundColor Colors.backgroundHover
                     , Css.borderColor transparent
-                    , Css.color Colors.text
                     ]
                 , focus
                     [ Css.backgroundColor Colors.backgroundHover
-                    , Css.color Colors.text
                     ]
                 , active
                     [ Css.backgroundColor Colors.backgroundActive
@@ -272,5 +326,84 @@ buttonModifier modifier =
                     ]
                 ]
 
+        Loading ->
+            Css.batch
+                [ important (Css.color transparent)
+                , Css.pointerEvents none
+                , important (Css.position absolute)
+                , Css.after
+                    [ loader
+                    , centerEm 1 1
+                    ]
+                ]
+
+        Small ->
+            Css.batch
+                [ Css.borderRadius smallRadius
+                , Css.fontSize (rem 0.75)
+                ]
+
+        Medium ->
+            Css.fontSize (rem 1.25)
+
+        Large ->
+            Css.fontSize (rem 1.5)
+
         _ ->
             Css.batch []
+
+
+buttonsStyles : List ButtonsModifier -> List Style
+buttonsStyles mods =
+    [ Css.alignItems center
+    , Css.displayFlex
+    , Css.flexWrap wrap
+    , Css.justifyContent flexStart
+    , descendants
+        [ typeSelector "button"
+            [ Css.marginBottom (rem 0.5)
+            , pseudoClass "not(:last-child)"
+                [ Css.marginRight (rem 0.5) ]
+            ]
+        ]
+    , pseudoClass
+        "last-child"
+        [ Css.marginBottom (rem -0.5)
+        ]
+    , pseudoClass
+        "not(:last-child)"
+        [ Css.marginBottom (rem 1)
+        ]
+    , Css.batch (List.map buttonsModifier mods)
+    ]
+
+
+buttonsModifier : ButtonsModifier -> Style
+buttonsModifier mod =
+    Css.batch
+        (case mod of
+            Attached ->
+                [ descendants
+                    [ typeSelector "button"
+                        [ pseudoClass "not(:first-child)"
+                            [ Css.borderBottomLeftRadius zero
+                            , Css.borderTopLeftRadius zero
+                            ]
+                        , pseudoClass "not(:last-child)"
+                            [ Css.borderBottomRightRadius zero
+                            , Css.borderTopRightRadius zero
+                            , important (Css.marginRight (px -1))
+                            ]
+                        , pseudoClass ":last-child"
+                            [ important (Css.marginRight zero)
+                            ]
+                        ]
+                    ]
+                ]
+
+            Centered ->
+                [ Css.justifyContent center ]
+
+            Right ->
+                [ Css.justifyContent flexEnd ]
+        )

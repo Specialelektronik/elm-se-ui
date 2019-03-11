@@ -4,7 +4,7 @@ import Css exposing (Style, block, center, displayFlex, flex, hex, int, ms, none
 import Css.Animations exposing (Keyframes, keyframes)
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (href)
-import SE.Framework.Colors exposing (black, lightest, linkDark, primary, white)
+import SE.Framework.Colors exposing (black, lightest, linkHover, primary, white)
 import SE.Framework.Utils exposing (desktop)
 
 
@@ -54,7 +54,7 @@ navbarItem =
     , Css.alignItems center
     , Css.color black
     , Css.hover
-        [ Css.color linkDark
+        [ Css.color linkHover
         , Css.backgroundColor lightest
         ]
     ]

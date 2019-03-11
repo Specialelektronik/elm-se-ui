@@ -6,7 +6,7 @@ import Html.Styled exposing (Attribute, Html, div, hr, img, nav, p, span, styled
 import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
-import SE.Framework.Button as Button exposing (button)
+import SE.Framework.Buttons as Buttons exposing (button, buttons)
 import SE.Framework.Columns exposing (column, columns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
@@ -41,26 +41,51 @@ view model =
             [ container [ isFluid ]
                 (List.map
                     (\( mods, label ) ->
-                        button mods (Just DoSomething) [ text label ]
+                        field [ button mods (Just DoSomething) [ text label ] ]
                     )
                     [ ( [], "Button" )
-                    , ( [ Button.Primary ], "Primary" )
-                    , ( [ Button.Link ], "Link" )
-                    , ( [ Button.Info ], "Info" )
-                    , ( [ Button.Success ], "Success" )
-                    , ( [ Button.Warning ], "Warning" )
-                    , ( [ Button.Danger ], "Danger" )
-                    , ( [ Button.White ], "White" )
-                    , ( [ Button.Lightest ], "Lightest" )
-                    , ( [ Button.Lighter ], "Lighter" )
-                    , ( [ Button.Light ], "Light" )
-                    , ( [ Button.Dark ], "Dark" )
-                    , ( [ Button.Darker ], "Darker" )
-                    , ( [ Button.Darkest ], "Darkest" )
-                    , ( [ Button.Black ], "Black" )
-                    , ( [ Button.Text ], "Text" )
+                    , ( [ Buttons.Primary ], "Primary" )
+                    , ( [ Buttons.Link ], "Link" )
+                    , ( [ Buttons.Info ], "Info" )
+                    , ( [ Buttons.Success ], "Success" )
+                    , ( [ Buttons.Warning ], "Warning" )
+                    , ( [ Buttons.Danger ], "Danger" )
+                    , ( [ Buttons.White ], "White" )
+                    , ( [ Buttons.Lightest ], "Lightest" )
+                    , ( [ Buttons.Lighter ], "Lighter" )
+                    , ( [ Buttons.Light ], "Light" )
+                    , ( [ Buttons.Dark ], "Dark" )
+                    , ( [ Buttons.Darker ], "Darker" )
+                    , ( [ Buttons.Darkest ], "Darkest" )
+                    , ( [ Buttons.Black ], "Black" )
+                    , ( [ Buttons.Text ], "Text" )
+                    , ( [ Buttons.Small ], "Small button" )
+                    , ( [ Buttons.Medium ], "Medium button" )
+                    , ( [ Buttons.Large ], "Large button" )
                     ]
                 )
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Buttons"
+                , buttons []
+                    [ button [ Buttons.Success ]
+                        (Just DoSomething)
+                        [ icon Icon.Save
+                        , span [] [ text "Save changes" ]
+                        ]
+                    , button [ Buttons.Info ] (Just DoSomething) [ text "Save and continue" ]
+                    , button [ Buttons.Danger ] (Just DoSomething) [ text "Cancel" ]
+                    ]
+                , field
+                    [ text "Add attached modifier to remove margin between buttons"
+                    ]
+                , buttons [ Buttons.Attached ]
+                    [ button [ Buttons.Lighter ] (Just DoSomething) [ text "Save changes" ]
+                    , button [ Buttons.Lighter ] (Just DoSomething) [ text "Save and continue" ]
+                    , button [ Buttons.Lighter ] (Just DoSomething) [ text "Cancel" ]
+                    ]
+                ]
             ]
         , section []
             [ container [ isFluid ]

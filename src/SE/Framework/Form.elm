@@ -6,7 +6,8 @@ import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (placeholder)
 import Html.Styled.Events exposing (onInput)
-import SE.Framework.Colors exposing (base, black, danger, darker, info, light, lighter, lightest, link, linkDark, primary, success, warning, white)
+import SE.Framework.Colors exposing (base, black, danger, darker, info, light, lighter, lightest, link, primary, success, warning, white)
+import SE.Framework.Control exposing (controlStyle)
 import SE.Framework.Utils as Utils exposing (loader, radius)
 
 
@@ -143,7 +144,7 @@ inputModifierStyle modifier =
 
 inputStyle : List Style
 inputStyle =
-    [ inputControlStyle
+    [ controlStyle
     , Css.borderColor light
     , Css.color darker
     , Css.maxWidth (pct 100)
@@ -192,33 +193,34 @@ placeholder c =
         ]
 
 
-inputControlStyle : Style
-inputControlStyle =
-    Css.batch
-        [ Css.property "-moz-appearance" "none"
-        , Css.property "-webkit-appearance" "none"
-        , Css.alignItems center
-        , Css.border3 (px 1) solid transparent
-        , Css.borderRadius radius
-        , Css.boxShadow none
-        , Css.display inlineFlex
-        , Css.fontSize (rem 1)
-        , Css.height (em 2.25)
-        , Css.justifyContent flexStart
-        , Css.lineHeight (rem 1.5)
-        , Css.property "padding-bottom" "calc(0.375em - 1px)"
-        , Css.property "padding-left" "calc(0.625em - 1px)"
-        , Css.property "padding-right" "calc(0.625em - 1px)"
-        , Css.property "padding-top" "calc(0.375em - 1px)"
-        , Css.position relative
-        , Css.verticalAlign top
-        , Css.active
-            [ Css.outline none
-            ]
-        , Css.focus
-            [ Css.outline none
-            ]
-        ]
+
+-- inputControlStyle : Style
+-- inputControlStyle =
+--     Css.batch
+--         [ Css.property "-moz-appearance" "none"
+--         , Css.property "-webkit-appearance" "none"
+--         , Css.alignItems center
+--         , Css.border3 (px 1) solid transparent
+--         , Css.borderRadius radius
+--         , Css.boxShadow none
+--         , Css.display inlineFlex
+--         , Css.fontSize (rem 1)
+--         , Css.height (em 2.5)
+--         , Css.justifyContent flexStart
+--         , Css.lineHeight (rem 1.5)
+--         , Css.property "padding-bottom" "calc(0.375em - 1px)"
+--         , Css.property "padding-left" "calc(0.625em - 1px)"
+--         , Css.property "padding-right" "calc(0.625em - 1px)"
+--         , Css.property "padding-top" "calc(0.375em - 1px)"
+--         , Css.position relative
+--         , Css.verticalAlign top
+--         , Css.active
+--             [ Css.outline none
+--             ]
+--         , Css.focus
+--             [ Css.outline none
+--             ]
+--         ]
 
 
 field : List (Html msg) -> Html msg
@@ -285,7 +287,7 @@ select rec onChange val =
         , Css.maxWidth (pct 100)
         , Css.position relative
         , Css.verticalAlign top
-        , Css.height (em 2.25)
+        , Css.height (em 2.5)
         , Css.after after
         ]
         []

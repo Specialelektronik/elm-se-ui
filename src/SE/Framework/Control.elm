@@ -1,4 +1,4 @@
-module SE.Framework.Control exposing (control)
+module SE.Framework.Control exposing (controlStyle)
 
 import Css exposing (Style, alignItems, border3, borderRadius, boxShadow, boxShadow5, center, display, em, flexStart, fontSize, height, inlineFlex, justifyContent, lineHeight, none, num, paddingBottom, paddingLeft, paddingRight, paddingTop, position, property, px, relative, rem, rgba, solid, top, transparent, verticalAlign, zero)
 
@@ -12,15 +12,15 @@ controlRadius =
 
 
 controlHeight =
-    em 2.25
+    em 2.5
 
 
 controlLineHeight =
     num 1.5
 
 
-control : Style
-control =
+controlStyle : Style
+controlStyle =
     Css.batch
         [ property "-moz-appearance" "none"
         , property "-webkit-appearance" "none"

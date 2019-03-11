@@ -7,6 +7,7 @@ import Html.Styled.Attributes exposing (class)
 
 type Icon
     = Home
+    | Save
 
 
 type Size
@@ -106,4 +107,7 @@ faClass i =
         (case i of
             Home ->
                 "fa-home"
+
+            Save ->
+                "fa-save"
         )

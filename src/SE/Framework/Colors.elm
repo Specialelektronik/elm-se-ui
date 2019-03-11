@@ -1,4 +1,4 @@
-module SE.Framework.Colors exposing (Color(..), background, backgroundActive, backgroundHover, base, black, border, color, danger, dangerDark, dark, darker, darkest, info, infoDark, light, lighter, lightest, link, linkDark, linkHover, primary, primaryDark, success, successDark, text, warning, warningDark, white)
+module SE.Framework.Colors exposing (Color(..), background, backgroundActive, backgroundHover, base, black, border, color, danger, dangerActive, dangerHover, dark, darker, darkest, info, infoActive, infoHover, light, lighter, lightest, link, linkActive, linkHover, primary, primaryActive, primaryHover, success, successActive, successHover, text, warning, warningActive, warningHover, white)
 
 import Css exposing (hsl, rgba)
 
@@ -14,17 +14,17 @@ type Color
 
 white : Css.Color
 white =
-    Css.hex "#ffffff"
+    Css.rgb 255 255 255
 
 
 lightest : Css.Color
 lightest =
-    Css.hex "#F8FAFC"
+    Css.rgb 248 250 252
 
 
 lighter : Css.Color
 lighter =
-    Css.hex "#F1F5F8"
+    Css.rgb 241 245 248
 
 
 light : Css.Color
@@ -39,12 +39,12 @@ base =
 
 dark : Css.Color
 dark =
-    Css.hex "#8795A1"
+    Css.rgb 135 149 161
 
 
 darker : Css.Color
 darker =
-    Css.hex "#606F7B"
+    Css.rgb 96 111 123
 
 
 darkest : Css.Color
@@ -62,64 +62,89 @@ primary =
     Css.rgb 53 157 55
 
 
-primaryDark : Css.Color
-primaryDark =
-    Css.rgb 41 126 82
+primaryHover : Css.Color
+primaryHover =
+    Css.rgb 47 138 48
+
+
+primaryActive : Css.Color
+primaryActive =
+    Css.rgb 40 119 42
 
 
 link : Css.Color
 link =
-    Css.hex "#3273dc"
+    Css.rgb 50 115 220
 
 
 linkHover : Css.Color
 linkHover =
-    darker
+    Css.rgb 36 102 209
 
 
-linkDark : Css.Color
-linkDark =
-    Css.hex "#276cda"
+linkActive : Css.Color
+linkActive =
+    Css.rgb 32 91 187
 
 
 info : Css.Color
 info =
-    hsl 204 0.86 0.53
+    Css.rgb 32 156 238
 
 
-infoDark : Css.Color
-infoDark =
-    Css.hex "#1496ed"
+infoHover : Css.Color
+infoHover =
+    Css.rgb 17 143 228
+
+
+infoActive : Css.Color
+infoActive =
+    Css.rgb 15 129 204
 
 
 success : Css.Color
 success =
-    Css.hex "#23d160"
+    primary
 
 
-successDark : Css.Color
-successDark =
-    Css.hex "#22c65b"
+successHover : Css.Color
+successHover =
+    primaryHover
+
+
+successActive : Css.Color
+successActive =
+    primaryActive
 
 
 warning : Css.Color
 warning =
-    Css.hex "#ffdd57"
+    Css.rgb 255 221 87
 
 
-warningDark : Css.Color
-warningDark =
-    Css.hex "#ffdb4a"
+warningHover : Css.Color
+warningHover =
+    Css.rgb 255 216 62
+
+
+warningActive : Css.Color
+warningActive =
+    Css.rgb 255 211 36
 
 
 danger : Css.Color
 danger =
-    Css.hex "#ff3860"
+    Css.rgb 255 56 96
 
 
-dangerDark : Css.Color
-dangerDark =
-    Css.hex "#ff2b56"
+dangerHover : Css.Color
+dangerHover =
+    Css.rgb 255 31 76
+
+
+dangerActive : Css.Color
+dangerActive =
+    Css.rgb 255 5 55
 
 
 border : Css.Color

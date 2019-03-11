@@ -1,4 +1,4 @@
-module SE.Framework.Utils exposing (block, centerEm, desktop, desktopWidth, gap, loader, onChange, overflowTouch, radius, tablet, tabletWidth, unselectable)
+module SE.Framework.Utils exposing (block, centerEm, desktop, desktopWidth, gap, loader, onChange, overflowTouch, radius, smallRadius, tablet, tabletWidth, unselectable)
 
 import Css exposing (Style, absolute, block, calc, deg, em, infinite, minus, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
@@ -45,6 +45,11 @@ tablet =
 radius : Css.Px
 radius =
     px 4
+
+
+smallRadius : Css.Px
+smallRadius =
+    px 2
 
 
 loader : Style
