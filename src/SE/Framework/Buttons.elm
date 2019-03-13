@@ -31,7 +31,6 @@ type
     | Text
       -- Sizes
     | Small
-    | Normal
     | Medium
     | Large
       -- Misc
