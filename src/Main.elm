@@ -70,7 +70,7 @@ view model =
                 [ Title.title "Buttons"
                 , buttons []
                     [ button [ Buttons.Success ]
-                        (Just DoSomething)
+                        Nothing
                         [ icon Icon.Save
                         , span [] [ text "Save changes" ]
                         ]
@@ -80,10 +80,18 @@ view model =
                 , field
                     [ text "Add attached modifier to remove margin between buttons"
                     ]
-                , buttons [ Buttons.Attached ]
-                    [ button [ Buttons.Lighter ] (Just DoSomething) [ text "Save changes" ]
-                    , button [ Buttons.Lighter ] (Just DoSomething) [ text "Save and continue" ]
-                    , button [ Buttons.Lighter ] (Just DoSomething) [ text "Cancel" ]
+                , field
+                    [ buttons [ Buttons.Attached ]
+                        [ button [ Buttons.Lighter ] (Just DoSomething) [ text "Save changes" ]
+                        , button [ Buttons.Lighter ] (Just DoSomething) [ text "Save and continue" ]
+                        , button [ Buttons.Lighter ] (Just DoSomething) [ text "Cancel" ]
+                        ]
+                    ]
+                , field
+                    [ button [ Buttons.Fullwidth, Buttons.Primary ] (Just DoSomething) [ text "Fullwidth button" ]
+                    ]
+                , field
+                    [ button [ Buttons.Static ] (Just DoSomething) [ text "Static button" ]
                     ]
                 ]
             ]

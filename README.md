@@ -3,7 +3,10 @@
 # TODO
 
  - [ ] Columns (started in the columns-branch)
- - [ ] Button states (Fullwidth, Disabled, Static)
+ - [ ] Button states
+    - [x] Fullwidth
+    - [x] Disabled
+    - [x] Static
  - [ ] Level
  - [ ] Form Radio button
  - [ ] Form File button

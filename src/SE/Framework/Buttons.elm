@@ -1,6 +1,6 @@
 module SE.Framework.Buttons exposing (ButtonsModifier(..), Modifier(..), button, buttons)
 
-import Css exposing (Style, absolute, active, bold, center, em, flexEnd, flexStart, focus, hover, important, noWrap, none, pointer, pseudoClass, px, rem, rgba, transparent, underline, wrap, zero)
+import Css exposing (Style, absolute, active, bold, center, disabled, em, flexEnd, flexStart, focus, hover, important, noWrap, none, num, pct, pointer, pseudoClass, px, rem, rgba, transparent, underline, wrap, zero)
 import Css.Global exposing (descendants, typeSelector)
 import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
@@ -37,7 +37,6 @@ type
     | Fullwidth
     | Loading
     | Static
-    | Disabled
 
 
 type ButtonsModifier
@@ -59,6 +58,7 @@ buttonShadowHover =
 
 
 {-| A reusable button which has some styles pre-applied to it.
+If onPress is Nothing, then the button will show as disabled
 -}
 button : List Modifier -> Maybe msg -> List (Html msg) -> Html msg
 button modifiers onPress html =
@@ -66,7 +66,7 @@ button modifiers onPress html =
         eventAttribs =
             case onPress of
                 Nothing ->
-                    []
+                    [ Html.Styled.Attributes.disabled True ]
 
                 Just msg ->
                     [ onClick msg ]
@@ -106,6 +106,12 @@ buttonStyles modifiers =
         [ Css.borderColor Colors.dark
         ]
     , buttonModifiers buttonModifier modifiers
+    , disabled
+        [ Css.backgroundColor transparent
+        , Css.borderColor transparent
+        , Css.boxShadow none
+        , Css.opacity (num 0.5)
+        ]
     ]
 
 
@@ -130,6 +136,9 @@ buttonModifier modifier =
                 , active
                     [ Css.backgroundColor Colors.primaryActive
                     ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.primary)
+                    ]
                 ]
 
         Link ->
@@ -144,6 +153,9 @@ buttonModifier modifier =
                     ]
                 , active
                     [ Css.backgroundColor Colors.linkActive
+                    ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.link)
                     ]
                 ]
 
@@ -160,6 +172,9 @@ buttonModifier modifier =
                 , active
                     [ Css.backgroundColor Colors.infoActive
                     ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.info)
+                    ]
                 ]
 
         Success ->
@@ -175,6 +190,9 @@ buttonModifier modifier =
                 , active
                     [ Css.backgroundColor Colors.successActive
                     ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.success)
+                    ]
                 ]
 
         Warning ->
@@ -187,6 +205,9 @@ buttonModifier modifier =
                     ]
                 , active
                     [ Css.backgroundColor Colors.warningActive
+                    ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.warning)
                     ]
                 ]
 
@@ -203,6 +224,9 @@ buttonModifier modifier =
                 , active
                     [ Css.backgroundColor Colors.dangerActive
                     ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.danger)
+                    ]
                 ]
 
         White ->
@@ -215,6 +239,9 @@ buttonModifier modifier =
                     ]
                 , active
                     [ Css.backgroundColor Colors.lighter
+                    ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.white)
                     ]
                 ]
 
@@ -229,6 +256,9 @@ buttonModifier modifier =
                 , active
                     [ Css.backgroundColor Colors.light
                     ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.lightest)
+                    ]
                 ]
 
         Lighter ->
@@ -242,6 +272,9 @@ buttonModifier modifier =
                 , active
                     [ Css.backgroundColor Colors.base
                     ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.lighter)
+                    ]
                 ]
 
         Light ->
@@ -254,6 +287,9 @@ buttonModifier modifier =
                     ]
                 , active
                     [ Css.backgroundColor Colors.dark
+                    ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.light)
                     ]
                 ]
 
@@ -269,6 +305,9 @@ buttonModifier modifier =
                 , active
                     [ Css.backgroundColor Colors.darkest
                     ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.dark)
+                    ]
                 ]
 
         Darker ->
@@ -283,6 +322,9 @@ buttonModifier modifier =
                 , active
                     [ Css.backgroundColor Colors.black
                     ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.darker)
+                    ]
                 ]
 
         Darkest ->
@@ -294,6 +336,9 @@ buttonModifier modifier =
                     [ Css.backgroundColor Colors.black
                     , Css.borderColor transparent
                     ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.darkest)
+                    ]
                 ]
 
         Black ->
@@ -304,6 +349,9 @@ buttonModifier modifier =
                 , hover
                     [ Css.backgroundColor Colors.black
                     , Css.borderColor transparent
+                    ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.black)
                     ]
                 ]
 
@@ -336,6 +384,20 @@ buttonModifier modifier =
                     ]
                 ]
 
+        Fullwidth ->
+            Css.batch
+                [ Css.displayFlex
+                , Css.width (pct 100)
+                ]
+
+        Static ->
+            Css.batch
+                [ important (Css.backgroundColor Colors.lightest)
+                , important (Css.borderColor Colors.light)
+                , important (Css.color Colors.dark)
+                , important (Css.pointerEvents none)
+                ]
+
         Small ->
             Css.batch
                 [ Css.borderRadius smallRadius
@@ -347,9 +409,6 @@ buttonModifier modifier =
 
         Large ->
             Css.fontSize (rem 1.5)
-
-        _ ->
-            Css.batch []
 
 
 buttonsStyles : List ButtonsModifier -> List Style
