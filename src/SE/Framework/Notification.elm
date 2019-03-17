@@ -1,6 +1,6 @@
 module SE.Framework.Notification exposing (danger, info, link, notification, primary, success, warning)
 
-import Css exposing (Style, absolute, block, calc, currentColor, int, minus, none, pseudoClass, relative, rem, transparent, zero)
+import Css exposing (Style, absolute, block, currentColor, int, minus, none, pseudoClass, relative, rem, transparent, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Events exposing (onClick)
