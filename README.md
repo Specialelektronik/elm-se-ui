@@ -15,7 +15,9 @@
  - [ ] Image (Picture) with support for different sizes and resolutions
  - [ ] Dropdown
  - [ ] Message (can be useful to insert into a product listing to announce stuff)
- - [ ] Modal (To display enlarged product images)
+ - [-] Modal (To display enlarged product images)
+    - [x] Modal (not card)
+    - [ ] Modal card (do we need the card option?)
 
 # Describe intent with this library
 
