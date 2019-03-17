@@ -12,6 +12,7 @@ import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
+import SE.Framework.Image as Image exposing (image, source)
 import SE.Framework.Modal exposing (modal)
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
@@ -358,6 +359,15 @@ view model =
                 , button [ Buttons.Large, Buttons.Primary ]
                     (Just ToggleModal)
                     [ text "Show Modal"
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Image"
+                , image ( 640, 480 )
+                    [ source "https://bulma.io/images/placeholders/640x480.png" 1
+                    , source "https://bulma.io/images/placeholders/640x320.png" 2
                     ]
                 ]
             ]
