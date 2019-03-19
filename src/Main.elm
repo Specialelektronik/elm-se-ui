@@ -12,6 +12,8 @@ import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, radio, select, textarea)
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
+import SE.Framework.Image as Image exposing (image, source)
+import SE.Framework.Modal exposing (modal)
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
 import SE.Framework.Section exposing (section)
@@ -352,7 +354,35 @@ view model =
                     ]
                 ]
             ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Modal"
+                , button [ Buttons.Large, Buttons.Primary ]
+                    (Just ToggleModal)
+                    [ text "Show Modal"
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Image"
+                , image ( 640, 480 )
+                    [ source "https://bulma.io/images/placeholders/640x480.png" 1
+                    , source "https://bulma.io/images/placeholders/640x320.png" 2
+                    ]
+                ]
+            ]
+        , modalView model.showModal
         ]
+
+
+modalView : Bool -> Html Msg
+modalView isActive =
+    if isActive == True then
+        modal ToggleModal [ text "Modal" ]
+
+    else
+        text ""
 
 
 message : (Maybe Msg -> List (Html Msg) -> Html Msg) -> String -> Html Msg
@@ -388,18 +418,23 @@ update msg model =
         ClearMessage ->
             { model | message = "" }
 
+        ToggleModal ->
+            { model | showModal = not model.showModal }
+
 
 type Msg
     = DoSomething
     | InputMsg String
     | CheckBox
     | ClearMessage
+    | ToggleModal
 
 
 type alias Model =
     { input : String
     , checked : Bool
     , message : String
+    , showModal : Bool
     }
 
 
@@ -408,4 +443,5 @@ initialModel =
     { input = ""
     , checked = False
     , message = "Här är ett meddelande"
+    , showModal = False
     }

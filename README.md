@@ -3,19 +3,27 @@
 # TODO
 
  - [ ] Columns (started in the columns-branch)
- - [ ] Button states
+ - [x] Button states
     - [x] Fullwidth
     - [x] Disabled
     - [x] Static
  - [ ] Level
- - [ ] Form Radio button
+ - [x] Form Radio button
  - [ ] Form File button
+ - [ ] Form addons
+    - [ ] Field attached modifier (.has-addons)
+    - [ ] Field Expanded modifier (.is-expanded)
+    - [ ] Field Grouped modifier (.is-grouped + .is-groupedcentered + .is-groupedright + .is-groupedMultiline)
+    - [ ] Control Expanded modifier
  - [ ] Box (different styling from Bulma?)
  - [ ] Card, or should be have Card and Box as one unified component?
  - [ ] Image (Picture) with support for different sizes and resolutions
  - [ ] Dropdown
  - [ ] Message (can be useful to insert into a product listing to announce stuff)
- - [ ] Modal (To display enlarged product images)
+ - [-] Modal (To display enlarged product images)
+    - [x] Modal (not card)
+    - [ ] Modal card (do we need the card option?)
+ - Documentation (type that takes a label, description, code examples)
 
 # Describe intent with this library
 
