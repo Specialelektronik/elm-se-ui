@@ -1,7 +1,7 @@
-module SE.Framework.Form exposing (InputModifier(..), InputRecord, checkbox, control, field, input, select, textarea)
+module SE.Framework.Form exposing (InputModifier(..), InputRecord, checkbox, control, field, input, radio, select, textarea)
 
 import Css exposing (Style, absolute, active, auto, block, bold, borderBox, calc, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, middle, minus, noRepeat, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, scale, solid, sub, top, transparent, url, vertical, zero)
-import Css.Global exposing (descendants, each, withAttribute)
+import Css.Global exposing (adjacentSiblings, descendants, each, typeSelector, withAttribute)
 import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (placeholder)
@@ -349,13 +349,26 @@ checkbox l checked onClick =
             else
                 0
     in
-    styled Html.Styled.div
-        [ Css.cursor pointer ]
+    styled Html.Styled.label
+        [ Css.cursor pointer
+        , adjacentSiblings
+            [ typeSelector "label"
+                [ Css.marginLeft (em 0.5)
+                ]
+            ]
+        , hover
+            [ descendants
+                [ typeSelector "span"
+                    [ Css.borderColor base
+                    ]
+                ]
+            ]
+        ]
         [ Html.Styled.Events.onClick onClick ]
         [ styled Html.Styled.span
             (inputStyle
-                ++ [ Css.width (rem 0.875)
-                   , Css.height (rem 0.875)
+                ++ [ Css.width (rem 1.25)
+                   , Css.height (rem 1.25)
                    , Css.padding zero
                    , Css.verticalAlign middle
                    , Css.marginBottom (px 2)
@@ -363,15 +376,67 @@ checkbox l checked onClick =
                    , Css.before
                         [ Css.display block
                         , Css.property "content" "\"\""
-                        , Css.width (rem 0.875)
-                        , Css.height (rem 0.875)
+                        , Css.width (rem 1.25)
+                        , Css.height (rem 1.25)
                         , Css.backgroundImage (url "/images/tick.svg")
                         , Css.backgroundRepeat noRepeat
                         , Css.backgroundPosition center
-                        , Css.backgroundSize2 (rem 0.5) auto
+                        , Css.backgroundSize2 (rem 0.6) auto
                         , Css.transform (scale checkedInt)
                         , Css.Transitions.transition
-                            [ Css.Transitions.transform 100
+                            [ Css.Transitions.transform 60
+                            ]
+                        ]
+                   ]
+            )
+            []
+            []
+        , text
+            l
+        ]
+
+
+radio : String -> Bool -> msg -> Html msg
+radio l checked onClick =
+    let
+        checkedInt =
+            if checked then
+                1
+
+            else
+                0
+    in
+    styled Html.Styled.label
+        [ Css.cursor pointer
+        , hover
+            [ descendants
+                [ typeSelector "span"
+                    [ Css.borderColor base
+                    ]
+                ]
+            ]
+        ]
+        [ Html.Styled.Events.onClick onClick ]
+        [ styled Html.Styled.span
+            (inputStyle
+                ++ [ Css.width (rem 1.25)
+                   , Css.height (rem 1.25)
+                   , Css.padding zero
+                   , Css.verticalAlign middle
+                   , Css.marginBottom (px 2)
+                   , Css.property "margin-right" "calc(0.625em - 1px)"
+                   , Css.borderRadius (pct 50)
+                   , Css.before
+                        [ Css.display block
+                        , Css.property "content" "\"\""
+                        , Css.width (pct 50)
+                        , Css.height (pct 50)
+                        , Css.margin2 zero auto
+                        , Css.backgroundColor primary
+                        , Css.borderRadius (pct 50)
+                        , Css.transform (scale checkedInt)
+                        , Css.Transitions.transition
+                            [ Css.Transitions.transform 60
                             ]
                         ]
                    ]

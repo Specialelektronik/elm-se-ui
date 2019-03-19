@@ -10,7 +10,7 @@ import SE.Framework.Buttons as Buttons exposing (button, buttons)
 import SE.Framework.Columns exposing (column, columns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
-import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
+import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, radio, select, textarea)
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
@@ -173,6 +173,7 @@ view model =
         , section []
             [ container [ isFluid ]
                 [ checkbox "Checkbox" model.checked CheckBox
+                , radio "Radio" model.checked CheckBox
                 ]
             ]
         , section []
