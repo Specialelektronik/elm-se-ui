@@ -10,7 +10,7 @@ import SE.Framework.Buttons as Buttons exposing (button, buttons)
 import SE.Framework.Columns exposing (column, columns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
-import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, radio, select, textarea)
+import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, expandedControl, field, input, radio, select, textarea)
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
 import SE.Framework.Image as Image exposing (image, source)
 import SE.Framework.Modal exposing (modal)
@@ -43,7 +43,7 @@ view model =
             [ container [ isFluid ]
                 (List.map
                     (\( mods, label ) ->
-                        field [ button mods (Just DoSomething) [ text label ] ]
+                        field [] [ button mods (Just DoSomething) [ text label ] ]
                     )
                     [ ( [], "Button" )
                     , ( [ Buttons.Primary ], "Primary" )
@@ -79,38 +79,42 @@ view model =
                     , button [ Buttons.Info ] (Just DoSomething) [ text "Save and continue" ]
                     , button [ Buttons.Danger ] (Just DoSomething) [ text "Cancel" ]
                     ]
-                , field
+                , field []
                     [ text "Add attached modifier to remove margin between buttons"
                     ]
-                , field
+                , field []
                     [ buttons [ Buttons.Attached ]
                         [ button [ Buttons.Lighter ] (Just DoSomething) [ text "Save changes" ]
                         , button [ Buttons.Lighter ] (Just DoSomething) [ text "Save and continue" ]
                         , button [ Buttons.Lighter ] (Just DoSomething) [ text "Cancel" ]
                         ]
                     ]
-                , field
+                , field []
                     [ button [ Buttons.Fullwidth, Buttons.Primary ] (Just DoSomething) [ text "Fullwidth button" ]
                     ]
-                , field
+                , field []
                     [ button [ Buttons.Static ] (Just DoSomething) [ text "Static button" ]
                     ]
                 ]
             ]
         , section []
             [ container [ isFluid ]
-                ([ field
-                    [ input
-                        { placeholder = "Input"
-                        , modifiers = []
-                        }
-                        InputMsg
-                        model.input
+                ([ Title.title "Form"
+                 , field []
+                    [ Form.label "Input"
+                    , control False
+                        [ input
+                            { placeholder = "Input"
+                            , modifiers = []
+                            }
+                            InputMsg
+                            model.input
+                        ]
                     ]
                  ]
                     ++ List.map
                         (\m ->
-                            field
+                            field []
                                 [ control False
                                     [ input
                                         { placeholder = "Input"
@@ -127,8 +131,42 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                ([ field
-                    [ control True
+                [ Title.title "Field modifiers"
+                , Title.title5 "Attached"
+                , field [ Form.Attached ]
+                    [ control False
+                        [ input
+                            { placeholder = "Find a repository"
+                            , modifiers = []
+                            }
+                            InputMsg
+                            model.input
+                        ]
+                    , control False
+                        [ button [ Buttons.Info ] (Just DoSomething) [ text "Search" ]
+                        ]
+                    ]
+                , Title.title5 " Control expanded"
+                , field [ Form.Attached ]
+                    [ expandedControl False
+                        [ input
+                            { placeholder = "Find a repository"
+                            , modifiers = []
+                            }
+                            InputMsg
+                            model.input
+                        ]
+                    , control False
+                        [ button [ Buttons.Info ] (Just DoSomething) [ text "Search" ]
+                        ]
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                ([ field []
+                    [ Form.label "Loading input or textarea"
+                    , control True
                         [ textarea
                             { placeholder = "Input"
                             , modifiers = []
@@ -141,7 +179,7 @@ view model =
                  ]
                     ++ List.map
                         (\m ->
-                            field
+                            field []
                                 [ control False
                                     [ textarea
                                         { placeholder = "Input"
@@ -266,7 +304,7 @@ view model =
             [ container [ isFluid ]
                 [ Title.title "Tags"
                 , div []
-                    (List.map (\( t, mods ) -> field [ tag mods t ])
+                    (List.map (\( t, mods ) -> field [] [ tag mods t ])
                         [ ( "Tag label", [] )
                         , ( "Primary label", [ Tag.Primary ] )
                         , ( "Link label", [ Tag.Link ] )
@@ -280,7 +318,7 @@ view model =
                         ]
                     )
                 , Title.title5 "List of tags"
-                , field
+                , field []
                     [ tags []
                         (List.map (\( t, mods ) -> tag mods t)
                             [ ( "Tag label", [] )
@@ -296,7 +334,7 @@ view model =
                             ]
                         )
                     ]
-                , field
+                , field []
                     [ content [] [ p [] [ text "Attach tags with Addons modifier" ] ]
                     , tags [ Tag.Addons ]
                         (List.map (\( t, mods ) -> tag mods t)
@@ -305,7 +343,7 @@ view model =
                             ]
                         )
                     ]
-                , field
+                , field []
                     [ content [] [ p [] [ text "Delete tag" ] ]
                     , tags [ Tag.Addons ]
                         [ tag [ Tag.Link ] "65\""

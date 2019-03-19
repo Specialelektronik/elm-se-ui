@@ -1,12 +1,12 @@
-module SE.Framework.Form exposing (InputModifier(..), InputRecord, checkbox, control, field, input, radio, select, textarea)
+module SE.Framework.Form exposing (FieldModifier(..), InputModifier(..), InputRecord, checkbox, control, expandedControl, field, input, label, radio, select, textarea)
 
 import Css exposing (Style, absolute, active, auto, block, bold, borderBox, calc, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, middle, minus, noRepeat, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, scale, solid, sub, top, transparent, url, vertical, zero)
 import Css.Global exposing (adjacentSiblings, descendants, each, typeSelector, withAttribute)
 import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
-import Html.Styled.Attributes exposing (placeholder)
+import Html.Styled.Attributes exposing (class, placeholder)
 import Html.Styled.Events exposing (onInput)
-import SE.Framework.Colors exposing (base, black, danger, darker, info, light, lighter, lightest, link, primary, success, warning, white)
+import SE.Framework.Colors as Colors exposing (base, black, danger, darker, info, light, lighter, lightest, link, primary, success, warning, white)
 import SE.Framework.Control exposing (controlStyle)
 import SE.Framework.Utils as Utils exposing (loader, radius)
 
@@ -17,7 +17,7 @@ TODO add size modifier?
 label : String -> Html msg
 label s =
     styled Html.Styled.label
-        [ Css.color darker
+        [ Css.color Colors.text
         , Css.display block
         , Css.fontSize (rem 1)
         , Css.fontWeight bold
@@ -223,18 +223,85 @@ placeholder c =
 --         ]
 
 
-field : List (Html msg) -> Html msg
-field =
+type FieldModifier
+    = Attached
+
+
+field : List FieldModifier -> List (Html msg) -> Html msg
+field mods =
     styled Html.Styled.div
         [ pseudoClass "not(:last-child)"
             [ Css.marginBottom (rem 0.75)
             ]
+        , Css.batch (List.map fieldModifier mods)
         ]
         []
 
 
+fieldModifier : FieldModifier -> Style
+fieldModifier mod =
+    Css.batch
+        (case mod of
+            Attached ->
+                [ Css.displayFlex
+                , Css.justifyContent flexStart
+                , descendants
+                    [ Css.Global.class "control"
+                        [ pseudoClass "not(:last-child)"
+                            [ Css.marginRight (px -1)
+                            ]
+                        , pseudoClass "not(:first-child):not(:last-child)"
+                            [ descendants
+                                [ each
+                                    [ typeSelector "button"
+                                    , typeSelector "input"
+                                    , typeSelector "select"
+                                    ]
+                                    [ Css.borderRadius zero ]
+                                ]
+                            ]
+                        , pseudoClass "first-child:not(:only-child)"
+                            [ descendants
+                                [ each
+                                    [ typeSelector "button"
+                                    , typeSelector "input"
+                                    , typeSelector "select"
+                                    ]
+                                    [ Css.borderBottomRightRadius zero
+                                    , Css.borderTopRightRadius zero
+                                    ]
+                                ]
+                            ]
+                        , pseudoClass "last-child:not(:only-child)"
+                            [ descendants
+                                [ each
+                                    [ typeSelector "button"
+                                    , typeSelector "input"
+                                    , typeSelector "select"
+                                    ]
+                                    [ Css.borderBottomLeftRadius zero
+                                    , Css.borderTopLeftRadius zero
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+        )
+
+
 control : Bool -> List (Html msg) -> Html msg
-control loading =
+control =
+    internalControl False
+
+
+expandedControl : Bool -> List (Html msg) -> Html msg
+expandedControl =
+    internalControl True
+
+
+internalControl : Bool -> Bool -> List (Html msg) -> Html msg
+internalControl isExpanded loading =
     let
         loadingStyle =
             if loading then
@@ -256,10 +323,15 @@ control loading =
          , Css.fontSize (rem 1)
          , Css.position relative
          , Css.textAlign left
+         , if isExpanded then
+            Css.flexGrow (int 1)
+
+           else
+            Css.batch []
          ]
             ++ loadingStyle
         )
-        []
+        [ class "control" ]
 
 
 select : SelectRecord InputRecord -> (String -> msg) -> String -> Html msg

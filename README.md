@@ -10,14 +10,12 @@
  - [ ] Level
  - [x] Form Radio button
  - [ ] Form File button
- - [ ] Form addons
-    - [ ] Field attached modifier (.has-addons)
-    - [ ] Field Expanded modifier (.is-expanded)
-    - [ ] Field Grouped modifier (.is-grouped + .is-groupedcentered + .is-groupedright + .is-groupedMultiline)
-    - [ ] Control Expanded modifier
+ - [x] Form addons
+    - [x] Field attached modifier (.has-addons)
+    - [x] Control Expanded modifier
  - [ ] Box (different styling from Bulma?)
  - [ ] Card, or should be have Card and Box as one unified component?
- - [ ] Image (Picture) with support for different sizes and resolutions
+ - [x] Image (Picture) with support for different sizes and resolutions
  - [ ] Dropdown
  - [ ] Message (can be useful to insert into a product listing to announce stuff)
  - [-] Modal (To display enlarged product images)
