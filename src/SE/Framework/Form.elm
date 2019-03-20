@@ -225,6 +225,7 @@ placeholder c =
 
 type FieldModifier
     = Attached
+    | Grouped
 
 
 field : List FieldModifier -> List (Html msg) -> Html msg
@@ -283,6 +284,20 @@ fieldModifier mod =
                                     , Css.borderTopLeftRadius zero
                                     ]
                                 ]
+                            ]
+                        ]
+                    ]
+                ]
+
+            Grouped ->
+                [ Css.displayFlex
+                , Css.justifyContent flexStart
+                , Css.Global.children
+                    [ Css.Global.class "control"
+                        [ Css.flexShrink zero
+                        , pseudoClass "not(:last-child)"
+                            [ Css.marginBottom zero
+                            , Css.marginRight (rem 0.75)
                             ]
                         ]
                     ]
