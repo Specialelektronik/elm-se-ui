@@ -7,7 +7,7 @@
     - [x] Fullwidth
     - [x] Disabled
     - [x] Static
- - [ ] Level
+ - [x] Level
  - [x] Form Radio button
  - [ ] Form File button
  - [x] Form addons

@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Css
-import Html.Styled exposing (Attribute, Html, div, hr, img, nav, p, span, styled, text, toUnstyled)
+import Html.Styled exposing (Attribute, Html, a, div, hr, img, nav, p, span, strong, styled, text, toUnstyled)
 import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
@@ -13,6 +13,7 @@ import SE.Framework.Content exposing (content)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, expandedControl, field, input, radio, select, textarea)
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
 import SE.Framework.Image as Image exposing (image, source)
+import SE.Framework.Level as Level exposing (centeredLevel, item, level, mobileLevel)
 import SE.Framework.Modal exposing (modal)
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
@@ -407,6 +408,90 @@ view model =
                 , image ( 640, 480 )
                     [ source "https://bulma.io/images/placeholders/640x480.png" 1
                     , source "https://bulma.io/images/placeholders/640x320.png" 2
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Level"
+                , level
+                    [ item
+                        [ p []
+                            [ strong [] [ text "123" ]
+                            , text " posts"
+                            ]
+                        ]
+                    , item
+                        [ field [ Form.Grouped ]
+                            [ control False [ input { placeholder = "Find a post", modifiers = [] } InputMsg model.input ]
+                            , control False [ button [] (Just DoSomething) [ text "Search" ] ]
+                            ]
+                        ]
+                    ]
+                    [ item
+                        [ strong [] [ text "All" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Published" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Drafts" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Deleted" ]
+                        ]
+                    , item
+                        [ button [ Buttons.Primary ] (Just DoSomething) [ text "New" ]
+                        ]
+                    ]
+                , Title.title "Mobile level"
+                , mobileLevel
+                    [ item
+                        [ p []
+                            [ strong [] [ text "123" ]
+                            , text " posts"
+                            ]
+                        ]
+                    , item
+                        [ field [ Form.Grouped ]
+                            [ control False [ input { placeholder = "Find a post", modifiers = [] } InputMsg model.input ]
+                            , control False [ button [] (Just DoSomething) [ text "Search" ] ]
+                            ]
+                        ]
+                    ]
+                    [ item
+                        [ strong [] [ text "All" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Published" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Drafts" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Deleted" ]
+                        ]
+                    , item
+                        [ button [ Buttons.Primary ] (Just DoSomething) [ text "New" ]
+                        ]
+                    ]
+                , Title.title "Centered level"
+                , centeredLevel
+                    [ item
+                        [ strong [] [ text "All" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Published" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Drafts" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Deleted" ]
+                        ]
+                    , item
+                        [ button [ Buttons.Primary ] (Just DoSomething) [ text "New" ]
+                        ]
                     ]
                 ]
             ]
