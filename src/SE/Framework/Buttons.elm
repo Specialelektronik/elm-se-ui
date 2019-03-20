@@ -1,6 +1,6 @@
 module SE.Framework.Buttons exposing (ButtonsModifier(..), Modifier(..), button, buttons)
 
-import Css exposing (Style, absolute, active, bold, center, disabled, em, flexEnd, flexStart, focus, hover, important, noWrap, none, num, pct, pointer, pseudoClass, px, rem, rgba, transparent, underline, wrap, zero)
+import Css exposing (Style, absolute, active, bold, calc, center, disabled, em, flexEnd, flexStart, focus, hover, important, minus, noWrap, none, num, pct, pointer, pseudoClass, px, rem, rgba, transparent, underline, wrap, zero)
 import Css.Global exposing (descendants, typeSelector)
 import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
@@ -111,6 +111,24 @@ buttonStyles modifiers =
         , Css.borderColor transparent
         , Css.boxShadow none
         , Css.opacity (num 0.5)
+        ]
+    , descendants
+        [ Css.Global.selector ".icon"
+            [ important (Css.height (em 1.5))
+            , important (Css.width (em 1.5))
+            , pseudoClass "first-child:not(:last-child)"
+                [ Css.marginLeft (calc (em -0.375) minus (px 1))
+                , Css.marginRight (em 0.1875)
+                ]
+            , pseudoClass "last-child:not(:first-child)"
+                [ Css.marginLeft (em 0.1875)
+                , Css.marginRight (calc (em -0.375) minus (px 1))
+                ]
+            , pseudoClass "first-child:last-child"
+                [ Css.marginLeft (calc (em -0.375) minus (px 1))
+                , Css.marginRight (calc (em -0.375) minus (px 1))
+                ]
+            ]
         ]
     ]
 
