@@ -7,9 +7,11 @@ import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
 import SE.Framework.Buttons as Buttons exposing (button, buttons)
+import SE.Framework.Colors as Colors
 import SE.Framework.Columns exposing (column, columns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
+import SE.Framework.Dropdown as Dropdown exposing (dropdown)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, expandedControl, field, input, radio, select, textarea)
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
 import SE.Framework.Image as Image exposing (image, source)
@@ -17,6 +19,7 @@ import SE.Framework.Level as Level exposing (centeredLevel, item, level, mobileL
 import SE.Framework.Modal exposing (modal)
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
+import SE.Framework.OuterClick as OuterClick
 import SE.Framework.Section exposing (section)
 import SE.Framework.Table as Table exposing (body, cell, foot, head, headCell, row, table)
 import SE.Framework.Tabs as Tabs exposing (tabs)
@@ -495,6 +498,29 @@ view model =
                     ]
                 ]
             ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Dropdown"
+                , dropdown "dd1"
+                    CloseDropdown
+                    model.isDropdownOpen
+                    (Dropdown.button
+                        [ Buttons.Primary ]
+                        (Just ToggleDropdown)
+                        [ span [] [ text "Dropdown button " ]
+                        , smallIcon Icon.AngleDown
+                        ]
+                    )
+                    [ Dropdown.link "/hello" [ text "Hello" ]
+                    , Dropdown.hr
+                    , Dropdown.content [ p [] [ text "This is content in a paragraph." ] ]
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Empty section" ]
+            ]
         , modalView model.showModal
         ]
 
@@ -544,6 +570,12 @@ update msg model =
         ToggleModal ->
             { model | showModal = not model.showModal }
 
+        ToggleDropdown ->
+            { model | isDropdownOpen = not model.isDropdownOpen }
+
+        CloseDropdown ->
+            { model | isDropdownOpen = False }
+
 
 type Msg
     = DoSomething
@@ -551,6 +583,8 @@ type Msg
     | CheckBox
     | ClearMessage
     | ToggleModal
+    | ToggleDropdown
+    | CloseDropdown
 
 
 type alias Model =
@@ -558,6 +592,7 @@ type alias Model =
     , checked : Bool
     , message : String
     , showModal : Bool
+    , isDropdownOpen : Bool
     }
 
 
@@ -567,4 +602,5 @@ initialModel =
     , checked = False
     , message = "Här är ett meddelande"
     , showModal = False
+    , isDropdownOpen = False
     }
