@@ -16,7 +16,7 @@
  - [ ] Box (different styling from Bulma?)
  - [ ] Card, or should be have Card and Box as one unified component?
  - [x] Image (Picture) with support for different sizes and resolutions
- - [ ] Dropdown
+ - [x] Dropdown
  - [ ] Message (can be useful to insert into a product listing to announce stuff)
  - [-] Modal (To display enlarged product images)
     - [x] Modal (not card)
