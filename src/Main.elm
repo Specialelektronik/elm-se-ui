@@ -8,10 +8,11 @@ import Html.Styled.Events exposing (onClick)
 import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
 <<<<<<< HEAD
 import SE.Framework.Button as Button exposing (button)
-import SE.Framework.Columns as Columns exposing (column, columns, defaultColumn, defaultColumns)
+import SE.Framework.Columns as Columns exposing (column, columns, defaultColumn, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
+<<<<<<< Updated upstream
 import Dict
 =======
 import SE.Framework.Buttons as Buttons exposing (button, buttons)
@@ -22,6 +23,8 @@ import SE.Framework.Content exposing (content)
 import SE.Framework.Dropdown as Dropdown exposing (dropdown)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, expandedControl, field, input, radio, select, textarea)
 >>>>>>> dev
+=======
+>>>>>>> Stashed changes
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
 import SE.Framework.Image as Image exposing (image, source)
 import SE.Framework.Level as Level exposing (centeredLevel, item, level, mobileLevel)
@@ -409,11 +412,16 @@ view model =
             [ container [ isFluid ]
 <<<<<<< HEAD
                 [ Title.title "Columns"
-                , defaultColumns
-                    [ column (Dict.singleton Columns.All Columns.Half) [ Notification.primary Nothing [ text "column 1" ] ]
-                    , defaultColumn [ Notification.primary Nothing [ text "column 2" ] ]
-                    , defaultColumn [ Notification.primary Nothing [ text "column 3" ] ]
-                    , defaultColumn [ Notification.primary Nothing [ text "column 4" ] ]
+                , columns
+                    [ column [ ( Columns.Mobile, Columns.Half ) ]
+                        [ text "Column 1"
+                        ]
+                    , defaultColumn
+                        [ text "Column 2"
+                        ]
+                    , defaultColumn
+                        [ text "Column 3"
+                        ]
                     ]
                 ]
             ]

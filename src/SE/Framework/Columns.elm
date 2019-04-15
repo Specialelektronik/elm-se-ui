@@ -1,8 +1,7 @@
-module SE.Framework.Columns exposing (column, columns, defaultColumn, defaultColumns, Device(..), Width(..))
+module SE.Framework.Columns exposing (Device(..), Width(..), column, columns, defaultColumn, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns)
 
-import Css exposing (Style, block, calc, pct, int, minus, none, pseudoClass, rem, wrap, zero)
+import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap, zero)
 import Css.Global exposing (children, typeSelector)
-import Dict exposing (Dict)
 import Html.Styled exposing (Html, styled, text)
 import SE.Framework.Utils exposing (desktop, tablet)
 
@@ -51,7 +50,7 @@ type Device
 
 
 type alias Sizes =
-    Dict Device Width
+    List ( Device, Width )
 
 
 type Gap
@@ -60,40 +59,58 @@ type Gap
     | Large
 
 
-type alias Modifier =
-    { gap : Gap
-    , isMultiline : Bool
-    }
+type alias IsMultiline =
+    Bool
 
 
-{-| TODO add modifiers
--}
-columns : Modifier -> List (Html msg) -> Html msg
-columns mods =
+type Column msg
+    = Column Sizes (List (Html msg))
+
+
+
+-- COLUMNS
+
+
+columns : List (Column msg) -> Html msg
+columns =
+    internalColumns Normal False
+
+
+multilineColumns : List (Column msg) -> Html msg
+multilineColumns =
+    internalColumns Normal True
+
+
+smallColumns : List (Column msg) -> Html msg
+smallColumns =
+    internalColumns Small False
+
+
+smallMultilineColumns : List (Column msg) -> Html msg
+smallMultilineColumns =
+    internalColumns Small True
+
+
+wideColumns : List (Column msg) -> Html msg
+wideColumns =
+    internalColumns Large False
+
+
+wideMultilineColumns : List (Column msg) -> Html msg
+wideMultilineColumns =
+    internalColumns Large True
+
+
+internalColumns : Gap -> IsMultiline -> List (Column msg) -> Html msg
+internalColumns gap isMultiline cols =
     styled Html.Styled.div
-        (columnsStyles mods)
+        (columnsStyles gap isMultiline)
         []
+        (List.map toHtml cols)
 
 
-defaultColumns : List (Html msg) -> Html msg
-defaultColumns =
-    columns { gap = Normal, isMultiline = False }
-
-
-column : Sizes -> List (Html msg) -> Html msg
-column sizes =
-    styled Html.Styled.div
-        (columnStyles sizes)
-        []
-
-
-defaultColumn : List (Html msg) -> Html msg
-defaultColumn =
-    column Dict.empty
-
-
-columnsStyles : Modifier -> List Style
-columnsStyles { gap, isMultiline } =
+columnsStyles : Gap -> IsMultiline -> List Style
+columnsStyles gap isMultiline =
     [ Css.marginLeft (negativeColumnGap gap)
     , Css.marginRight (negativeColumnGap gap)
     , Css.marginTop (negativeColumnGap gap)
@@ -117,18 +134,34 @@ columnsStyles { gap, isMultiline } =
     ]
 
 
+
+-- COLUMN
+
+
+column : Sizes -> List (Html msg) -> Column msg
+column sizes html =
+    Column sizes html
+
+
+defaultColumn : List (Html msg) -> Column msg
+defaultColumn html =
+    Column [] html
+
+
+toHtml : Column msg -> Html msg
+toHtml (Column sizes html) =
+    styled Html.Styled.div
+        (columnStyles sizes)
+        []
+        html
+
+
 columnStyles : Sizes -> List Style
 columnStyles sizes =
     [ Css.display block
     , Css.flex3 (int 1) (int 1) (int 0)
-    , Css.batch (columnSizes sizes)
+    , Css.batch (List.map columnSize sizes)
     ]
-
-
-columnSizes : Sizes -> List Style
-columnSizes sizes =
-    Dict.toList sizes
-        |> List.map columnSize
 
 
 columnSize : ( Device, Width ) -> Style
@@ -136,9 +169,12 @@ columnSize ( device, width ) =
     case device of
         All ->
             translateWidth width
+        Mobile ->
 
-        _ ->
-            Css.batch []
+    Tablet ->
+    Desktop ->
+    Widescreen ->
+    FullHD ->
 
 
 translateWidth : Width -> Style
