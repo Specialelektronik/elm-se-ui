@@ -2,19 +2,33 @@ module Main exposing (main)
 
 import Browser
 import Css
-import Html.Styled exposing (Attribute, Html, div, hr, img, nav, p, span, styled, text, toUnstyled)
+import Html.Styled exposing (Attribute, Html, a, div, hr, img, nav, p, span, strong, styled, text, toUnstyled)
 import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
+<<<<<<< HEAD
 import SE.Framework.Button as Button exposing (button)
 import SE.Framework.Columns as Columns exposing (column, columns, defaultColumn, defaultColumns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
 import Dict
+=======
+import SE.Framework.Buttons as Buttons exposing (button, buttons)
+import SE.Framework.Colors as Colors
+import SE.Framework.Columns exposing (column, columns)
+import SE.Framework.Container exposing (container, isFluid)
+import SE.Framework.Content exposing (content)
+import SE.Framework.Dropdown as Dropdown exposing (dropdown)
+import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, expandedControl, field, input, radio, select, textarea)
+>>>>>>> dev
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
+import SE.Framework.Image as Image exposing (image, source)
+import SE.Framework.Level as Level exposing (centeredLevel, item, level, mobileLevel)
+import SE.Framework.Modal exposing (modal)
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
+import SE.Framework.OuterClick as OuterClick
 import SE.Framework.Section exposing (section)
 import SE.Framework.Table as Table exposing (body, cell, foot, head, headCell, row, table)
 import SE.Framework.Tabs as Tabs exposing (tabs)
@@ -42,41 +56,78 @@ view model =
             [ container [ isFluid ]
                 (List.map
                     (\( mods, label ) ->
-                        button mods (Just DoSomething) [ text label ]
+                        field [] [ button mods (Just DoSomething) [ text label ] ]
                     )
                     [ ( [], "Button" )
-                    , ( [ Button.Primary ], "Primary" )
-                    , ( [ Button.Link ], "Link" )
-                    , ( [ Button.Info ], "Info" )
-                    , ( [ Button.Success ], "Success" )
-                    , ( [ Button.Warning ], "Warning" )
-                    , ( [ Button.Danger ], "Danger" )
-                    , ( [ Button.White ], "White" )
-                    , ( [ Button.Lightest ], "Lightest" )
-                    , ( [ Button.Lighter ], "Lighter" )
-                    , ( [ Button.Light ], "Light" )
-                    , ( [ Button.Dark ], "Dark" )
-                    , ( [ Button.Darker ], "Darker" )
-                    , ( [ Button.Darkest ], "Darkest" )
-                    , ( [ Button.Black ], "Black" )
-                    , ( [ Button.Text ], "Text" )
+                    , ( [ Buttons.Primary ], "Primary" )
+                    , ( [ Buttons.Link ], "Link" )
+                    , ( [ Buttons.Info ], "Info" )
+                    , ( [ Buttons.Success ], "Success" )
+                    , ( [ Buttons.Warning ], "Warning" )
+                    , ( [ Buttons.Danger ], "Danger" )
+                    , ( [ Buttons.White ], "White" )
+                    , ( [ Buttons.Lightest ], "Lightest" )
+                    , ( [ Buttons.Lighter ], "Lighter" )
+                    , ( [ Buttons.Light ], "Light" )
+                    , ( [ Buttons.Dark ], "Dark" )
+                    , ( [ Buttons.Darker ], "Darker" )
+                    , ( [ Buttons.Darkest ], "Darkest" )
+                    , ( [ Buttons.Black ], "Black" )
+                    , ( [ Buttons.Text ], "Text" )
+                    , ( [ Buttons.Small ], "Small button" )
+                    , ( [ Buttons.Medium ], "Medium button" )
+                    , ( [ Buttons.Large ], "Large button" )
                     ]
                 )
             ]
         , section []
             [ container [ isFluid ]
-                ([ field
-                    [ input
-                        { placeholder = "Input"
-                        , modifiers = []
-                        }
-                        InputMsg
-                        model.input
+                [ Title.title "Buttons"
+                , buttons []
+                    [ button [ Buttons.Success ]
+                        Nothing
+                        [ icon Icon.Save
+                        , span [] [ text "Save changes" ]
+                        ]
+                    , button [ Buttons.Info ] (Just DoSomething) [ text "Save and continue" ]
+                    , button [ Buttons.Danger ] (Just DoSomething) [ text "Cancel" ]
+                    ]
+                , field []
+                    [ text "Add attached modifier to remove margin between buttons"
+                    ]
+                , field []
+                    [ buttons [ Buttons.Attached ]
+                        [ button [ Buttons.Lighter ] (Just DoSomething) [ text "Save changes" ]
+                        , button [ Buttons.Lighter ] (Just DoSomething) [ text "Save and continue" ]
+                        , button [ Buttons.Lighter ] (Just DoSomething) [ text "Cancel" ]
+                        ]
+                    ]
+                , field []
+                    [ button [ Buttons.Fullwidth, Buttons.Primary ] (Just DoSomething) [ text "Fullwidth button" ]
+                    ]
+                , field []
+                    [ button [ Buttons.Static ] (Just DoSomething) [ text "Static button" ]
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                ([ Title.title "Form"
+                 , field []
+                    [ Form.label "Input"
+                    , control False
+                        [ input
+                            { placeholder = "Input"
+                            , modifiers = []
+                            }
+                            InputMsg
+                            model.input
+                        ]
                     ]
                  ]
                     ++ List.map
                         (\m ->
-                            field
+                            field []
                                 [ control False
                                     [ input
                                         { placeholder = "Input"
@@ -93,8 +144,42 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                ([ field
-                    [ control True
+                [ Title.title "Field modifiers"
+                , Title.title5 "Attached"
+                , field [ Form.Attached ]
+                    [ control False
+                        [ input
+                            { placeholder = "Find a repository"
+                            , modifiers = []
+                            }
+                            InputMsg
+                            model.input
+                        ]
+                    , control False
+                        [ button [ Buttons.Info ] (Just DoSomething) [ text "Search" ]
+                        ]
+                    ]
+                , Title.title5 " Control expanded"
+                , field [ Form.Attached ]
+                    [ expandedControl False
+                        [ input
+                            { placeholder = "Find a repository"
+                            , modifiers = []
+                            }
+                            InputMsg
+                            model.input
+                        ]
+                    , control False
+                        [ button [ Buttons.Info ] (Just DoSomething) [ text "Search" ]
+                        ]
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                ([ field []
+                    [ Form.label "Loading input or textarea"
+                    , control True
                         [ textarea
                             { placeholder = "Input"
                             , modifiers = []
@@ -107,7 +192,7 @@ view model =
                  ]
                     ++ List.map
                         (\m ->
-                            field
+                            field []
                                 [ control False
                                     [ textarea
                                         { placeholder = "Input"
@@ -141,6 +226,7 @@ view model =
         , section []
             [ container [ isFluid ]
                 [ checkbox "Checkbox" model.checked CheckBox
+                , radio "Radio" model.checked CheckBox
                 ]
             ]
         , section []
@@ -231,7 +317,7 @@ view model =
             [ container [ isFluid ]
                 [ Title.title "Tags"
                 , div []
-                    (List.map (\( t, mods ) -> field [ tag mods t ])
+                    (List.map (\( t, mods ) -> field [] [ tag mods t ])
                         [ ( "Tag label", [] )
                         , ( "Primary label", [ Tag.Primary ] )
                         , ( "Link label", [ Tag.Link ] )
@@ -245,7 +331,7 @@ view model =
                         ]
                     )
                 , Title.title5 "List of tags"
-                , field
+                , field []
                     [ tags []
                         (List.map (\( t, mods ) -> tag mods t)
                             [ ( "Tag label", [] )
@@ -261,7 +347,7 @@ view model =
                             ]
                         )
                     ]
-                , field
+                , field []
                     [ content [] [ p [] [ text "Attach tags with Addons modifier" ] ]
                     , tags [ Tag.Addons ]
                         (List.map (\( t, mods ) -> tag mods t)
@@ -270,7 +356,7 @@ view model =
                             ]
                         )
                     ]
-                , field
+                , field []
                     [ content [] [ p [] [ text "Delete tag" ] ]
                     , tags [ Tag.Addons ]
                         [ tag [ Tag.Link ] "65\""
@@ -321,6 +407,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
+<<<<<<< HEAD
                 [ Title.title "Columns"
                 , defaultColumns
                     [ column (Dict.singleton Columns.All Columns.Half) [ Notification.primary Nothing [ text "column 1" ] ]
@@ -330,7 +417,142 @@ view model =
                     ]
                 ]
             ]
+=======
+                [ Title.title "Modal"
+                , button [ Buttons.Large, Buttons.Primary ]
+                    (Just ToggleModal)
+                    [ text "Show Modal"
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Image"
+                , image ( 640, 480 )
+                    [ source "https://bulma.io/images/placeholders/640x480.png" 1
+                    , source "https://bulma.io/images/placeholders/640x320.png" 2
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Level"
+                , level
+                    [ item
+                        [ p []
+                            [ strong [] [ text "123" ]
+                            , text " posts"
+                            ]
+                        ]
+                    , item
+                        [ field [ Form.Grouped ]
+                            [ control False [ input { placeholder = "Find a post", modifiers = [] } InputMsg model.input ]
+                            , control False [ button [] (Just DoSomething) [ text "Search" ] ]
+                            ]
+                        ]
+                    ]
+                    [ item
+                        [ strong [] [ text "All" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Published" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Drafts" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Deleted" ]
+                        ]
+                    , item
+                        [ button [ Buttons.Primary ] (Just DoSomething) [ text "New" ]
+                        ]
+                    ]
+                , Title.title "Mobile level"
+                , mobileLevel
+                    [ item
+                        [ p []
+                            [ strong [] [ text "123" ]
+                            , text " posts"
+                            ]
+                        ]
+                    , item
+                        [ field [ Form.Grouped ]
+                            [ control False [ input { placeholder = "Find a post", modifiers = [] } InputMsg model.input ]
+                            , control False [ button [] (Just DoSomething) [ text "Search" ] ]
+                            ]
+                        ]
+                    ]
+                    [ item
+                        [ strong [] [ text "All" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Published" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Drafts" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Deleted" ]
+                        ]
+                    , item
+                        [ button [ Buttons.Primary ] (Just DoSomething) [ text "New" ]
+                        ]
+                    ]
+                , Title.title "Centered level"
+                , centeredLevel
+                    [ item
+                        [ strong [] [ text "All" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Published" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Drafts" ]
+                        ]
+                    , item
+                        [ a [ href "/" ] [ text "Deleted" ]
+                        ]
+                    , item
+                        [ button [ Buttons.Primary ] (Just DoSomething) [ text "New" ]
+                        ]
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Dropdown"
+                , dropdown "dd1"
+                    CloseDropdown
+                    model.isDropdownOpen
+                    (Dropdown.button
+                        [ Buttons.Primary ]
+                        (Just ToggleDropdown)
+                        [ span [] [ text "Dropdown button " ]
+                        , smallIcon Icon.AngleDown
+                        ]
+                    )
+                    [ Dropdown.link "/hello" [ text "Hello" ]
+                    , Dropdown.hr
+                    , Dropdown.content [ p [] [ text "This is content in a paragraph." ] ]
+                    ]
+                ]
+            ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Empty section" ]
+            ]
+        , modalView model.showModal
+>>>>>>> dev
         ]
+
+
+modalView : Bool -> Html Msg
+modalView isActive =
+    if isActive == True then
+        modal ToggleModal [ text "Modal" ]
+
+    else
+        text ""
 
 
 message : (Maybe Msg -> List (Html Msg) -> Html Msg) -> String -> Html Msg
@@ -366,18 +588,32 @@ update msg model =
         ClearMessage ->
             { model | message = "" }
 
+        ToggleModal ->
+            { model | showModal = not model.showModal }
+
+        ToggleDropdown ->
+            { model | isDropdownOpen = not model.isDropdownOpen }
+
+        CloseDropdown ->
+            { model | isDropdownOpen = False }
+
 
 type Msg
     = DoSomething
     | InputMsg String
     | CheckBox
     | ClearMessage
+    | ToggleModal
+    | ToggleDropdown
+    | CloseDropdown
 
 
 type alias Model =
     { input : String
     , checked : Bool
     , message : String
+    , showModal : Bool
+    , isDropdownOpen : Bool
     }
 
 
@@ -386,4 +622,6 @@ initialModel =
     { input = ""
     , checked = False
     , message = "Här är ett meddelande"
+    , showModal = False
+    , isDropdownOpen = False
     }

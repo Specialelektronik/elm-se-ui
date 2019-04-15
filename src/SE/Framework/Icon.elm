@@ -7,6 +7,8 @@ import Html.Styled.Attributes exposing (class)
 
 type Icon
     = Home
+    | Save
+    | AngleDown
 
 
 type Size
@@ -20,7 +22,7 @@ internalIcon : Size -> Icon -> Html msg
 internalIcon size i =
     styled Html.Styled.span
         (containerStyles size)
-        []
+        [ class "icon" ]
         [ Html.Styled.i [ class "fas", faClass i ] []
         ]
 
@@ -106,4 +108,10 @@ faClass i =
         (case i of
             Home ->
                 "fa-home"
+
+            Save ->
+                "fa-save"
+
+            AngleDown ->
+                "fa-angle-down"
         )

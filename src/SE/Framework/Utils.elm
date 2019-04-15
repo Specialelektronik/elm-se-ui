@@ -1,8 +1,8 @@
-module SE.Framework.Utils exposing (block, centerEm, desktop, desktopWidth, gap, loader, onChange, overflowTouch, radius, tablet, tabletWidth, unselectable)
+module SE.Framework.Utils exposing (block, centerEm, desktop, desktopWidth, gap, loader, mobile, onChange, overflowTouch, radius, smallRadius, tablet, tabletWidth, unselectable)
 
 import Css exposing (Style, absolute, block, calc, deg, em, infinite, minus, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
-import Css.Media as Media exposing (all, minWidth, only, print, screen)
+import Css.Media as Media exposing (all, maxWidth, minWidth, only, print, screen)
 import Html.Styled exposing (Attribute)
 import Html.Styled.Events exposing (on)
 import Json.Decode as Json
@@ -42,9 +42,19 @@ tablet =
     Media.withMedia [ only screen [ minWidth (px tabletWidth) ] ]
 
 
+mobile : List Style -> Style
+mobile =
+    Media.withMedia [ only screen [ maxWidth (px (tabletWidth - 1)) ] ]
+
+
 radius : Css.Px
 radius =
     px 4
+
+
+smallRadius : Css.Px
+smallRadius =
+    px 2
 
 
 loader : Style

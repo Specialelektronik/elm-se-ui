@@ -1,6 +1,6 @@
 module SE.Framework.Delete exposing (delete)
 
-import Css exposing (Style, absolute, active, after, before, block, calc, currentColor, deg, focus, hover, inlineBlock, int, minus, none, pct, pointer, pseudoClass, px, relative, rem, rgba, rotate, top, translateX, translateY, transparent, zero)
+import Css exposing (Style, absolute, active, after, before, block, currentColor, deg, focus, hover, inlineBlock, int, minus, none, pct, pointer, pseudoClass, px, relative, rem, rgba, rotate, top, translateX, translateY, transparent, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
 import Css.Transitions
 import Html.Styled exposing (Html, styled, text)
