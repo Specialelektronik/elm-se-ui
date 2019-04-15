@@ -2,7 +2,7 @@
 
 # TODO
 
- - [ ] Columns (started in the columns-branch)
+ - [x] Columns (started in the columns-branch)
  - [x] Button states
     - [x] Fullwidth
     - [x] Disabled

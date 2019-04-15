@@ -3,7 +3,7 @@ module SE.Framework.Columns exposing (Device(..), Width(..), column, columns, de
 import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap, zero)
 import Css.Global exposing (children, typeSelector)
 import Html.Styled exposing (Html, styled, text)
-import SE.Framework.Utils exposing (desktop, tablet)
+import SE.Framework.Utils exposing (desktop, mobile, tablet)
 
 
 columnGap : Gap -> Css.Rem
@@ -45,8 +45,6 @@ type Device
     | Mobile
     | Tablet
     | Desktop
-    | Widescreen
-    | FullHD
 
 
 type alias Sizes =
@@ -60,6 +58,10 @@ type Gap
 
 
 type alias IsMultiline =
+    Bool
+
+
+type alias IsMobile =
     Bool
 
 
@@ -103,14 +105,30 @@ wideMultilineColumns =
 
 internalColumns : Gap -> IsMultiline -> List (Column msg) -> Html msg
 internalColumns gap isMultiline cols =
+    let
+        isMobile =
+            isMobileColumns cols
+    in
     styled Html.Styled.div
-        (columnsStyles gap isMultiline)
+        (columnsStyles gap isMultiline isMobile)
         []
         (List.map toHtml cols)
 
 
-columnsStyles : Gap -> IsMultiline -> List Style
-columnsStyles gap isMultiline =
+isMobileColumns : List (Column msg) -> Bool
+isMobileColumns cols =
+    List.map isMobileColumn cols
+        |> List.foldl (||) False
+
+
+isMobileColumn : Column msg -> Bool
+isMobileColumn (Column sizes _) =
+    List.map Tuple.first sizes
+        |> List.member Mobile
+
+
+columnsStyles : Gap -> IsMultiline -> IsMobile -> List Style
+columnsStyles gap isMultiline isMobile =
     [ Css.marginLeft (negativeColumnGap gap)
     , Css.marginRight (negativeColumnGap gap)
     , Css.marginTop (negativeColumnGap gap)
@@ -128,6 +146,11 @@ columnsStyles gap isMultiline =
         ]
     , if isMultiline then
         Css.flexWrap wrap
+
+      else
+        Css.batch []
+    , if isMobile then
+        Css.displayFlex
 
       else
         Css.batch []
@@ -169,12 +192,15 @@ columnSize ( device, width ) =
     case device of
         All ->
             translateWidth width
-        Mobile ->
 
-    Tablet ->
-    Desktop ->
-    Widescreen ->
-    FullHD ->
+        Mobile ->
+            mobile [ translateWidth width ]
+
+        Tablet ->
+            tablet [ translateWidth width ]
+
+        Desktop ->
+            desktop [ translateWidth width ]
 
 
 translateWidth : Width -> Style

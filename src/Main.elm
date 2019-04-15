@@ -6,25 +6,13 @@ import Html.Styled exposing (Attribute, Html, a, div, hr, img, nav, p, span, str
 import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
-<<<<<<< HEAD
-import SE.Framework.Button as Button exposing (button)
-import SE.Framework.Columns as Columns exposing (column, columns, defaultColumn, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns)
-import SE.Framework.Container exposing (container, isFluid)
-import SE.Framework.Content exposing (content)
-import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, field, input, select, textarea)
-<<<<<<< Updated upstream
-import Dict
-=======
 import SE.Framework.Buttons as Buttons exposing (button, buttons)
 import SE.Framework.Colors as Colors
-import SE.Framework.Columns exposing (column, columns)
+import SE.Framework.Columns as Columns exposing (column, columns, defaultColumn, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns)
 import SE.Framework.Container exposing (container, isFluid)
 import SE.Framework.Content exposing (content)
 import SE.Framework.Dropdown as Dropdown exposing (dropdown)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, expandedControl, field, input, radio, select, textarea)
->>>>>>> dev
-=======
->>>>>>> Stashed changes
 import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
 import SE.Framework.Image as Image exposing (image, source)
 import SE.Framework.Level as Level exposing (centeredLevel, item, level, mobileLevel)
@@ -410,22 +398,6 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-<<<<<<< HEAD
-                [ Title.title "Columns"
-                , columns
-                    [ column [ ( Columns.Mobile, Columns.Half ) ]
-                        [ text "Column 1"
-                        ]
-                    , defaultColumn
-                        [ text "Column 2"
-                        ]
-                    , defaultColumn
-                        [ text "Column 3"
-                        ]
-                    ]
-                ]
-            ]
-=======
                 [ Title.title "Modal"
                 , button [ Buttons.Large, Buttons.Primary ]
                     (Just ToggleModal)
@@ -549,8 +521,41 @@ view model =
             [ container [ isFluid ]
                 [ Title.title "Empty section" ]
             ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title "Columns"
+                , content []
+                    [ p []
+                        [ text "Anytime a column contains the Mobile Size, the columns get the flex: display style"
+                        ]
+                    ]
+                , Title.title5 "Mobile columns"
+                , columns
+                    [ column [ ( Columns.Mobile, Columns.OneQuarter ) ]
+                        [ text "Mobile column one quarter"
+                        ]
+                    , defaultColumn
+                        [ text "Column 2 - default size"
+                        ]
+                    , defaultColumn
+                        [ text "Column 3 - default size"
+                        ]
+                    ]
+                , Title.title5 "Multiline columns"
+                , Columns.multilineColumns
+                    [ column [ ( Columns.All, Columns.Full ) ]
+                        [ text "Full width column"
+                        ]
+                    , defaultColumn
+                        [ text "Column 2 - default size"
+                        ]
+                    , defaultColumn
+                        [ text "Column 3 - default size"
+                        ]
+                    ]
+                ]
+            ]
         , modalView model.showModal
->>>>>>> dev
         ]
 
 
