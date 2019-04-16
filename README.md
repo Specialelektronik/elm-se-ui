@@ -28,3 +28,6 @@
 Focus is on type checked and correct components, that why every component has it's own modifiers, no global "catch-all" kind of stuff.
 
 Use https://github.com/Skinney/elm-git-install to utilize in application
+
+# Setup npm script support in Windows
+https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-scripts-in-windows
