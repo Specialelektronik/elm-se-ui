@@ -149,7 +149,7 @@ dangerActive =
 
 border : Css.Color
 border =
-    lighter
+    light
 
 
 background : Css.Color

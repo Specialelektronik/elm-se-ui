@@ -31,3 +31,5 @@ Use https://github.com/Skinney/elm-git-install to utilize in application
 
 # Setup npm script support in Windows
 https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-scripts-in-windows
+
+https://github.com/lucamug/style-framework/blob/master/src/Framework.elm

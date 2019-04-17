@@ -1,4 +1,4 @@
-module SE.Framework.Control exposing (controlStyle)
+module SE.Framework.Control exposing (controlHeight, controlStyle)
 
 import Css exposing (Style, active, alignItems, border3, borderRadius, boxShadow, boxShadow5, center, cursor, disabled, display, em, flexStart, focus, fontSize, height, inlineFlex, justifyContent, lineHeight, none, notAllowed, num, paddingBottom, paddingLeft, paddingRight, paddingTop, position, property, px, relative, rem, rgba, solid, top, transparent, verticalAlign, zero)
 

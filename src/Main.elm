@@ -20,6 +20,7 @@ import SE.Framework.Modal exposing (modal)
 import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 import SE.Framework.Notification as Notification
 import SE.Framework.OuterClick as OuterClick
+import SE.Framework.Pagination as Pagination exposing (centeredPagination, pagination, rightPagination)
 import SE.Framework.Section exposing (section)
 import SE.Framework.Table as Table exposing (body, cell, foot, head, headCell, row, table)
 import SE.Framework.Tabs as Tabs exposing (tabs)
@@ -29,6 +30,15 @@ import SE.Framework.Title as Title
 
 view : Model -> Html Msg
 view model =
+    let
+        paginationRecord =
+            { lastPage = 7
+            , currentPage = model.page
+            , nextPageLabel = "Next page"
+            , previousPageLabel = "Previous"
+            , msg = ChangePage
+            }
+    in
     div []
         [ navbar
             (brand "/"
@@ -555,6 +565,22 @@ view model =
                     ]
                 ]
             ]
+        , section []
+            [ container [ isFluid ]
+                [ Title.title ("Pagination (current page: " ++ String.fromInt model.page ++ ")")
+                , content []
+                    [ p []
+                        [ text "Pagination"
+                        ]
+                    ]
+                , Title.title5 "Regular"
+                , pagination paginationRecord
+                , Title.title5 "Centered"
+                , centeredPagination paginationRecord
+                , Title.title5 "Right"
+                , rightPagination paginationRecord
+                ]
+            ]
         , modalView model.showModal
         ]
 
@@ -610,6 +636,9 @@ update msg model =
         CloseDropdown ->
             { model | isDropdownOpen = False }
 
+        ChangePage page ->
+            { model | page = page }
+
 
 type Msg
     = DoSomething
@@ -619,6 +648,7 @@ type Msg
     | ToggleModal
     | ToggleDropdown
     | CloseDropdown
+    | ChangePage Int
 
 
 type alias Model =
@@ -627,6 +657,7 @@ type alias Model =
     , message : String
     , showModal : Bool
     , isDropdownOpen : Bool
+    , page : Int
     }
 
 
@@ -637,4 +668,5 @@ initialModel =
     , message = "Här är ett meddelande"
     , showModal = False
     , isDropdownOpen = False
+    , page = 2
     }
