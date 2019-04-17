@@ -1,9 +1,13 @@
 module SE.Framework.Pagination exposing (PaginationRecord, centeredPagination, pagination, rightPagination)
 
-import Css exposing (Style, block, calc, center, int, minus, none, pct, pseudoClass, rem, wrap, zero)
-import Html.Styled exposing (Html, a, li, nav, span, styled, text)
+import Css exposing (Style, active, block, calc, center, default, disabled, em, flexEnd, flexStart, focus, hover, int, minus, none, num, pct, pseudoClass, rem, spaceBetween, wrap, zero)
+import Css.Global exposing (adjacentSiblings, children, typeSelector)
+import Html.Styled exposing (Attribute, Html, a, button, li, nav, span, styled, text)
+import Html.Styled.Attributes as Attributes
 import Html.Styled.Events exposing (onClick)
-import SE.Framework.Buttons as Buttons exposing (button)
+import SE.Framework.Colors as Colors
+import SE.Framework.Control exposing (controlHeight, controlStyle)
+import SE.Framework.Utils exposing (tablet, unselectable)
 
 
 {-| first link: always 1
@@ -28,7 +32,7 @@ type alias PaginationRecord msg =
 
 type Alignment
     = Left
-    | Centered
+    | Center
     | Right
 
 
@@ -43,12 +47,12 @@ pagination rec =
 
 centeredPagination : PaginationRecord msg -> Html msg
 centeredPagination rec =
-    text "Centered pagination"
+    internalPagination Center rec
 
 
 rightPagination : PaginationRecord msg -> Html msg
 rightPagination rec =
-    text "Right Pagination"
+    internalPagination Right rec
 
 
 internalPagination : Alignment -> PaginationRecord msg -> Html msg
@@ -64,9 +68,85 @@ internalPagination alignment rec =
 
 navStyles : Alignment -> List Style
 navStyles alignment =
-    [ Css.fontSize (rem 1)
+    [ Css.batch navAndListStyles
+    , Css.fontSize (rem 1)
     , Css.margin (rem -0.25)
+    , tablet
+        [ Css.justifyContent spaceBetween
+        , case alignment of
+            Left ->
+                leftNavStyles
+
+            Center ->
+                centerNavStyles
+
+            Right ->
+                rightNavStyles
+        ]
     ]
+
+
+leftNavStyles : Style
+leftNavStyles =
+    children
+        [ typeSelector "ul"
+            [ Css.justifyContent flexStart
+            , Css.order (int 1)
+            ]
+
+        -- previous
+        , typeSelector "button"
+            [ Css.order (int 2)
+            , adjacentSiblings
+                --next
+                [ typeSelector "button"
+                    [ Css.order (int 3)
+                    ]
+                ]
+            ]
+        ]
+
+
+centerNavStyles : Style
+centerNavStyles =
+    children
+        [ typeSelector "ul"
+            [ Css.justifyContent center
+            , Css.order (int 2)
+            ]
+
+        -- previous
+        , typeSelector "button"
+            [ Css.order (int 1)
+            , adjacentSiblings
+                --next
+                [ typeSelector "button"
+                    [ Css.order (int 3)
+                    ]
+                ]
+            ]
+        ]
+
+
+rightNavStyles : Style
+rightNavStyles =
+    children
+        [ typeSelector "ul"
+            [ Css.justifyContent flexEnd
+            , Css.order (int 3)
+            ]
+
+        -- previous
+        , typeSelector "button"
+            [ Css.order (int 1)
+            , adjacentSiblings
+                --next
+                [ typeSelector "button"
+                    [ Css.order (int 2)
+                    ]
+                ]
+            ]
+        ]
 
 
 
@@ -76,14 +156,17 @@ navStyles alignment =
 next : (Int -> msg) -> String -> Int -> Int -> Html msg
 next msg label currentPage lastPage =
     let
-        message =
-            if currentPage == lastPage then
-                Nothing
+        isDisabled =
+            currentPage == lastPage
+
+        attrs =
+            if isDisabled then
+                [ Attributes.disabled isDisabled ]
 
             else
-                Just (msg (currentPage + 1))
+                [ onClick (msg (currentPage + 1)) ]
     in
-    button [] message [ text label ]
+    styled button (itemStyles False) attrs [ text label ]
 
 
 
@@ -93,14 +176,10 @@ next msg label currentPage lastPage =
 previous : (Int -> msg) -> String -> Int -> Html msg
 previous msg label currentPage =
     let
-        message =
-            if currentPage == 1 then
-                Nothing
-
-            else
-                Just (msg (currentPage - 1))
+        isDisabled =
+            currentPage == 1
     in
-    button [] message [ text label ]
+    styled button (itemStyles False) [ onClick (msg (currentPage - 1)), Attributes.disabled isDisabled ] [ text label ]
 
 
 
@@ -127,16 +206,39 @@ list message lastPage currentPage =
 
 clipped : (Int -> msg) -> Int -> Int -> List (Html msg)
 clipped message lastPage currentPage =
-    let
-        lst
-    in
+    listItem message (currentPage == 1) 1
+        :: (if currentPage > 3 then
+                listEllipsis
 
-    case currentPage of
-        1 ->
-        2 ->
-        (lastPage-1) ->
-        lastPage ->
-        _ ->
+            else
+                text ""
+           )
+        :: (if currentPage > 2 then
+                listItem message False (currentPage - 1)
+
+            else
+                text ""
+           )
+        :: (if currentPage /= 1 && currentPage /= lastPage then
+                listItem message True currentPage
+
+            else
+                text ""
+           )
+        :: (if currentPage < (lastPage - 1) then
+                listItem message False (currentPage + 1)
+
+            else
+                text ""
+           )
+        :: (if currentPage < (lastPage - 2) then
+                listEllipsis
+
+            else
+                text ""
+           )
+        :: listItem message (currentPage == lastPage) lastPage
+        :: []
 
 
 all : (Int -> msg) -> Int -> Int -> List (Html msg)
@@ -147,8 +249,12 @@ all message lastPage currentPage =
 
 listStyles : List Style
 listStyles =
-    [ Css.flexWrap wrap
-    , Css.batch navAndListStyles
+    [ Css.batch navAndListStyles
+    , Css.flexWrap wrap
+    , tablet
+        [ Css.flexGrow (int 1)
+        , Css.flexShrink (int 1)
+        ]
     ]
 
 
@@ -168,12 +274,69 @@ navAndListStyles =
 listItem : (Int -> msg) -> Bool -> Int -> Html msg
 listItem message isCurrent page =
     li []
-        [ a [ onClick (message page) ] [ text (String.fromInt page) ]
+        [ styled a (itemStyles isCurrent) [ onClick (message page) ] [ text (String.fromInt page) ]
         ]
+
+
+itemAndEllipsisStyles : Style
+itemAndEllipsisStyles =
+    Css.batch
+        [ controlStyle
+        , unselectable
+        , Css.backgroundColor Colors.white
+        , Css.fontSize (em 1)
+        , Css.paddingLeft (em 0.5)
+        , Css.paddingRight (em 0.5)
+        , Css.justifyContent center
+        , Css.margin (rem 0.25)
+        , Css.textAlign center
+        ]
+
+
+itemStyles : Bool -> List Style
+itemStyles isCurrent =
+    [ itemAndEllipsisStyles
+    , Css.borderColor Colors.border
+    , Css.color Colors.text
+    , Css.minWidth controlHeight
+    , hover
+        [ Css.borderColor Colors.dark
+        ]
+    , focus
+        [ Css.borderColor Colors.dark
+        ]
+    , active
+        [ Css.borderColor Colors.dark
+        ]
+    , disabled
+        [ Css.backgroundColor Colors.lighter
+        , Css.borderColor Colors.lighter
+        , Css.boxShadow none
+        , Css.color Colors.base
+        , Css.opacity (num 0.5)
+        ]
+    , Css.batch <|
+        if isCurrent then
+            [ Css.backgroundColor Colors.link
+            , Css.important (Css.borderColor Colors.link)
+            , Css.important (Css.color Colors.white)
+            , Css.pointerEvents none
+            , Css.cursor default
+            ]
+
+        else
+            []
+    ]
 
 
 listEllipsis : Html msg
 listEllipsis =
-    li []
-        [ span [] [ text "&hellip;" ]
-        ]
+    li [] [ styled span ellipsisStyle [] [ text "…" ] ]
+
+
+ellipsisStyle : List Style
+ellipsisStyle =
+    [ itemAndEllipsisStyles
+    , Css.color Colors.light
+    , Css.pointerEvents none
+    ]

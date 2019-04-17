@@ -30,6 +30,15 @@ import SE.Framework.Title as Title
 
 view : Model -> Html Msg
 view model =
+    let
+        paginationRecord =
+            { lastPage = 7
+            , currentPage = model.page
+            , nextPageLabel = "Next page"
+            , previousPageLabel = "Previous"
+            , msg = ChangePage
+            }
+    in
     div []
         [ navbar
             (brand "/"
@@ -565,29 +574,11 @@ view model =
                         ]
                     ]
                 , Title.title5 "Regular"
-                , pagination
-                    { lastPage = 7
-                    , currentPage = model.page
-                    , nextPageLabel = "Next page"
-                    , previousPageLabel = "Previous"
-                    , msg = ChangePage
-                    }
+                , pagination paginationRecord
                 , Title.title5 "Centered"
-                , centeredPagination
-                    { lastPage = 7
-                    , currentPage = model.page
-                    , nextPageLabel = "Next page"
-                    , previousPageLabel = "Previous"
-                    , msg = ChangePage
-                    }
+                , centeredPagination paginationRecord
                 , Title.title5 "Right"
-                , rightPagination
-                    { lastPage = 7
-                    , currentPage = model.page
-                    , nextPageLabel = "Next page"
-                    , previousPageLabel = "Previous"
-                    , msg = ChangePage
-                    }
+                , rightPagination paginationRecord
                 ]
             ]
         , modalView model.showModal
