@@ -1,10 +1,13 @@
 module SE.Framework exposing (main)
 
 import Browser
-import Css exposing (column, fixed, int, px, relative, rem, vh, zero)
-import Html.Styled exposing (Html, article, aside, div, main_, styled, text, toUnstyled)
+import Css exposing (block, calc, column, em, fixed, hover, int, minus, px, relative, rem, rgba, vh, zero)
+import Html.Styled exposing (Html, a, article, aside, div, li, main_, styled, text, toUnstyled, ul)
+import Html.Styled.Attributes exposing (href, id)
 import SE.Framework.Colors as Colors
 import SE.Framework.Section exposing (section)
+import SE.Framework.Title as Title
+import SE.Framework.Utils exposing (radius, smallRadius)
 
 
 type alias Introspection =
@@ -64,14 +67,14 @@ view model =
         , styled main_
             [ Css.flexGrow (int 1) ]
             []
-            [ article []
+            [ article [ id "Breadcrumb" ]
                 [ section []
-                    [ text "Article 1"
+                    [ Title.title3 "Breadcrumb"
                     ]
                 ]
-            , article []
+            , article [ id "Buttons" ]
                 [ section []
-                    [ text "Article 2"
+                    [ Title.title3 "Buttons"
                     ]
                 ]
             , article []
@@ -109,20 +112,61 @@ viewSidebar =
         [ Css.minHeight (vh 100)
         , Css.flex3 zero zero (px 300)
         , Css.position relative
-        , Css.backgroundColor Colors.black
+        , Css.backgroundColor Colors.primary
+        , Css.color Colors.white
         ]
         []
         [ styled div
             [ Css.position fixed
-            , Css.margin2 zero (rem 1.5)
-
-            --, Css.width calc (300 px - 3 rem)
+            , Css.margin2 (rem 3) (rem 1.5)
+            , Css.width (calc (px 300) minus (rem 3))
             , Css.displayFlex
             , Css.flexDirection column
             ]
             []
-            [ text "sidebar"
+            [ sidebarMenu
             ]
+        ]
+
+
+sidebarMenu : Html Msg
+sidebarMenu =
+    ul []
+        [ sidebarItem True "Breadcrumb" "Breadcrumb"
+        , sidebarItem False "Buttons" "Buttons"
+        ]
+
+
+
+{- name = Name of the file
+   Label = Label of the menu item
+-}
+
+
+sidebarItem : Bool -> String -> String -> Html Msg
+sidebarItem isActive name label =
+    styled li
+        []
+        []
+        [ styled a
+            [ Css.display block
+            , Css.padding2 (em 0.5) (em 0.75)
+            , Css.color Colors.white
+            , Css.borderRadius smallRadius
+            , hover
+                [ Css.backgroundColor (rgba 0 0 0 0.2)
+                , Css.color Colors.white
+                ]
+            , Css.batch <|
+                if isActive then
+                    [ Css.backgroundColor (rgba 0 0 0 0.1)
+                    ]
+
+                else
+                    []
+            ]
+            [ href <| "#" ++ name ]
+            [ text label ]
         ]
 
 
