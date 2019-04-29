@@ -24,10 +24,8 @@ import Html.Styled exposing (Html, styled)
 import Html.Styled.Attributes exposing (class)
 
 
-type Icon
-    = Home
-    | Save
-    | AngleDown
+type alias Icon =
+    String
 
 
 type Size
@@ -42,7 +40,7 @@ internalIcon size i =
     styled Html.Styled.span
         (containerStyles size)
         [ class "icon" ]
-        [ Html.Styled.i [ class "fas", faClass i ] []
+        [ Html.Styled.i [ class ("fas" ++ faClass i) ] []
         ]
 
 
@@ -121,16 +119,10 @@ faDimensions size =
         )
 
 
-faClass : Icon -> Html.Styled.Attribute msg
-faClass i =
-    class
-        (case i of
-            Home ->
-                "fa-home"
+faClass : String -> String
+faClass str =
+    if String.startsWith "fa-" str then
+        str
 
-            Save ->
-                "fa-save"
-
-            AngleDown ->
-                "fa-angle-down"
-        )
+    else
+        "fa-" ++ str

@@ -87,7 +87,7 @@ view model =
                 , buttons []
                     [ button [ Buttons.Success ]
                         Nothing
-                        [ icon Icon.Save
+                        [ icon "save"
                         , span [] [ text "Save changes" ]
                         ]
                     , button [ Buttons.Info ] (Just DoSomething) [ text "Save and continue" ]
@@ -297,19 +297,19 @@ view model =
             [ container [ isFluid ]
                 [ Title.title "Ikoner"
                 , p []
-                    [ icon Icon.Home
+                    [ icon "home"
                     , text "Regular"
                     ]
                 , p []
-                    [ smallIcon Icon.Home
+                    [ smallIcon "home"
                     , text "Small"
                     ]
                 , p []
-                    [ mediumIcon Icon.Home
+                    [ mediumIcon "home"
                     , text "Medium"
                     ]
                 , p []
-                    [ largeIcon Icon.Home
+                    [ largeIcon "home"
                     , text "Large"
                     ]
                 ]
@@ -371,7 +371,7 @@ view model =
                 [ Title.title "Breadcrumbs"
                 , breadcrumb
                     [ Breadcrumb.link "/"
-                        [ icon Icon.Home
+                        [ icon "home"
                         , span [] [ text "Bulma" ]
                         ]
                     , Breadcrumb.link "/"
@@ -391,7 +391,7 @@ view model =
                 [ Title.title "Tabs"
                 , tabs [ Tabs.Medium ]
                     [ Tabs.link "/"
-                        [ mediumIcon Icon.Home
+                        [ mediumIcon "home"
                         , span [] [ text "Bulma" ]
                         ]
                     , Tabs.link "/"
@@ -518,7 +518,7 @@ view model =
                         [ Buttons.Primary ]
                         (Just ToggleDropdown)
                         [ span [] [ text "Dropdown button " ]
-                        , smallIcon Icon.AngleDown
+                        , smallIcon "angle-down"
                         ]
                     )
                     [ Dropdown.link "/hello" [ text "Hello" ]
