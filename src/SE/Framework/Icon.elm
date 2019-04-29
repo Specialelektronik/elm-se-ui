@@ -1,4 +1,23 @@
-module SE.Framework.Icon exposing (Icon(..), icon, largeIcon, mediumIcon, smallIcon)
+module SE.Framework.Icon exposing
+    ( icon
+    , smallIcon, mediumIcon, largeIcon
+    )
+
+{-| Creates a Bulma Icon element set.
+
+<https://bulma.io/documentation/elements/icon/>
+
+
+# Definition
+
+@docs icon
+
+
+# Sizes
+
+@docs smallIcon, mediumIcon, largeIcon
+
+-}
 
 import Css exposing (Style, center, inlineFlex, rem)
 import Html.Styled exposing (Html, styled)
@@ -34,21 +53,21 @@ icon =
     internalIcon Regular
 
 
-{-| Renders a 1.5 rem icon
+{-| Renders a 1 rem icon
 -}
 smallIcon : Icon -> Html msg
 smallIcon =
     internalIcon Small
 
 
-{-| Renders a 1.5 rem icon
+{-| Renders a 2 rem icon
 -}
 mediumIcon : Icon -> Html msg
 mediumIcon =
     internalIcon Medium
 
 
-{-| Renders a 1.5 rem icon
+{-| Renders a 3 rem icon
 -}
 largeIcon : Icon -> Html msg
 largeIcon =

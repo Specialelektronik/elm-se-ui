@@ -1,4 +1,19 @@
-module SE.Framework.Pagination exposing (PaginationRecord, centeredPagination, pagination, rightPagination)
+module SE.Framework.Pagination exposing
+    ( pagination, centeredPagination, rightPagination
+    , PaginationRecord
+    )
+
+{-| Bulmas Pagination component
+see <https://bulma.io/documentation/components/pagination/>
+
+@docs pagination, centeredPagination, rightPagination
+
+
+# Pagination record
+
+@docs PaginationRecord
+
+-}
 
 import Css exposing (Style, active, block, calc, center, default, disabled, em, flexEnd, flexStart, focus, hover, int, minus, none, num, pct, pseudoClass, rem, spaceBetween, wrap, zero)
 import Css.Global exposing (adjacentSiblings, children, typeSelector)
@@ -10,15 +25,13 @@ import SE.Framework.Control exposing (controlHeight, controlStyle)
 import SE.Framework.Utils exposing (tablet, unselectable)
 
 
-{-| first link: always 1
-last : input from function
-current
-next page label
-previous page label
+{-| The record holds all the data
 
-is-centered
-is-right
-msg Int
+  - lastPage: The last possible page that the pagination state could be in
+  - currentPage: The current page
+  - nextPageLabel : Button text for the next button
+  - previousPageLabel : Button text for the previous button
+  - msg : A function that takes an Int and returns a msg, when the message is triggered it will be loaded will the appropriate page to load. (Example: Current page is 4, the next button will trigger `msg 5`)
 
 -}
 type alias PaginationRecord msg =
@@ -40,16 +53,32 @@ type Alignment
 -- CONTAINER
 
 
+{-| If the lastPage is <= 7, the pagination will be rendered without any ellipsis. Any number above 7 will render the pagination with ellipsis in the appropriate places.
+
+    pagination
+        { lastPage = 8
+        , currentPage = 5
+        , nextPageLabel = "Next"
+        , previousPageLabel = "Previous"
+        , msg = ChangePage
+        }
+        == "1 ... 4 5 6 ... 9"
+
+-}
 pagination : PaginationRecord msg -> Html msg
 pagination rec =
     internalPagination Left rec
 
 
+{-| Centered pagination
+-}
 centeredPagination : PaginationRecord msg -> Html msg
 centeredPagination rec =
     internalPagination Center rec
 
 
+{-| Right aligned pagination
+-}
 rightPagination : PaginationRecord msg -> Html msg
 rightPagination rec =
     internalPagination Right rec

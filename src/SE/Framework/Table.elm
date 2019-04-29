@@ -3,7 +3,7 @@ module SE.Framework.Table exposing (Modifier(..), body, cell, foot, head, headCe
 import Css exposing (Style, auto, bold, currentColor, em, hidden, important, int, left, num, pct, px, rem, solid, top, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
 import Html.Styled exposing (Html, styled, text)
-import SE.Framework.Colors exposing (darker, darkest, light, lighter, lightest, primary, white)
+import SE.Framework.Colors exposing (darker, darkest, light, lighter, primary, white)
 import SE.Framework.Utils exposing (block, overflowTouch)
 
 
@@ -56,9 +56,6 @@ wrapper : List Modifier -> Html msg -> Html msg
 wrapper mods t =
     if List.member Mobilefriendly mods then
         styled Html.Styled.div
-            --   overflow: auto
-            --   overflow-y: hidden
-            --   max-width: 100%
             [ block
             , overflowTouch
             , Css.overflow auto

@@ -1,4 +1,23 @@
-module SE.Framework.Buttons exposing (ButtonsModifier(..), Modifier(..), button, buttons)
+module SE.Framework.Buttons exposing
+    ( buttons, ButtonsModifier(..)
+    , button, Modifier(..)
+    )
+
+{-| Buttons from Bulma with some small design adjustments. Supports all colors and the `buttons` container.
+
+see <https://bulma.io/documentation/elements/button/>
+
+
+# Grouping
+
+@docs buttons, ButtonsModifier
+
+
+# Buttons
+
+@docs button, Modifier
+
+-}
 
 import Css exposing (Style, absolute, active, bold, calc, center, disabled, em, flexEnd, flexStart, focus, hover, important, minus, noWrap, none, num, pct, pointer, pseudoClass, px, rem, rgba, transparent, underline, wrap, zero)
 import Css.Global exposing (descendants, typeSelector)
@@ -11,6 +30,8 @@ import SE.Framework.Control exposing (controlStyle)
 import SE.Framework.Utils exposing (centerEm, loader, smallRadius)
 
 
+{-| Modify the button, support all modifiers in Bulma except the Disabled. To disable a button, use `Nothing` as the Maybe msg.
+-}
 type
     Modifier
     -- Colors
@@ -39,6 +60,8 @@ type
     | Static
 
 
+{-| Modifiers for the buttons container.
+-}
 type ButtonsModifier
     = Attached
     | Centered
@@ -77,6 +100,9 @@ button modifiers onPress html =
         html
 
 
+{-| A "List of buttons" container.
+see <https://bulma.io/documentation/elements/button/#list-of-buttons>
+-}
 buttons : List ButtonsModifier -> List (Html msg) -> Html msg
 buttons mods btns =
     styled Html.Styled.div (buttonsStyles mods) [] btns

@@ -6,7 +6,7 @@ import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (class, placeholder)
 import Html.Styled.Events exposing (onInput)
-import SE.Framework.Colors as Colors exposing (base, black, danger, darker, info, light, lighter, lightest, link, primary, success, warning, white)
+import SE.Framework.Colors as Colors exposing (base, black, danger, darker, info, light, link, primary, success, warning, white)
 import SE.Framework.Control exposing (controlStyle)
 import SE.Framework.Utils as Utils exposing (loader, radius)
 

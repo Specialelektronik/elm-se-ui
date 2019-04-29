@@ -1,4 +1,22 @@
-module SE.Framework.Breadcrumb exposing (activeLink, breadcrumb, link)
+module SE.Framework.Breadcrumb exposing
+    ( breadcrumb
+    , link, activeLink
+    )
+
+{-| Bulmas breadcrumb tags
+see <https://bulma.io/documentation/components/breadcrumb/>
+
+
+# Parent
+
+@docs breadcrumb
+
+
+# Links
+
+@docs link, activeLink
+
+-}
 
 import Css exposing (Style, center, default, em, flex, flexStart, hover, noWrap, none, rem, wrap, zero)
 import Css.Global exposing (adjacentSiblings, descendants, each, selector, typeSelector)
@@ -17,16 +35,22 @@ type alias IsActive =
     Bool
 
 
+{-| Creates a non-active link. It takes the url as the first parameter and the a list of html content as the second.
+-}
 link : String -> List (Html msg) -> Link msg
 link =
     Link False
 
 
+{-| Creates an active link. It takes the url as the first parameter and the a list of html content as the second.
+-}
 activeLink : String -> List (Html msg) -> Link msg
 activeLink =
     Link True
 
 
+{-| This function takes a list of Link tags (created via the link function or activeLink function). We only support the / separator, left alignment and normal size.
+-}
 breadcrumb : List (Link msg) -> Html msg
 breadcrumb links =
     styled Html.Styled.nav

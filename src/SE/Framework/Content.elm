@@ -1,11 +1,20 @@
 module SE.Framework.Content exposing (content)
 
+{-| Bulmas content element
+see <https://bulma.io/documentation/elements/content/>
+
+
+# Definition
+
+@docs content
+
+-}
+
 import Css exposing (Style, auto, bold, center, circle, decimal, disc, em, inlineBlock, italic, left, outside, pct, pseudoClass, px, rem, solid, square, top, zero)
-import Css.Animations exposing (Keyframes, keyframes)
 import Css.Global exposing (blockquote, dd, descendants, dl, each, h1, h2, h3, h4, h5, h6, img, ol, p, pre, selector, table, td, tfoot, th, thead, typeSelector, ul)
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (href)
-import SE.Framework.Colors as Colors exposing (black, lighter, lightest)
+import SE.Framework.Colors as Colors exposing (black, lightest)
 import SE.Framework.Utils exposing (block)
 
 
@@ -24,6 +33,23 @@ headingLineHeight =
     rem 1.125
 
 
+{-| Styles most HTML tags
+
+  - <p> paragraphs
+  - <ul> <ol> <dl> lists
+  - <h1> to <h6> headings
+  - <blockquote> quotes
+  - <em> and <strong>
+  - <table> <tr> <th> <td> tables
+
+Works like a normal Html.Styled.div:
+
+    content []
+        [ h1 [] [ text "Heading 1" ]
+        , p [] [ text "Content body text" ]
+        ]
+
+-}
 content : List (Html.Styled.Attribute msg) -> List (Html msg) -> Html msg
 content =
     styled Html.Styled.div

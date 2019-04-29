@@ -1,4 +1,39 @@
-module SE.Framework.Utils exposing (block, centerEm, desktop, desktopWidth, gap, loader, mobile, onChange, overflowTouch, radius, smallRadius, tablet, tabletWidth, unselectable)
+module SE.Framework.Utils exposing
+    ( desktop, tablet, mobile
+    , loader
+    , onChange
+    , block, centerEm, overflowTouch, unselectable
+    , desktopWidth, gap, radius, smallRadius, tabletWidth
+    )
+
+{-| Utility functions mostly used by the framework itself.
+
+
+# Media queries
+
+@docs desktop, tablet, mobile
+
+
+# Animation helpers
+
+@docs loader
+
+
+# Events
+
+@docs onChange
+
+
+# Helpers
+
+@docs block, centerEm, overflowTouch, unselectable
+
+
+# Constants
+
+@docs desktopWidth, gap, radius, smallRadius, tabletWidth
+
+-}
 
 import Css exposing (Style, absolute, block, calc, deg, em, infinite, minus, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
@@ -9,54 +44,65 @@ import Json.Decode as Json
 import SE.Framework.Colors exposing (light)
 
 
-{-| Pixel value
+{-| Column gap in pixels
 -}
 gap : Float
 gap =
     64
 
 
+{-| Threshold for desktops
+-}
 desktopWidth : Float
 desktopWidth =
     960 + (2 * gap)
 
 
+{-| Threshold for tablets
+-}
 tabletWidth : Float
 tabletWidth =
     769
 
 
-
--- @media screen and (min-width: $desktop)
-
-
+{-| Media query that maps to @media screen and (min-width: $desktop)
+-}
 desktop : List Style -> Style
 desktop =
     Media.withMedia [ only screen [ minWidth (px desktopWidth) ] ]
 
 
-{-| TODO add support for print to this since Bulma has it
+{-| Media query that maps to @media screen and (min-width: $tablet)
+TODO add support for print to this since Bulma has it
 -}
 tablet : List Style -> Style
 tablet =
     Media.withMedia [ only screen [ minWidth (px tabletWidth) ] ]
 
 
+{-| Media query for mobile devices
+-}
 mobile : List Style -> Style
 mobile =
     Media.withMedia [ only screen [ maxWidth (px (tabletWidth - 1)) ] ]
 
 
+{-| Standard radius value
+-}
 radius : Css.Px
 radius =
     px 4
 
 
+{-| Small radius value
+-}
 smallRadius : Css.Px
 smallRadius =
     px 2
 
 
+{-| Loading spinner animation
+-}
 loader : Style
 loader =
     Css.batch
@@ -90,11 +136,15 @@ spinAround =
         ]
 
 
+{-| onChange event is used on select form elements
+-}
 onChange : (String -> msg) -> Html.Styled.Attribute msg
 onChange handler =
     on "change" <| Json.map handler <| Json.at [ "target", "value" ] Json.string
 
 
+{-| Block class used by .field, p etc
+-}
 block : Style
 block =
     pseudoClass "not(:last-child)"
@@ -102,6 +152,8 @@ block =
         ]
 
 
+{-| Make an element unselectable
+-}
 unselectable : Style
 unselectable =
     Css.batch
@@ -113,11 +165,16 @@ unselectable =
         ]
 
 
+{-| Use momentum based scolling
+see <https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-overflow-scrolling#Values>
+-}
 overflowTouch : Style
 overflowTouch =
     Css.property "-webkit-overflow-scrolling" "touch"
 
 
+{-| Center element
+-}
 centerEm : Float -> Float -> Style
 centerEm width height =
     Css.batch

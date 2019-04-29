@@ -1,16 +1,26 @@
-module SE.Framework.Image exposing (image, source)
+module SE.Framework.Image exposing
+    ( image
+    , source
+    )
 
--- import Css.Transitions
+{-| Image lets you create img tags with multiple sources to support responsive images
+
+
+# Definition
+
+@docs image
+
+
+# Source
+
+@docs source
+
+-}
 
 import Css exposing (Style, auto, block, pct, relative)
 import Css.Global exposing (descendants, typeSelector)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes exposing (attribute, src)
-
-
-
--- import SE.Framework.Colors exposing (background, white)
--- import SE.Framework.Utils exposing (block, desktop, radius, tablet, unselectable)
 
 
 type alias Source =
@@ -31,6 +41,14 @@ type alias Height =
     Int
 
 
+{-| Create and img tag with a list of sources. If the list of sources is empty or hasn't got a single source with the resolution of 1, then this function will output an empty text tag.
+
+    image ( 640, 480 )
+        [ source "https://bulma.io/images/placeholders/640x480.png" 1
+        , source "https://bulma.io/images/placeholders/1280x960.png" 2
+        ] == "<div style="position: relative;display: block;"><img style="display: block;height: auto;width: 100%;" src="https://bulma.io/images/placeholders/640x480.png" width="640" height="480" srcset="https://bulma.io/images/placeholders/640x480.png 1x, https://bulma.io/images/placeholders/1280x960.png 2x"></div>"
+
+-}
 image : ( Width, Height ) -> List Source -> Html msg
 image ( w, h ) sources =
     let
@@ -56,6 +74,12 @@ image ( w, h ) sources =
                 ]
 
 
+{-| Create a source with a url and a resolution (1,2,3)
+Read more about the srcset attribute at <https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images>
+
+    source "https://bulma.io/images/placeholders/640x480.png" 1
+
+-}
 source : String -> Resolution -> Source
 source =
     Source

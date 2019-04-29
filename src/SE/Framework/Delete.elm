@@ -1,5 +1,14 @@
 module SE.Framework.Delete exposing (delete)
 
+{-| Bulmas delete tag
+see <https://bulma.io/documentation/elements/delete/>
+
+#Definition
+
+@docs delete
+
+-}
+
 import Css exposing (Style, absolute, active, after, before, block, currentColor, deg, focus, hover, inlineBlock, int, minus, none, pct, pointer, pseudoClass, px, relative, rem, rgba, rotate, top, translateX, translateY, transparent, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
 import Css.Transitions
@@ -9,6 +18,9 @@ import SE.Framework.Colors exposing (background, white)
 import SE.Framework.Utils exposing (block, desktop, radius, tablet, unselectable)
 
 
+{-| A simple circle with a cross, no support for sizes.
+You can supply custom styles with the first argument.
+-}
 delete : List Style -> msg -> Html msg
 delete styles msg =
     styled Html.Styled.button
