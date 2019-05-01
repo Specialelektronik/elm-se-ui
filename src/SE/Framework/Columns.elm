@@ -1,4 +1,42 @@
-module SE.Framework.Columns exposing (Device(..), Width(..), column, columns, defaultColumn, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns)
+module SE.Framework.Columns exposing
+    ( columns, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
+    , defaultColumn, column
+    , Device(..), Width(..)
+    )
+
+{-| Bulmas Columns
+see <https://bulma.io/documentation/columns/>
+
+
+# Basics
+
+Too a large extend, these functions works very similar a Bulmas own version. Each container modifier is its own function. The `.is-mobile` modifier isn't needed since the `Sizes` type contains a mobile option. Instead of variable gap, we have 3 different gap widths, small (0.5 rem), normal (0.75 rem) and wide (1 rem).
+
+@docs columns, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
+
+
+# Column
+
+There are 2 different column functions. `defaultColumn` is the standard, no options alternative, if you just want the plain .column class.
+
+@docs defaultColumn, column
+
+
+# Sizes
+
+The `column` function takes a `Sizes` parameter, a List (Device, Width)
+
+@docs Device, Width
+
+
+# Unsupported features
+
+  - .is-vcentered
+  - .is-centered
+  - .is-gapless
+  - .is-variable and .is-2-mobile etc.
+
+-}
 
 import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap, zero)
 import Css.Global exposing (children, typeSelector)
@@ -29,6 +67,8 @@ negativeColumnGap gap =
     rem (columnGapHelper gap * -1)
 
 
+{-| A lot of the width modifiers for `column` is supported.
+-}
 type Width
     = Auto
     | Narrow
@@ -40,6 +80,14 @@ type Width
     | Full
 
 
+{-| `Device` in combination with `Width` lets you specify the width for a specific device:
+
+    [ ( All, OneThird )
+    , ( Mobile, Half )
+    ]
+        == ".is-one-third .is-half-mobile"
+
+-}
 type Device
     = All
     | Mobile
@@ -73,31 +121,43 @@ type Column msg
 -- COLUMNS
 
 
+{-| Standard `div.columns`, normal gap, no multiline
+-}
 columns : List (Column msg) -> Html msg
 columns =
     internalColumns Normal False
 
 
+{-| `div.columns.is-multiline`
+-}
 multilineColumns : List (Column msg) -> Html msg
 multilineColumns =
     internalColumns Normal True
 
 
+{-| `div.columns.is-2`
+-}
 smallColumns : List (Column msg) -> Html msg
 smallColumns =
     internalColumns Small False
 
 
+{-| `div.columns.is-multiline.is-2`
+-}
 smallMultilineColumns : List (Column msg) -> Html msg
 smallMultilineColumns =
     internalColumns Small True
 
 
+{-| `div.columns.is-4`
+-}
 wideColumns : List (Column msg) -> Html msg
 wideColumns =
     internalColumns Large False
 
 
+{-| `div.columns.is-multiline.is-4`
+-}
 wideMultilineColumns : List (Column msg) -> Html msg
 wideMultilineColumns =
     internalColumns Large True
@@ -161,14 +221,29 @@ columnsStyles gap isMultiline isMobile =
 -- COLUMN
 
 
-column : Sizes -> List (Html msg) -> Column msg
-column sizes html =
-    Column sizes html
-
-
+{-| Standard no-frills `.column`
+-}
 defaultColumn : List (Html msg) -> Column msg
 defaultColumn html =
     Column [] html
+
+
+{-| `.column` with Sizes options
+
+    columns
+        [ defaultColumn [ text "Default column" ]
+        , column
+            [ ( All, Half )
+            , ( Mobile, OneThird )
+            ]
+            [ text "Half width column that shrinks to one third on a mobile device" ]
+        ]
+        == "<div class='columns is-mobile'>\n            <div class='column'>Default column</div>\n            <div class='column is-half is-one-third-mobile'>Half width column that shrinks to one third on a mobile device</div>\n        </div>"
+
+-}
+column : Sizes -> List (Html msg) -> Column msg
+column sizes html =
+    Column sizes html
 
 
 toHtml : Column msg -> Html msg

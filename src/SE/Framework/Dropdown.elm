@@ -1,4 +1,37 @@
-module SE.Framework.Dropdown exposing (button, content, dropdown, hr, link)
+module SE.Framework.Dropdown exposing
+    ( dropdown
+    , button
+    , link, content, hr
+    )
+
+{-| Bulmas Dropdown component
+see <https://bulma.io/documentation/components/dropdown/>
+
+The Elm Arcitecture makes it a little difficult to listen to clicks on the entire document. Instead we use the OuterClick utility library to know if the user has clicked outside of the dropdown.
+
+
+# Unsupported features
+
+  - Hoverable
+  - Right aligned
+  - Drop up
+
+
+# Definition
+
+@docs dropdown
+
+
+# Button
+
+@docs button
+
+
+# Content
+
+@docs link, content, hr
+
+-}
 
 import Css exposing (Style, absolute, active, auto, block, bold, borderBox, calc, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, middle, minus, noRepeat, noWrap, none, num, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, scale, solid, sub, top, transparent, url, vertical, zero)
 import Css.Global exposing (adjacentSiblings, descendants, each, typeSelector, withAttribute)
@@ -37,6 +70,16 @@ dropdownContentShadow =
     Css.property "box-shadow" "0 2px 3px rgba(34, 41, 47, 0.1), 0 0 0 1px rgba(34, 41, 47, 0.1)"
 
 
+{-| Render the dropdown
+Parameters
+
+1.  String id for the dropdown, should be unique in order to support multiple dropdowns on the same page
+2.  Close message
+3.  Bool isOpen
+4.  A button created via the `button` function
+5.  A list of Items created via `link`, `content` or `hr`
+
+-}
 dropdown : String -> msg -> Bool -> Button msg -> List (Item msg) -> Html msg
 dropdown id closeMsg isOpen btn items =
     let
@@ -60,21 +103,30 @@ dropdown id closeMsg isOpen btn items =
         ]
 
 
+{-| The dropdown button, toggles open/closed
+see the button component for more documentation on the modifiers
+-}
 button : List Buttons.Modifier -> Maybe msg -> List (Html msg) -> Button msg
 button =
     Button
 
 
+{-| Renders a dropdown item
+-}
 link : Url -> List (Html msg) -> Item msg
 link =
     Link
 
 
+{-| Renders a dropdown content tag
+-}
 content : List (Html msg) -> Item msg
 content =
     Content
 
 
+{-| Renders a dropdown divider
+-}
 hr : Item msg
 hr =
     Hr
