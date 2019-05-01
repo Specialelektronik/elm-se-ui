@@ -9,7 +9,7 @@ import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
 import SE.Framework.Buttons as Buttons exposing (button, buttons)
 import SE.Framework.Colors as Colors
 import SE.Framework.Columns as Columns exposing (column, columns, defaultColumn, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns)
-import SE.Framework.Container exposing (container, isFluid)
+import SE.Framework.Container as Container exposing (container)
 import SE.Framework.Content exposing (content)
 import SE.Framework.Dropdown as Dropdown exposing (dropdown)
 import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, expandedControl, field, input, radio, select, textarea)
@@ -22,7 +22,7 @@ import SE.Framework.Notification as Notification
 import SE.Framework.OuterClick as OuterClick
 import SE.Framework.Pagination as Pagination exposing (centeredPagination, pagination, rightPagination)
 import SE.Framework.Section exposing (section)
-import SE.Framework.Table as Table exposing (body, cell, foot, head, headCell, row, table)
+import SE.Framework.Table as Table exposing (body, cell, foot, head, row, table)
 import SE.Framework.Tabs as Tabs exposing (tabs)
 import SE.Framework.Tag as Tag exposing (deleteTag, tag, tags)
 import SE.Framework.Title as Title
@@ -54,7 +54,7 @@ view model =
             , link "/about" "About"
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 (List.map
                     (\( mods, label ) ->
                         field [] [ button mods (Just DoSomething) [ text label ] ]
@@ -82,7 +82,7 @@ view model =
                 )
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Buttons"
                 , buttons []
                     [ button [ Buttons.Success ]
@@ -112,7 +112,7 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 ([ Title.title "Form"
                  , field []
                     [ Form.label "Input"
@@ -120,9 +120,9 @@ view model =
                         [ input
                             { placeholder = "Input"
                             , modifiers = []
+                            , onInput = InputMsg
+                            , value = model.input
                             }
-                            InputMsg
-                            model.input
                         ]
                     ]
                  ]
@@ -133,9 +133,9 @@ view model =
                                     [ input
                                         { placeholder = "Input"
                                         , modifiers = m :: []
+                                        , onInput = InputMsg
+                                        , value = model.input
                                         }
-                                        InputMsg
-                                        model.input
                                     ]
                                 ]
                         )
@@ -144,7 +144,7 @@ view model =
                 )
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Field modifiers"
                 , Title.title5 "Attached"
                 , field [ Form.Attached ]
@@ -152,9 +152,9 @@ view model =
                         [ input
                             { placeholder = "Find a repository"
                             , modifiers = []
+                            , onInput = InputMsg
+                            , value = model.input
                             }
-                            InputMsg
-                            model.input
                         ]
                     , control False
                         [ button [ Buttons.Info ] (Just DoSomething) [ text "Search" ]
@@ -166,9 +166,9 @@ view model =
                         [ input
                             { placeholder = "Find a repository"
                             , modifiers = []
+                            , onInput = InputMsg
+                            , value = model.input
                             }
-                            InputMsg
-                            model.input
                         ]
                     , control False
                         [ button [ Buttons.Info ] (Just DoSomething) [ text "Search" ]
@@ -177,7 +177,7 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 ([ field []
                     [ Form.label "Loading input or textarea"
                     , control True
@@ -185,9 +185,9 @@ view model =
                             { placeholder = "Input"
                             , modifiers = []
                             , rows = 3
+                            , onInput = InputMsg
+                            , value = model.input
                             }
-                            InputMsg
-                            model.input
                         ]
                     ]
                  ]
@@ -199,9 +199,9 @@ view model =
                                         { placeholder = "Input"
                                         , modifiers = m :: []
                                         , rows = 3
+                                        , onInput = InputMsg
+                                        , value = model.input
                                         }
-                                        InputMsg
-                                        model.input
                                     ]
                                 ]
                         )
@@ -210,28 +210,28 @@ view model =
                 )
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ select
                     { placeholder = "Select dropdown"
                     , modifiers = [ Form.Warning ]
+                    , onInput = InputMsg
+                    , value = "Value 2"
                     , options =
                         [ { value = "Value 1"
                           , label = "Label 1"
                           }
                         ]
                     }
-                    InputMsg
-                    "Value 2"
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ checkbox "Checkbox" model.checked CheckBox
                 , radio "Radio" model.checked CheckBox
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ message Notification.primary model.message
                 , message Notification.link model.message
                 , message Notification.info model.message
@@ -241,7 +241,7 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Det här är en titel samma som title3"
                 , Title.title1 "Det här är en titel1"
                 , Title.title2 "Det här är en titel2"
@@ -252,15 +252,15 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ table [ Table.Bordered, Table.Fullwidth, Table.Hoverable, Table.Striped, Table.Mobilefriendly, Table.Narrow ]
                     (head
-                        [ headCell (text "Tabellrubrik 1")
-                        , headCell (text "Tabellrubrik 2")
-                        , headCell (text "Tabellrubrik 3")
-                        , headCell (text "Tabellrubrik 4")
-                        , headCell (text "Tabellrubrik 5")
-                        , headCell (text "Tabellrubrik 6")
+                        [ cell (text "Tabellrubrik 1")
+                        , cell (text "Tabellrubrik 2")
+                        , cell (text "Tabellrubrik 3")
+                        , cell (text "Tabellrubrik 4")
+                        , cell (text "Tabellrubrik 5")
+                        , cell (text "Tabellrubrik 6")
                         ]
                     )
                     (foot [])
@@ -294,7 +294,7 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Ikoner"
                 , p []
                     [ icon "home"
@@ -315,7 +315,7 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Tags"
                 , div []
                     (List.map (\( t, mods ) -> field [] [ tag mods t ])
@@ -367,7 +367,7 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Breadcrumbs"
                 , breadcrumb
                     [ Breadcrumb.link "/"
@@ -387,27 +387,31 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Tabs"
                 , tabs [ Tabs.Medium ]
-                    [ Tabs.link "/"
+                    [ Tabs.link False
+                        "/"
                         [ mediumIcon "home"
                         , span [] [ text "Bulma" ]
                         ]
-                    , Tabs.link "/"
+                    , Tabs.link False
+                        "/"
                         [ text "Documentation"
                         ]
-                    , Tabs.link "/"
+                    , Tabs.link False
+                        "/"
                         [ text "Components"
                         ]
-                    , Tabs.activeLink "/"
+                    , Tabs.link True
+                        "/"
                         [ text "Tabs"
                         ]
                     ]
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Modal"
                 , button [ Buttons.Large, Buttons.Primary ]
                     (Just ToggleModal)
@@ -416,7 +420,7 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Image"
                 , image ( 640, 480 )
                     [ source "https://bulma.io/images/placeholders/640x480.png" 1
@@ -425,7 +429,7 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Level"
                 , level
                     [ item
@@ -436,7 +440,14 @@ view model =
                         ]
                     , item
                         [ field [ Form.Grouped ]
-                            [ control False [ input { placeholder = "Find a post", modifiers = [] } InputMsg model.input ]
+                            [ control False
+                                [ input
+                                    { placeholder = "Find a post"
+                                    , modifiers = []
+                                    , onInput = InputMsg
+                                    , value = model.input
+                                    }
+                                ]
                             , control False [ button [] (Just DoSomething) [ text "Search" ] ]
                             ]
                         ]
@@ -467,7 +478,14 @@ view model =
                         ]
                     , item
                         [ field [ Form.Grouped ]
-                            [ control False [ input { placeholder = "Find a post", modifiers = [] } InputMsg model.input ]
+                            [ control False
+                                [ input
+                                    { placeholder = "Find a post"
+                                    , modifiers = []
+                                    , onInput = InputMsg
+                                    , value = model.input
+                                    }
+                                ]
                             , control False [ button [] (Just DoSomething) [ text "Search" ] ]
                             ]
                         ]
@@ -509,7 +527,7 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Dropdown"
                 , dropdown "dd1"
                     CloseDropdown
@@ -528,11 +546,11 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Empty section" ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title "Columns"
                 , content []
                     [ p []
@@ -566,7 +584,7 @@ view model =
                 ]
             ]
         , section []
-            [ container [ isFluid ]
+            [ container [ Container.Fluid ]
                 [ Title.title ("Pagination (current page: " ++ String.fromInt model.page ++ ")")
                 , content []
                     [ p []

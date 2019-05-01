@@ -1,18 +1,117 @@
-module SE.Framework.Form exposing (FieldModifier(..), InputModifier(..), InputRecord, checkbox, control, expandedControl, field, input, label, radio, select, textarea)
+module SE.Framework.Form exposing
+    ( label, input, textarea, select, checkbox, radio
+    , InputModifier(..), InputRecord
+    , field, FieldModifier(..), control, expandedControl
+    )
+
+{-| Bulmas Form elements
+see <https://bulma.io/documentation/form/>
+
+
+# General
+
+@docs label, input, textarea, select, checkbox, radio
+
+
+# Input Record and Modifiers
+
+@docs InputModifier, InputRecord
+
+
+# Fields and Controls
+
+@docs field, FieldModifier, control, expandedControl
+
+
+# Unsupported features
+
+  - Horizontal form
+  - Size modifier
+  - .help
+  - icons in input, textarea, select .control
+
+-}
 
 import Css exposing (Style, absolute, active, auto, block, bold, borderBox, calc, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, middle, minus, noRepeat, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, scale, solid, sub, top, transparent, url, vertical, zero)
 import Css.Global exposing (adjacentSiblings, descendants, each, typeSelector, withAttribute)
 import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
-import Html.Styled.Attributes exposing (class, placeholder)
+import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onInput)
 import SE.Framework.Colors as Colors exposing (base, black, danger, darker, info, light, link, primary, success, warning, white)
 import SE.Framework.Control exposing (controlStyle)
 import SE.Framework.Utils as Utils exposing (loader, radius)
 
 
-{-| Label
-TODO add size modifier?
+{-| Holds the basic data for inputs, textareas and selects
+-}
+type alias InputRecord msg =
+    { value : String
+    , placeholder : String
+    , modifiers : List InputModifier
+    , onInput : String -> msg
+    }
+
+
+{-| Textareas also need a rows attribute
+-}
+type alias TextareaRecord a =
+    { a
+        | rows : Int
+    }
+
+
+{-| Selects also need a rows attribute
+-}
+type alias SelectRecord a =
+    { a
+        | options : List Option
+    }
+
+
+type alias Option =
+    { label : String
+    , value : String
+    }
+
+
+{-| Size modifiers are not supported at the moment.
+-}
+type
+    InputModifier
+    -- Colors
+    = Primary
+    | Info
+    | Success
+    | Warning
+    | Danger
+      -- State
+    | Loading
+    | Disabled
+    | ReadOnly
+    | Static
+
+
+{-| Field Modifier
+-}
+type FieldModifier
+    = Attached
+    | Grouped
+
+
+type alias IsChecked =
+    Bool
+
+
+type alias IsLoading =
+    Bool
+
+
+
+-- LABEL
+
+
+{-| `label.label`
 -}
 label : String -> Html msg
 label s =
@@ -29,77 +128,45 @@ label s =
         [ text s ]
 
 
-type alias InputRecord =
-    { placeholder : String
-    , modifiers : List InputModifier
-    }
+
+-- INPUT
 
 
-type alias TextareaRecord a =
-    { a
-        | rows : Int
-    }
-
-
-type alias SelectRecord a =
-    { a
-        | options : List Option
-    }
-
-
-type alias Option =
-    { label : String
-    , value : String
-    }
-
-
-type
-    InputModifier
-    -- Colors
-    = Primary
-    | Info
-    | Success
-    | Warning
-    | Danger
-      -- Sizes ( ignored for now)
-      -- | Small
-      -- | Normal
-      -- | Medium
-      -- | Large
-      -- State
-    | Loading
-    | Disabled
-    | ReadOnly
-    | Static
-
-
-{-| Input
-TODO add size modifier?
+{-| `input.input`
 -}
-input : InputRecord -> (String -> msg) -> String -> Html msg
-input rec onInput val =
+input : InputRecord msg -> Html msg
+input rec =
     styled Html.Styled.input
         (inputStyle
             ++ List.map inputModifierStyle
                 rec.modifiers
         )
-        [ Html.Styled.Events.onInput onInput, Html.Styled.Attributes.placeholder rec.placeholder, Html.Styled.Attributes.value val ]
+        [ Html.Styled.Events.onInput rec.onInput, Html.Styled.Attributes.placeholder rec.placeholder, Html.Styled.Attributes.value rec.value ]
         []
 
 
-textarea : TextareaRecord InputRecord -> (String -> msg) -> String -> Html msg
-textarea rec onInput val =
-    styled Html.Styled.textarea
-        (textareaStyle
-            ++ List.map inputModifierStyle
-                rec.modifiers
-        )
-        [ Html.Styled.Events.onInput onInput
-        , Html.Styled.Attributes.placeholder rec.placeholder
-        , Html.Styled.Attributes.value val
-        , Html.Styled.Attributes.rows rec.rows
+inputStyle : List Style
+inputStyle =
+    [ controlStyle
+    , Css.borderColor light
+    , Css.color darker
+    , Css.maxWidth (pct 100)
+    , Css.width (pct 100)
+    , placeholder
+        [ Css.color (rgba 96 111 123 0.3)
         ]
-        []
+    , hover
+        [ Css.borderColor base
+        ]
+    , focus
+        [ Css.borderColor link
+        , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
+        ]
+    , active
+        [ Css.borderColor link
+        , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
+        ]
+    ]
 
 
 inputModifierStyle : InputModifier -> Style
@@ -142,28 +209,25 @@ inputModifierStyle modifier =
             Css.batch []
 
 
-inputStyle : List Style
-inputStyle =
-    [ controlStyle
-    , Css.borderColor light
-    , Css.color darker
-    , Css.maxWidth (pct 100)
-    , Css.width (pct 100)
-    , placeholder
-        [ Css.color (rgba 96 111 123 0.3)
+
+-- TEXTAREA
+
+
+{-| `textarea.textarea`
+-}
+textarea : TextareaRecord (InputRecord msg) -> Html msg
+textarea rec =
+    styled Html.Styled.textarea
+        (textareaStyle
+            ++ List.map inputModifierStyle
+                rec.modifiers
+        )
+        [ Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        , Html.Styled.Attributes.rows rec.rows
         ]
-    , hover
-        [ Css.borderColor base
-        ]
-    , focus
-        [ Css.borderColor link
-        , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
-        ]
-    , active
-        [ Css.borderColor link
-        , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
-        ]
-    ]
+        []
 
 
 textareaStyle : List Style
@@ -184,50 +248,222 @@ textareaStyle =
            ]
 
 
-placeholder : List Style -> Style
-placeholder c =
+
+-- SELECT
+
+
+{-| `div.select > select`
+
+`is-multiple` and `is-rounded` not supported
+
+-}
+select : SelectRecord (InputRecord msg) -> Html msg
+select rec =
+    let
+        after =
+            if List.member Loading rec.modifiers then
+                [ loader
+                , Css.marginTop zero
+                , Css.position absolute
+                , Css.right (em 0.625)
+                , Css.top (em 0.625)
+                , Css.transform none
+                ]
+
+            else
+                [ arrow
+                , Css.borderColor darker
+                , Css.right (em 1.125)
+                , Css.zIndex (int 4)
+                ]
+    in
+    styled Html.Styled.div
+        [ Css.display inlineBlock
+        , Css.maxWidth (pct 100)
+        , Css.position relative
+        , Css.verticalAlign top
+        , Css.height (em 2.5)
+        , Css.after after
+        ]
+        []
+        [ styled Html.Styled.select
+            (inputStyle
+                ++ [ Css.cursor pointer
+                   , Css.display block
+                   , Css.fontSize (em 1)
+                   , Css.maxWidth (pct 100)
+                   , Css.outline none
+                   , Css.paddingRight (em 2.5)
+                   , pseudoElement "ms-expand" [ Css.display none ]
+                   ]
+                ++ List.map inputModifierStyle
+                    rec.modifiers
+            )
+            [ Utils.onChange rec.onInput
+            ]
+            (option rec.value { label = rec.placeholder, value = "" } :: List.map (option rec.value) rec.options)
+        ]
+
+
+option : String -> Option -> Html msg
+option val o =
+    Html.Styled.option
+        [ Html.Styled.Attributes.value o.value
+        , Html.Styled.Attributes.selected
+            (o.value == val)
+        ]
+        [ text o.label ]
+
+
+arrow : Style
+arrow =
     Css.batch
-        [ pseudoElement "placeholder" c
-        , pseudoElement "-webkit-input-placeholder" c
-        , pseudoElement "-ms-input-placeholder" c
+        [ Css.border3 (px 3) solid link
+        , Css.borderRadius (px 2)
+        , Css.borderRight zero
+        , Css.borderTop zero
+        , Css.property "content" "\"\""
+        , Css.display block
+        , Css.height (em 0.625)
+        , Css.marginTop (em -0.4375)
+        , Css.pointerEvents none
+        , Css.position absolute
+        , Css.top (pct 50)
+        , Css.transform (rotate (deg -45))
+        , Css.width (em 0.625)
         ]
 
 
 
--- inputControlStyle : Style
--- inputControlStyle =
---     Css.batch
---         [ Css.property "-moz-appearance" "none"
---         , Css.property "-webkit-appearance" "none"
---         , Css.alignItems center
---         , Css.border3 (px 1) solid transparent
---         , Css.borderRadius radius
---         , Css.boxShadow none
---         , Css.display inlineFlex
---         , Css.fontSize (rem 1)
---         , Css.height (em 2.5)
---         , Css.justifyContent flexStart
---         , Css.lineHeight (rem 1.5)
---         , Css.property "padding-bottom" "calc(0.375em - 1px)"
---         , Css.property "padding-left" "calc(0.625em - 1px)"
---         , Css.property "padding-right" "calc(0.625em - 1px)"
---         , Css.property "padding-top" "calc(0.375em - 1px)"
---         , Css.position relative
---         , Css.verticalAlign top
---         , Css.active
---             [ Css.outline none
---             ]
---         , Css.focus
---             [ Css.outline none
---             ]
---         ]
+-- CHECKBOX
 
 
-type FieldModifier
-    = Attached
-    | Grouped
+{-| The checkbox depart from Bulma, instead we use a styled span to get a "better looking" checkbox.
+-}
+checkbox : String -> IsChecked -> msg -> Html msg
+checkbox l checked onClick =
+    let
+        checkedInt =
+            if checked then
+                1
+
+            else
+                0
+    in
+    styled Html.Styled.label
+        [ Css.cursor pointer
+        , adjacentSiblings
+            [ typeSelector "label"
+                [ Css.marginLeft (em 0.5)
+                ]
+            ]
+        , hover
+            [ descendants
+                [ typeSelector "span"
+                    [ Css.borderColor base
+                    ]
+                ]
+            ]
+        ]
+        [ Html.Styled.Events.onClick onClick ]
+        [ styled Html.Styled.span
+            (inputStyle
+                ++ [ Css.width (rem 1.25)
+                   , Css.height (rem 1.25)
+                   , Css.padding zero
+                   , Css.verticalAlign middle
+                   , Css.marginBottom (px 2)
+                   , Css.property "margin-right" "calc(0.625em - 1px)"
+                   , Css.before
+                        [ Css.display block
+                        , Css.property "content" "\"\""
+                        , Css.width (rem 1.25)
+                        , Css.height (rem 1.25)
+                        , Css.backgroundImage (url "/images/tick.svg")
+                        , Css.backgroundRepeat noRepeat
+                        , Css.backgroundPosition center
+                        , Css.backgroundSize2 (rem 0.6) auto
+                        , Css.transform (scale checkedInt)
+                        , Css.Transitions.transition
+                            [ Css.Transitions.transform 60
+                            ]
+                        ]
+                   ]
+            )
+            []
+            []
+        , text
+            l
+        ]
 
 
+
+-- RADIO
+
+
+{-| The radio depart from Bulma, instead we use a styled span to get a "better looking" radio.
+-}
+radio : String -> IsChecked -> msg -> Html msg
+radio l checked onClick =
+    let
+        checkedInt =
+            if checked then
+                1
+
+            else
+                0
+    in
+    styled Html.Styled.label
+        [ Css.cursor pointer
+        , hover
+            [ descendants
+                [ typeSelector "span"
+                    [ Css.borderColor base
+                    ]
+                ]
+            ]
+        ]
+        [ Html.Styled.Events.onClick onClick ]
+        [ styled Html.Styled.span
+            (inputStyle
+                ++ [ Css.width (rem 1.25)
+                   , Css.height (rem 1.25)
+                   , Css.padding zero
+                   , Css.verticalAlign middle
+                   , Css.marginBottom (px 2)
+                   , Css.property "margin-right" "calc(0.625em - 1px)"
+                   , Css.borderRadius (pct 50)
+                   , Css.before
+                        [ Css.display block
+                        , Css.property "content" "\"\""
+                        , Css.width (pct 50)
+                        , Css.height (pct 50)
+                        , Css.margin2 zero auto
+                        , Css.backgroundColor primary
+                        , Css.borderRadius (pct 50)
+                        , Css.transform (scale checkedInt)
+                        , Css.Transitions.transition
+                            [ Css.Transitions.transform 60
+                            ]
+                        ]
+                   ]
+            )
+            []
+            []
+        , text
+            l
+        ]
+
+
+{-| `div.field`
+
+    field [] [ text "Field" ] == "<div class='field'>Field</div>"
+
+    field [ Attached ] [ text "Attached field" ] = "<div class='field'> Attached field</div>"
+
+    field [ Grouped ] [ text "Grouped field" ] = "<div class='field'>Grouped field</div>"
+
+-}
 field : List FieldModifier -> List (Html msg) -> Html msg
 field mods =
     styled Html.Styled.div
@@ -305,12 +541,26 @@ fieldModifier mod =
         )
 
 
-control : Bool -> List (Html msg) -> Html msg
+{-| `div.control`
+
+    control False [] == "<div class='control'></div>"
+
+    control True [] == "<div class='control is-loading'></div>"
+
+-}
+control : IsLoading -> List (Html msg) -> Html msg
 control =
     internalControl False
 
 
-expandedControl : Bool -> List (Html msg) -> Html msg
+{-| `div.control.is-expanded`
+
+    expandedControl False [] == "<div class='controlis-expanded'></div>"
+
+    expandedControl True [] == "<div class='control is-expanded is-loading'></div>"
+
+-}
+expandedControl : IsLoading -> List (Html msg) -> Html msg
 expandedControl =
     internalControl True
 
@@ -349,187 +599,10 @@ internalControl isExpanded loading =
         [ class "control" ]
 
 
-select : SelectRecord InputRecord -> (String -> msg) -> String -> Html msg
-select rec onChange val =
-    let
-        after =
-            if List.member Loading rec.modifiers then
-                [ loader
-                , Css.marginTop zero
-                , Css.position absolute
-                , Css.right (em 0.625)
-                , Css.top (em 0.625)
-                , Css.transform none
-                ]
-
-            else
-                [ arrow
-                , Css.borderColor darker
-                , Css.right (em 1.125)
-                , Css.zIndex (int 4)
-                ]
-    in
-    styled Html.Styled.div
-        [ Css.display inlineBlock
-        , Css.maxWidth (pct 100)
-        , Css.position relative
-        , Css.verticalAlign top
-        , Css.height (em 2.5)
-        , Css.after after
-        ]
-        []
-        [ styled Html.Styled.select
-            (inputStyle
-                ++ [ Css.cursor pointer
-                   , Css.display block
-                   , Css.fontSize (em 1)
-                   , Css.maxWidth (pct 100)
-                   , Css.outline none
-                   , Css.paddingRight (em 2.5)
-                   , pseudoElement "ms-expand" [ Css.display none ]
-                   ]
-                ++ List.map inputModifierStyle
-                    rec.modifiers
-            )
-            [ Utils.onChange onChange
-            ]
-            (option val { label = rec.placeholder, value = "" } :: List.map (option val) rec.options)
-        ]
-
-
-option : String -> Option -> Html msg
-option val o =
-    Html.Styled.option
-        [ Html.Styled.Attributes.value o.value
-        , Html.Styled.Attributes.selected
-            (o.value == val)
-        ]
-        [ text o.label ]
-
-
-arrow : Style
-arrow =
+placeholder : List Style -> Style
+placeholder c =
     Css.batch
-        [ Css.border3 (px 3) solid link
-        , Css.borderRadius (px 2)
-        , Css.borderRight zero
-        , Css.borderTop zero
-        , Css.property "content" "\"\""
-        , Css.display block
-        , Css.height (em 0.625)
-        , Css.marginTop (em -0.4375)
-        , Css.pointerEvents none
-        , Css.position absolute
-        , Css.top (pct 50)
-        , Css.transform (rotate (deg -45))
-        , Css.width (em 0.625)
-        ]
-
-
-checkbox : String -> Bool -> msg -> Html msg
-checkbox l checked onClick =
-    let
-        checkedInt =
-            if checked then
-                1
-
-            else
-                0
-    in
-    styled Html.Styled.label
-        [ Css.cursor pointer
-        , adjacentSiblings
-            [ typeSelector "label"
-                [ Css.marginLeft (em 0.5)
-                ]
-            ]
-        , hover
-            [ descendants
-                [ typeSelector "span"
-                    [ Css.borderColor base
-                    ]
-                ]
-            ]
-        ]
-        [ Html.Styled.Events.onClick onClick ]
-        [ styled Html.Styled.span
-            (inputStyle
-                ++ [ Css.width (rem 1.25)
-                   , Css.height (rem 1.25)
-                   , Css.padding zero
-                   , Css.verticalAlign middle
-                   , Css.marginBottom (px 2)
-                   , Css.property "margin-right" "calc(0.625em - 1px)"
-                   , Css.before
-                        [ Css.display block
-                        , Css.property "content" "\"\""
-                        , Css.width (rem 1.25)
-                        , Css.height (rem 1.25)
-                        , Css.backgroundImage (url "/images/tick.svg")
-                        , Css.backgroundRepeat noRepeat
-                        , Css.backgroundPosition center
-                        , Css.backgroundSize2 (rem 0.6) auto
-                        , Css.transform (scale checkedInt)
-                        , Css.Transitions.transition
-                            [ Css.Transitions.transform 60
-                            ]
-                        ]
-                   ]
-            )
-            []
-            []
-        , text
-            l
-        ]
-
-
-radio : String -> Bool -> msg -> Html msg
-radio l checked onClick =
-    let
-        checkedInt =
-            if checked then
-                1
-
-            else
-                0
-    in
-    styled Html.Styled.label
-        [ Css.cursor pointer
-        , hover
-            [ descendants
-                [ typeSelector "span"
-                    [ Css.borderColor base
-                    ]
-                ]
-            ]
-        ]
-        [ Html.Styled.Events.onClick onClick ]
-        [ styled Html.Styled.span
-            (inputStyle
-                ++ [ Css.width (rem 1.25)
-                   , Css.height (rem 1.25)
-                   , Css.padding zero
-                   , Css.verticalAlign middle
-                   , Css.marginBottom (px 2)
-                   , Css.property "margin-right" "calc(0.625em - 1px)"
-                   , Css.borderRadius (pct 50)
-                   , Css.before
-                        [ Css.display block
-                        , Css.property "content" "\"\""
-                        , Css.width (pct 50)
-                        , Css.height (pct 50)
-                        , Css.margin2 zero auto
-                        , Css.backgroundColor primary
-                        , Css.borderRadius (pct 50)
-                        , Css.transform (scale checkedInt)
-                        , Css.Transitions.transition
-                            [ Css.Transitions.transform 60
-                            ]
-                        ]
-                   ]
-            )
-            []
-            []
-        , text
-            l
+        [ pseudoElement "placeholder" c
+        , pseudoElement "-webkit-input-placeholder" c
+        , pseudoElement "-ms-input-placeholder" c
         ]
