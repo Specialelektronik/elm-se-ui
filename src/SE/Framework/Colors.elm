@@ -1,15 +1,6 @@
-module SE.Framework.Colors exposing (Color(..), background, backgroundActive, backgroundHover, base, black, border, color, danger, dangerActive, dangerHover, dark, darker, darkest, info, infoActive, infoHover, light, lighter, lightest, link, linkActive, linkHover, primary, primaryActive, primaryHover, success, successActive, successHover, text, warning, warningActive, warningHover, white)
+module SE.Framework.Colors exposing (background, backgroundActive, backgroundHover, base, black, border, callToAction, callToActionActive, callToActionHover, danger, dangerActive, dangerHover, dark, darker, darkest, info, infoActive, infoHover, light, lighter, lightest, link, linkActive, linkHover, primary, primaryActive, primaryHover, success, successActive, successHover, text, warning, warningActive, warningHover, white)
 
 import Css exposing (hsl, rgba)
-
-
-type Color
-    = Primary
-    | Link
-    | Info
-    | Success
-    | Warning
-    | Danger
 
 
 white : Css.Color
@@ -132,6 +123,21 @@ warningActive =
     Css.rgb 255 211 36
 
 
+callToAction : Css.Color
+callToAction =
+    Css.rgb 239 142 0
+
+
+callToActionHover : Css.Color
+callToActionHover =
+    Css.rgb 226 134 0
+
+
+callToActionActive : Css.Color
+callToActionActive =
+    Css.rgb 214 127 0
+
+
 danger : Css.Color
 danger =
     Css.rgb 255 56 96
@@ -170,25 +176,3 @@ backgroundActive =
 text : Css.Color
 text =
     darkest
-
-
-color : Color -> Css.Color
-color c =
-    case c of
-        Primary ->
-            primary
-
-        Link ->
-            link
-
-        Info ->
-            info
-
-        Success ->
-            success
-
-        Warning ->
-            warning
-
-        Danger ->
-            danger

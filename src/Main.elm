@@ -65,6 +65,7 @@ view model =
                     , ( [ Buttons.Info ], "Info" )
                     , ( [ Buttons.Success ], "Success" )
                     , ( [ Buttons.Warning ], "Warning" )
+                    , ( [ Buttons.CallToAction ], "Call to action" )
                     , ( [ Buttons.Danger ], "Danger" )
                     , ( [ Buttons.White ], "White" )
                     , ( [ Buttons.Lightest ], "Lightest" )
@@ -83,7 +84,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Buttons"
+                [ Title.title3 "Buttons"
                 , buttons []
                     [ button [ Buttons.Success ]
                         Nothing
@@ -113,7 +114,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                ([ Title.title "Form"
+                ([ Title.title3 "Form"
                  , field []
                     [ Form.label "Input"
                     , control False
@@ -145,7 +146,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Field modifiers"
+                [ Title.title3 "Field modifiers"
                 , Title.title5 "Attached"
                 , field [ Form.Attached ]
                     [ control False
@@ -242,8 +243,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Det här är en titel samma som title3"
-                , Title.title1 "Det här är en titel1"
+                [ Title.title1 "Det här är en titel1"
                 , Title.title2 "Det här är en titel2"
                 , Title.title3 "Det här är en titel3"
                 , Title.title4 "Det här är en titel4"
@@ -295,7 +295,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Ikoner"
+                [ Title.title3 "Ikoner"
                 , p []
                     [ icon Icon.Home
                     , text "Regular"
@@ -316,7 +316,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Tags"
+                [ Title.title3 "Tags"
                 , div []
                     (List.map (\( t, mods ) -> field [] [ tag mods t ])
                         [ ( "Tag label", [] )
@@ -368,7 +368,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Breadcrumbs"
+                [ Title.title3 "Breadcrumbs"
                 , breadcrumb
                     [ Breadcrumb.link "/"
                         [ icon Icon.Home
@@ -388,7 +388,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Tabs"
+                [ Title.title3 "Tabs"
                 , tabs [ Tabs.Medium ]
                     [ Tabs.link "/"
                         [ mediumIcon Icon.Home
@@ -408,7 +408,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Modal"
+                [ Title.title3 "Modal"
                 , button [ Buttons.Large, Buttons.Primary ]
                     (Just ToggleModal)
                     [ text "Show Modal"
@@ -417,7 +417,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Image"
+                [ Title.title3 "Image"
                 , image ( 640, 480 )
                     [ source "https://bulma.io/images/placeholders/640x480.png" 1
                     , source "https://bulma.io/images/placeholders/640x320.png" 2
@@ -426,7 +426,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Level"
+                [ Title.title3 "Level"
                 , level
                     [ item
                         [ p []
@@ -457,7 +457,7 @@ view model =
                         [ button [ Buttons.Primary ] (Just DoSomething) [ text "New" ]
                         ]
                     ]
-                , Title.title "Mobile level"
+                , Title.title3 "Mobile level"
                 , mobileLevel
                     [ item
                         [ p []
@@ -488,7 +488,7 @@ view model =
                         [ button [ Buttons.Primary ] (Just DoSomething) [ text "New" ]
                         ]
                     ]
-                , Title.title "Centered level"
+                , Title.title3 "Centered level"
                 , centeredLevel
                     [ item
                         [ strong [] [ text "All" ]
@@ -510,7 +510,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Dropdown"
+                [ Title.title3 "Dropdown"
                 , dropdown "dd1"
                     CloseDropdown
                     model.isDropdownOpen
@@ -529,11 +529,11 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Empty section" ]
+                [ Title.title3 "Empty section" ]
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title "Columns"
+                [ Title.title3 "Columns"
                 , content []
                     [ p []
                         [ text "Anytime a column contains the Mobile Size, the columns get the flex: display style"
@@ -567,7 +567,7 @@ view model =
             ]
         , section []
             [ container [ isFluid ]
-                [ Title.title ("Pagination (current page: " ++ String.fromInt model.page ++ ")")
+                [ Title.title3 ("Pagination (current page: " ++ String.fromInt model.page ++ ")")
                 , content []
                     [ p []
                         [ text "Pagination"

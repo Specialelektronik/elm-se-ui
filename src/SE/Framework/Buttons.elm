@@ -19,6 +19,7 @@ type
     | Info
     | Success
     | Warning
+    | CallToAction
     | Danger
     | White
     | Lightest
@@ -226,6 +227,24 @@ buttonModifier modifier =
                     ]
                 , disabled
                     [ important (Css.backgroundColor Colors.warning)
+                    ]
+                ]
+
+        CallToAction ->
+            Css.batch
+                [ Css.color Colors.white
+                , Css.backgroundColor Colors.callToAction
+                , Css.borderColor transparent
+                , hover
+                    [ Css.color Colors.white
+                    , Css.backgroundColor Colors.callToActionHover
+                    , Css.borderColor transparent
+                    ]
+                , active
+                    [ Css.backgroundColor Colors.callToActionActive
+                    ]
+                , disabled
+                    [ important (Css.backgroundColor Colors.callToAction)
                     ]
                 ]
 
