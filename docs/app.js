@@ -1,6 +1,6 @@
-import { Elm } from "./src/Main.elm";
+import { Elm } from "../src/SE/Framework.elm";
 
-var app = Elm.Main.init({
+var app = Elm.SE.Framework.init({
   node: document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49")
 });
 if (document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49")) {

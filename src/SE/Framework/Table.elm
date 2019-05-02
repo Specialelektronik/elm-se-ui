@@ -1,14 +1,39 @@
-module SE.Framework.Table exposing (Modifier(..), body, cell, foot, head, headCell, row, table)
+module SE.Framework.Table exposing
+    ( table, Modifier(..)
+    , head, body, foot, row, cell
+    )
+
+{-| Bulmas table element
+see <https://bulma.io/documentation/elements/table/>
+
+The table element has several helper functions to make it easy to create the table. The Elm arcitecture makes it possible to require each sub component (like a table head) and structure the code in a very developer friendly way.
+
+
+# Unsupported features
+
+  - .is-selected
+
+
+# Definition
+
+@docs table, Modifier
+
+
+# Header, Body and Footer
+
+@docs head, body, foot, row, cell
+
+-}
 
 import Css exposing (Style, auto, bold, currentColor, em, hidden, important, int, left, num, pct, px, rem, solid, top, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
 import Html.Styled exposing (Html, styled, text)
-import SE.Framework.Colors exposing (darker, darkest, light, lighter, lightest, primary, white)
+import SE.Framework.Colors exposing (darker, darkest, light, lighter, primary, white)
 import SE.Framework.Utils exposing (block, overflowTouch)
 
 
 type Head msg
-    = Head (List (HeadCell msg))
+    = Head (List (Cell msg))
 
 
 type Body msg
@@ -23,14 +48,12 @@ type Row msg
     = Row (List (Cell msg))
 
 
-type HeadCell msg
-    = HeadCell (Html msg)
-
-
 type Cell msg
     = Cell (Html msg)
 
 
+{-| All Bulma table modifiers are supported, including the currently undocumented MobileFriendly.
+-}
 type Modifier
     = Bordered
     | Fullwidth
@@ -40,6 +63,8 @@ type Modifier
     | Mobilefriendly
 
 
+{-| The main container. It takes the modifiers, head and foot to begin with and the body at the end.
+-}
 table : List Modifier -> Head msg -> Foot msg -> Body msg -> Html msg
 table mods h f b =
     wrapper mods
@@ -52,13 +77,12 @@ table mods h f b =
         )
 
 
+{-| Makes the table horizontal scrollable if wanted
+-}
 wrapper : List Modifier -> Html msg -> Html msg
 wrapper mods t =
     if List.member Mobilefriendly mods then
         styled Html.Styled.div
-            --   overflow: auto
-            --   overflow-y: hidden
-            --   max-width: 100%
             [ block
             , overflowTouch
             , Css.overflow auto
@@ -177,31 +201,36 @@ tableModifierStyle allMods mod =
             Css.batch []
 
 
-head : List (HeadCell msg) -> Head msg
+{-| Renders a thead tag
+-}
+head : List (Cell msg) -> Head msg
 head =
     Head
 
 
+{-| Renders a tbody tag
+-}
 body : List (Row msg) -> Body msg
 body =
     Body
 
 
+{-| Renders a tfoot tag
+-}
 foot : List (Cell msg) -> Foot msg
 foot =
     Foot
 
 
-headCell : Html msg -> HeadCell msg
-headCell =
-    HeadCell
-
-
+{-| Renders a tr tag
+-}
 row : List (Cell msg) -> Row msg
 row =
     Row
 
 
+{-| Renders th tag if created as a child to the `head` function, otherwise it renders a td tag
+-}
 cell : Html msg -> Cell msg
 cell =
     Cell
@@ -229,6 +258,6 @@ cellToHtml (Cell html) =
     Html.Styled.td [] [ html ]
 
 
-headCelltoHtml : HeadCell msg -> Html msg
-headCelltoHtml (HeadCell html) =
+headCelltoHtml : Cell msg -> Html msg
+headCelltoHtml (Cell html) =
     Html.Styled.th [] [ html ]

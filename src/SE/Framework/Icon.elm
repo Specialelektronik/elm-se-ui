@@ -1,14 +1,31 @@
-module SE.Framework.Icon exposing (Icon(..), icon, largeIcon, mediumIcon, smallIcon)
+module SE.Framework.Icon exposing
+    ( icon
+    , smallIcon, mediumIcon, largeIcon
+    )
+
+{-| Creates a Bulma Icon element set.
+
+<https://bulma.io/documentation/elements/icon/>
+
+
+# Definition
+
+@docs icon
+
+
+# Sizes
+
+@docs smallIcon, mediumIcon, largeIcon
+
+-}
 
 import Css exposing (Style, center, inlineFlex, rem)
 import Html.Styled exposing (Html, styled)
 import Html.Styled.Attributes exposing (class)
 
 
-type Icon
-    = Home
-    | Save
-    | AngleDown
+type alias Icon =
+    String
 
 
 type Size
@@ -23,7 +40,7 @@ internalIcon size i =
     styled Html.Styled.span
         (containerStyles size)
         [ class "icon" ]
-        [ Html.Styled.i [ class "fas", faClass i ] []
+        [ Html.Styled.i [ class ("fas" ++ faClass i) ] []
         ]
 
 
@@ -34,21 +51,21 @@ icon =
     internalIcon Regular
 
 
-{-| Renders a 1.5 rem icon
+{-| Renders a 1 rem icon
 -}
 smallIcon : Icon -> Html msg
 smallIcon =
     internalIcon Small
 
 
-{-| Renders a 1.5 rem icon
+{-| Renders a 2 rem icon
 -}
 mediumIcon : Icon -> Html msg
 mediumIcon =
     internalIcon Medium
 
 
-{-| Renders a 1.5 rem icon
+{-| Renders a 3 rem icon
 -}
 largeIcon : Icon -> Html msg
 largeIcon =
@@ -102,16 +119,10 @@ faDimensions size =
         )
 
 
-faClass : Icon -> Html.Styled.Attribute msg
-faClass i =
-    class
-        (case i of
-            Home ->
-                "fa-home"
+faClass : String -> String
+faClass str =
+    if String.startsWith "fa-" str then
+        str
 
-            Save ->
-                "fa-save"
-
-            AngleDown ->
-                "fa-angle-down"
-        )
+    else
+        "fa-" ++ str

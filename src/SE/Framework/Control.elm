@@ -1,24 +1,38 @@
 module SE.Framework.Control exposing (controlHeight, controlStyle)
 
+{-| Helper functions for form elements and buttons.
+
+@docs controlHeight, controlStyle
+
+-}
+
 import Css exposing (Style, active, alignItems, border3, borderRadius, boxShadow, boxShadow5, center, cursor, disabled, display, em, flexStart, focus, fontSize, height, inlineFlex, justifyContent, lineHeight, none, notAllowed, num, paddingBottom, paddingLeft, paddingRight, paddingTop, position, property, px, relative, rem, rgba, solid, top, transparent, verticalAlign, zero)
 
 
+controlBorderWidth : Css.Px
 controlBorderWidth =
     px 1
 
 
+controlRadius : Css.Rem
 controlRadius =
     rem 0.25
 
 
+{-| Height used for controls like buttons and text inputs.
+-}
+controlHeight : Css.Em
 controlHeight =
     em 2.5
 
 
+controlLineHeight : Css.Em
 controlLineHeight =
-    num 1.5
+    em 1.5
 
 
+{-| "Normalized" style for controls like buttons and input text fields.
+-}
 controlStyle : Style
 controlStyle =
     Css.batch

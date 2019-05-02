@@ -1,4 +1,22 @@
-module SE.Framework.Tabs exposing (Modifier(..), activeLink, link, tabs)
+module SE.Framework.Tabs exposing
+    ( tabs
+    , link, Modifier(..)
+    )
+
+{-| Bulmas Tags component
+see <https://bulma.io/documentation/components/tabs/>
+
+
+# Container
+
+@docs tabs
+
+
+# Links
+
+@docs link, Modifier
+
+-}
 
 import Css exposing (Style, auto, center, default, em, flex, flexStart, hidden, hover, int, noWrap, none, px, rem, solid, spaceBetween, stretch, top, wrap, zero)
 import Css.Global exposing (adjacentSiblings, descendants, each, selector, typeSelector)
@@ -17,39 +35,24 @@ type alias IsActive =
     Bool
 
 
+{-| Only medium sized tabs are supported.
+-}
 type Modifier
     = Medium
 
 
-link : String -> List (Html msg) -> Link msg
-link =
-    Link False
+
+-- TABS
 
 
-activeLink : String -> List (Html msg) -> Link msg
-activeLink =
-    Link True
-
-
+{-| Currently, only the Medium size modifier is supported, no boxed, fullwidth or anything else.
+-}
 tabs : List Modifier -> List (Link msg) -> Html msg
 tabs mods links =
     styled Html.Styled.nav
         [ navStyle, navModifiers mods ]
         []
         [ styled Html.Styled.ul ulStyles [] (List.map linkToHtml links)
-        ]
-
-
-linkToHtml : Link msg -> Html msg
-linkToHtml (Link isActive url html) =
-    styled Html.Styled.li
-        (liStyles isActive)
-        []
-        [ styled
-            Html.Styled.a
-            (aStyles isActive)
-            [ Html.Styled.Attributes.href url ]
-            html
         ]
 
 
@@ -92,6 +95,33 @@ ulStyles =
     , Css.flexShrink zero
     , Css.justifyContent flexStart
     ]
+
+
+
+-- LINK
+
+
+{-| An active link is rendered as a blue link, non-active are rendered av dark text.
+
+    link False "https://example.com/" [ text "Go to example.com" ]
+
+-}
+link : IsActive -> String -> List (Html msg) -> Link msg
+link =
+    Link
+
+
+linkToHtml : Link msg -> Html msg
+linkToHtml (Link isActive url html) =
+    styled Html.Styled.li
+        (liStyles isActive)
+        []
+        [ styled
+            Html.Styled.a
+            (aStyles isActive)
+            [ Html.Styled.Attributes.href url ]
+            html
+        ]
 
 
 liStyles : IsActive -> List Style

@@ -1,4 +1,16 @@
-module SE.Framework.Notification exposing (danger, info, link, notification, primary, success, warning)
+module SE.Framework.Notification exposing (notification, primary, link, info, success, warning, danger)
+
+{-| Bulmas notification element
+see <https://bulma.io/documentation/elements/notification/>
+
+
+# Definition
+
+This module exposes one function for each color. If you supply a message it will be triggered if the user clicks the delete button. If no message is supplied, no delete button will be displayed.
+
+@docs notification, primary, link, info, success, warning, danger
+
+-}
 
 import Css exposing (Style, absolute, block, currentColor, int, minus, none, pseudoClass, relative, rem, transparent, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
@@ -14,11 +26,15 @@ padding =
     Css.padding4 (rem 1.25) (rem 2.5) (rem 1.25) (rem 1.5)
 
 
+{-| Grey notification
+-}
 notification : Maybe msg -> List (Html msg) -> Html msg
 notification =
     internalNotification []
 
 
+{-| Primary notification
+-}
 primary : Maybe msg -> List (Html msg) -> Html msg
 primary =
     internalNotification
@@ -27,6 +43,8 @@ primary =
         ]
 
 
+{-| Link notification
+-}
 link : Maybe msg -> List (Html msg) -> Html msg
 link =
     internalNotification
@@ -35,6 +53,8 @@ link =
         ]
 
 
+{-| Info notification
+-}
 info : Maybe msg -> List (Html msg) -> Html msg
 info =
     internalNotification
@@ -43,6 +63,8 @@ info =
         ]
 
 
+{-| Success notification
+-}
 success : Maybe msg -> List (Html msg) -> Html msg
 success =
     internalNotification
@@ -51,6 +73,8 @@ success =
         ]
 
 
+{-| Warning notification
+-}
 warning : Maybe msg -> List (Html msg) -> Html msg
 warning =
     internalNotification
@@ -59,6 +83,8 @@ warning =
         ]
 
 
+{-| Danger notification
+-}
 danger : Maybe msg -> List (Html msg) -> Html msg
 danger =
     internalNotification
@@ -105,13 +131,3 @@ delete msg =
         , Css.top (rem 0.5)
         ]
         msg
-
-
-
---   // Colors
---   @each $name, $pair in $colors
---     $color: nth($pair, 1)
---     $color-invert: nth($pair, 2)
---     &.is-#{$name}
---       background-color: $color
---       color: $color-invert

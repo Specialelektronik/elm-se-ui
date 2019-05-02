@@ -1,5 +1,15 @@
 module SE.Framework.Modal exposing (modal)
 
+{-| Bulmas modal component
+see <https://bulma.io/documentation/components/modal/>
+
+
+# Definition
+
+@docs modal
+
+-}
+
 import Css exposing (Style, absolute, auto, calc, center, column, fixed, hidden, int, minus, none, pct, px, relative, rgba, vh, zero)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Events exposing (onClick)
@@ -7,6 +17,8 @@ import SE.Framework.Delete exposing (delete)
 import SE.Framework.Utils exposing (tablet)
 
 
+{-| The modal does not have an active state, to close the modal, simple don't render it.
+-}
 modal : msg -> List (Html msg) -> Html msg
 modal closeMsg c =
     styled Html.Styled.div

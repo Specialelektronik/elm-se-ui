@@ -1,5 +1,8 @@
 module SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
 
+{-| DEPRECATED, not part of the framework.
+-}
+
 import Css exposing (Style, block, center, displayFlex, flex, hex, int, ms, none, px, relative, rem, stretch, zero)
 import Css.Animations exposing (Keyframes, keyframes)
 import Html.Styled exposing (Attribute, Html, styled, text)

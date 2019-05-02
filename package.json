@@ -1,14 +1,19 @@
 {
-  "name": "se-style",
+  "name": "framework",
   "version": "1.0.0",
-  "description": "",
+  "description": "An Elm style framework with lots of inspiration from Bulma",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "directories": {
+    "doc": "docs"
   },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {},
+  "scripts": {
+    "start": "cmd/start"
+  },
+  "author": "Carl-Fredrik Herö <carl-fredrik.hero@specialelektronik.se>",
+  "license": "MIT",
+  "dependencies": {
+    "parcel-bundler": "^1.12.3"
+  },
   "devDependencies": {
     "elm-hot": "^1.0.1",
     "node-elm-compiler": "^5.0.1",

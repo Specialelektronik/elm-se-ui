@@ -1,4 +1,28 @@
-module SE.Framework.Tag exposing (TagModifier(..), TagsModifier(..), deleteTag, tag, tags)
+module SE.Framework.Tag exposing
+    ( tag, deleteTag
+    , TagModifier(..)
+    , tags, TagsModifier(..)
+    )
+
+{-| Bulmas tag element
+see <https://bulma.io/documentation/elements/tag/>
+
+
+# Tag
+
+@docs tag, deleteTag
+
+
+# Modifiers
+
+@docs TagModifier
+
+
+# Tags container
+
+@docs tags, TagsModifier
+
+-}
 
 import Css exposing (Style, absolute, active, after, before, block, center, currentColor, deg, em, flexStart, focus, hover, important, inlineFlex, noWrap, num, pct, pointer, pseudoClass, px, relative, rem, rotate, translateX, translateY, wrap, zero)
 import Css.Global exposing (class, descendants)
@@ -10,6 +34,8 @@ import SE.Framework.Colors as Colors
 import SE.Framework.Utils exposing (radius)
 
 
+{-| Supported modifiers are colors (all colors are supported) and sizes
+-}
 type
     TagModifier
     -- Colors
@@ -33,10 +59,14 @@ type
     | Large
 
 
+{-| Tags can be attached using the Addons modifier
+-}
 type TagsModifier
     = Addons
 
 
+{-| Colors and sizes is supported modifiers, `rounded` also, there is no way to attach a delete button to a tag, use `tags [Addons]` with a regular `tag` and `deleteTag`.
+-}
 tag : List TagModifier -> String -> Html msg
 tag mods t =
     styled Html.Styled.span
@@ -45,6 +75,8 @@ tag mods t =
         [ text t ]
 
 
+{-| The delete modifier is supported using this function.
+-}
 deleteTag : msg -> Html msg
 deleteTag clickMsg =
     styled Html.Styled.span
@@ -53,6 +85,9 @@ deleteTag clickMsg =
         []
 
 
+{-| List of tags
+see <https://bulma.io/documentation/elements/tag/#list-of-tags>
+-}
 tags : List TagsModifier -> List (Html msg) -> Html msg
 tags mods ts =
     styled Html.Styled.div
