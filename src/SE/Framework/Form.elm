@@ -148,7 +148,7 @@ input rec =
 inputStyle : List Style
 inputStyle =
     [ controlStyle
-    , Css.borderColor light
+    , Css.borderColor base
     , Css.color darker
     , Css.maxWidth (pct 100)
     , Css.width (pct 100)

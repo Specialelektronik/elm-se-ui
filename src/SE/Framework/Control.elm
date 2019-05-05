@@ -7,16 +7,12 @@ module SE.Framework.Control exposing (controlHeight, controlStyle)
 -}
 
 import Css exposing (Style, active, alignItems, border3, borderRadius, boxShadow, boxShadow5, center, cursor, disabled, display, em, flexStart, focus, fontSize, height, inlineFlex, justifyContent, lineHeight, none, notAllowed, num, paddingBottom, paddingLeft, paddingRight, paddingTop, position, property, px, relative, rem, rgba, solid, top, transparent, verticalAlign, zero)
+import SE.Framework.Utils exposing (radius)
 
 
 controlBorderWidth : Css.Px
 controlBorderWidth =
     px 1
-
-
-controlRadius : Css.Rem
-controlRadius =
-    rem 0.25
 
 
 {-| Height used for controls like buttons and text inputs.
@@ -40,7 +36,7 @@ controlStyle =
         , property "-webkit-appearance" "none"
         , alignItems center
         , border3 controlBorderWidth solid transparent
-        , borderRadius controlRadius
+        , borderRadius radius
         , boxShadow none
         , display inlineFlex
         , fontSize (px 16)

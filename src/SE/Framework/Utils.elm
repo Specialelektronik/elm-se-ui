@@ -91,14 +91,14 @@ mobile =
 -}
 radius : Css.Px
 radius =
-    px 4
+    px 2
 
 
 {-| Small radius value
 -}
 smallRadius : Css.Px
 smallRadius =
-    px 2
+    px 1
 
 
 {-| Loading spinner animation

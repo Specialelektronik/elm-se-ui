@@ -1,6 +1,6 @@
 module SE.Framework.Buttons exposing
     ( buttons, ButtonsModifier(..)
-    , button, Modifier(..)
+    , button, staticButton, Modifier(..)
     )
 
 {-| Buttons from Bulma with some small design adjustments. Supports all colors and the `buttons` container.
@@ -15,7 +15,7 @@ see <https://bulma.io/documentation/elements/button/>
 
 # Buttons
 
-@docs button, Modifier
+@docs button, staticButton, Modifier
 
 -}
 
@@ -58,7 +58,6 @@ type
       -- Misc
     | Fullwidth
     | Loading
-    | Static
 
 
 {-| Modifiers for the buttons container.
@@ -98,6 +97,16 @@ button modifiers onPress html =
     styled Html.Styled.button
         (buttonStyles modifiers)
         eventAttribs
+        html
+
+
+{-| Static button without onclick message
+-}
+staticButton : List Modifier -> List (Html msg) -> Html msg
+staticButton modifiers html =
+    styled Html.Styled.span
+        (staticButtonStyles modifiers)
+        []
         html
 
 
@@ -158,6 +167,16 @@ buttonStyles modifiers =
             ]
         ]
     ]
+
+
+staticButtonStyles : List Modifier -> List Style
+staticButtonStyles modifiers =
+    buttonStyles modifiers
+        ++ [ important (Css.backgroundColor Colors.lightest)
+           , important (Css.borderColor Colors.base)
+           , important (Css.color Colors.dark)
+           , important (Css.pointerEvents none)
+           ]
 
 
 buttonModifiers : (Modifier -> Style) -> List Modifier -> Style
@@ -451,14 +470,6 @@ buttonModifier modifier =
             Css.batch
                 [ Css.displayFlex
                 , Css.width (pct 100)
-                ]
-
-        Static ->
-            Css.batch
-                [ important (Css.backgroundColor Colors.lightest)
-                , important (Css.borderColor Colors.light)
-                , important (Css.color Colors.dark)
-                , important (Css.pointerEvents none)
                 ]
 
         Small ->

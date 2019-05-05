@@ -40,7 +40,7 @@ internalIcon size i =
     styled Html.Styled.span
         (containerStyles size)
         [ class "icon" ]
-        [ Html.Styled.i [ class ("fas" ++ faClass i) ] []
+        [ Html.Styled.i [ class ("fas " ++ faClass i) ] []
         ]
 
 
