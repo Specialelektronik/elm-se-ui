@@ -2,28 +2,16 @@ module SE.Framework exposing (main)
 
 import Browser
 import Css exposing (block, calc, column, em, fixed, hover, int, minus, px, relative, rem, rgba, vh, zero)
-import Html.Styled exposing (Html, a, article, aside, div, li, main_, styled, text, toUnstyled, ul)
+import Html.Styled exposing (Html, a, article, aside, div, li, main_, span, styled, text, toUnstyled, ul)
 import Html.Styled.Attributes exposing (href, id)
+import SE.Framework.Buttons as Buttons
 import SE.Framework.Colors as Colors
+import SE.Framework.Columns as Columns
+import SE.Framework.Form as Form
+import SE.Framework.Icon as Icon
 import SE.Framework.Section exposing (section)
 import SE.Framework.Title as Title
 import SE.Framework.Utils exposing (radius, smallRadius)
-
-
-type alias Introspection =
-    { name : String
-    , signature : String
-    , description : String
-    , variations : List Variation
-    }
-
-
-type alias Variation =
-    ( String, List SubSection )
-
-
-type alias SubSection =
-    ( Html Msg, String )
 
 
 
@@ -31,12 +19,33 @@ type alias SubSection =
 
 
 type alias Model =
-    ()
+    { button : ButtonModel
+    }
+
+
+type alias ButtonModel =
+    { colors : List Buttons.Modifier
+    , sizes : List Buttons.Modifier
+    , msg : Maybe Msg
+    , text : String
+    , icon : String
+    }
 
 
 initialModel : Model
 initialModel =
-    ()
+    { button = initialButton
+    }
+
+
+initialButton : ButtonModel
+initialButton =
+    { colors = []
+    , sizes = []
+    , msg = Just NoOp
+    , text = "Button"
+    , icon = "shopping-cart"
+    }
 
 
 
@@ -45,6 +54,9 @@ initialModel =
 
 type Msg
     = NoOp
+    | UpdateButtonColor Buttons.Modifier
+    | UpdateButtonSize Buttons.Modifier
+    | UpdateButtonIcon String
 
 
 update : Msg -> Model -> Model
@@ -52,6 +64,30 @@ update msg model =
     case msg of
         NoOp ->
             model
+
+        UpdateButtonColor modifier ->
+            { model | button = updateButtonColor model.button modifier }
+
+        UpdateButtonSize modifier ->
+            { model | button = updateButtonSize model.button modifier }
+
+        UpdateButtonIcon s ->
+            { model | button = updateButtonIcon model.button s }
+
+
+updateButtonColor : ButtonModel -> Buttons.Modifier -> ButtonModel
+updateButtonColor model mod =
+    { model | colors = [ mod ] }
+
+
+updateButtonSize : ButtonModel -> Buttons.Modifier -> ButtonModel
+updateButtonSize model mod =
+    { model | sizes = [ mod ] }
+
+
+updateButtonIcon : ButtonModel -> String -> ButtonModel
+updateButtonIcon model s =
+    { model | icon = s }
 
 
 
@@ -75,35 +111,68 @@ view model =
             , article [ id "Buttons" ]
                 [ section []
                     [ Title.title3 "Buttons"
-                    ]
-                ]
-            , article []
-                [ section []
-                    [ text "Article 1"
-                    ]
-                ]
-            , article []
-                [ section []
-                    [ text "Article 2"
-                    ]
-                ]
-            , article []
-                [ section []
-                    [ text "Article 1"
-                    ]
-                ]
-            , article []
-                [ section []
-                    [ text "Article 2"
+                    , Buttons.button (model.button.colors ++ model.button.sizes)
+                        model.button.msg
+                        [ viewButtonIcon model.button.icon, span [] [ text "Button" ] ]
+                    , Title.title4 "Modifiers"
+                    , Columns.columns
+                        [ Columns.defaultColumn
+                            [ Title.title5 "Colors"
+                            , ul [] <|
+                                List.map
+                                    (\( l, m ) -> li [] [ Form.radio l (List.member m model.button.colors) (UpdateButtonColor m) ])
+                                    [ ( "Primary", Buttons.Primary )
+                                    , ( "Link", Buttons.Link )
+                                    , ( "Info", Buttons.Info )
+                                    , ( "Success", Buttons.Success )
+                                    , ( "Warning", Buttons.Warning )
+                                    , ( "Danger", Buttons.Danger )
+                                    , ( "White", Buttons.White )
+                                    , ( "Lightest", Buttons.Lightest )
+                                    , ( "Lighter", Buttons.Lighter )
+                                    , ( "Light", Buttons.Light )
+                                    , ( "Dark", Buttons.Dark )
+                                    , ( "Darker", Buttons.Darker )
+                                    , ( "Darkest", Buttons.Darkest )
+                                    , ( "Black", Buttons.Black )
+                                    , ( "Text", Buttons.Text )
+                                    ]
+                            ]
+                        , Columns.defaultColumn
+                            [ Title.title5 "Sizes"
+                            , ul [] <|
+                                List.map
+                                    (\( l, m ) -> li [] [ Form.radio l (List.member m model.button.sizes) (UpdateButtonSize m) ])
+                                    [ ( "Small", Buttons.Small )
+                                    , ( "Medium", Buttons.Medium )
+                                    , ( "Large", Buttons.Large )
+                                    ]
+                            ]
+                        , Columns.defaultColumn
+                            [ Title.title5 "Icons"
+                            , Form.field []
+                                [ Form.input
+                                    { value = model.button.icon
+                                    , placeholder = "Icon"
+                                    , modifiers = []
+                                    , onInput = UpdateButtonIcon
+                                    }
+                                ]
+                            ]
+                        ]
                     ]
                 ]
             ]
         ]
 
 
-viewIntrospection : Introspection -> Html Msg
-viewIntrospection introspection =
-    text "introspection"
+viewButtonIcon : String -> Html Msg
+viewButtonIcon s =
+    if s == "" then
+        text ""
+
+    else
+        Icon.icon s
 
 
 viewSidebar : Html Msg
