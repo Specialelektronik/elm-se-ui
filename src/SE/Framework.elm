@@ -2,9 +2,13 @@ module SE.Framework exposing (main)
 
 import Browser
 import Css exposing (block, calc, column, em, fixed, hover, int, minus, px, relative, rem, rgba, vh, zero)
-import Html.Styled exposing (Html, a, article, aside, div, li, main_, styled, text, toUnstyled, ul)
+import Html.Styled exposing (Html, a, article, aside, div, li, main_, span, styled, text, toUnstyled, ul)
 import Html.Styled.Attributes exposing (href, id)
+import SE.Framework.Buttons as Buttons
 import SE.Framework.Colors as Colors
+import SE.Framework.Columns as Columns
+import SE.Framework.Form as Form
+import SE.Framework.Icon as Icon
 import SE.Framework.Section exposing (section)
 import SE.Framework.Title as Title
 import SE.Framework.Utils exposing (radius, smallRadius)
@@ -74,27 +78,39 @@ view model =
                 ]
             , article [ id "Buttons" ]
                 [ section []
-                    [ Title.title3 "Buttons"
-                    ]
-                ]
-            , article []
-                [ section []
-                    [ text "Article 1"
-                    ]
-                ]
-            , article []
-                [ section []
-                    [ text "Article 2"
-                    ]
-                ]
-            , article []
-                [ section []
-                    [ text "Article 1"
-                    ]
-                ]
-            , article []
-                [ section []
-                    [ text "Article 2"
+                    [ Title.title3 "Samsung QM75N UHD"
+                    , div []
+                        [ Title.title6 "Artikelnummer"
+                        , span [] [ text "LH75QMREBGCXEN" ]
+                        ]
+                    , Columns.columns
+                        [ Columns.column [ ( Columns.All, Columns.Narrow ) ] [ text "images" ]
+                        , Columns.defaultColumn
+                            [ Form.field [ Form.Attached ]
+                                [ Form.control False
+                                    [ Form.input
+                                        { value = ""
+                                        , placeholder = "Ange antal"
+                                        , modifiers = []
+                                        , onInput = \_ -> NoOp
+                                        }
+                                    ]
+                                , Form.control False
+                                    [ Buttons.staticButton [] [ text "st" ]
+                                    ]
+                                ]
+                            ]
+                        , Columns.defaultColumn
+                            [ Form.field
+                                []
+                                [ Buttons.button [ Buttons.CallToAction, Buttons.Fullwidth ]
+                                    (Just NoOp)
+                                    [ Icon.icon "shopping-cart"
+                                    , span [] [ text "Lägg i varukorg" ]
+                                    ]
+                                ]
+                            ]
+                        ]
                     ]
                 ]
             ]
@@ -108,25 +124,29 @@ viewIntrospection introspection =
 
 viewSidebar : Html Msg
 viewSidebar =
-    styled aside
-        [ Css.minHeight (vh 100)
-        , Css.flex3 zero zero (px 300)
-        , Css.position relative
-        , Css.backgroundColor Colors.primary
-        , Css.color Colors.white
-        ]
-        []
-        [ styled div
-            [ Css.position fixed
-            , Css.margin2 (rem 3) (rem 1.5)
-            , Css.width (calc (px 300) minus (rem 3))
-            , Css.displayFlex
-            , Css.flexDirection column
-            ]
-            []
-            [ sidebarMenu
-            ]
-        ]
+    text ""
+
+
+
+-- styled aside
+--     [ Css.minHeight (vh 100)
+--     , Css.flex3 zero zero (px 300)
+--     , Css.position relative
+--     , Css.backgroundColor Colors.primary
+--     , Css.color Colors.white
+--     ]
+--     []
+--     [ styled div
+--         [ Css.position fixed
+--         , Css.margin2 (rem 3) (rem 1.5)
+--         , Css.width (calc (px 300) minus (rem 3))
+--         , Css.displayFlex
+--         , Css.flexDirection column
+--         ]
+--         []
+--         [ sidebarMenu
+--         ]
+--     ]
 
 
 sidebarMenu : Html Msg
