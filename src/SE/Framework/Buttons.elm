@@ -26,7 +26,7 @@ import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Colors as Colors
-import SE.Framework.Control exposing (controlStyle)
+import SE.Framework.Control as Control exposing (controlStyle)
 import SE.Framework.Utils exposing (centerEm, loader, smallRadius)
 
 
@@ -52,9 +52,7 @@ type
     | Black
     | Text
       -- Sizes
-    | Small
-    | Medium
-    | Large
+    | Size Control.Size
       -- Misc
     | Fullwidth
     | Loading
@@ -84,7 +82,7 @@ buttonShadowHover =
 If onPress is Nothing, then the button will show as disabled
 -}
 button : List Modifier -> Maybe msg -> List (Html msg) -> Html msg
-button modifiers onPress html =
+button mods onPress html =
     let
         eventAttribs =
             case onPress of
@@ -95,7 +93,7 @@ button modifiers onPress html =
                     [ onClick msg ]
     in
     styled Html.Styled.button
-        (buttonStyles modifiers)
+        (buttonStyles mods)
         eventAttribs
         html
 
@@ -103,9 +101,9 @@ button modifiers onPress html =
 {-| Static button without onclick message
 -}
 staticButton : List Modifier -> List (Html msg) -> Html msg
-staticButton modifiers html =
+staticButton mods html =
     styled Html.Styled.span
-        (staticButtonStyles modifiers)
+        (staticButtonStyles mods)
         []
         html
 
@@ -119,8 +117,12 @@ buttons mods btns =
 
 
 buttonStyles : List Modifier -> List Style
-buttonStyles modifiers =
-    [ controlStyle
+buttonStyles mods =
+    let
+        size =
+            extractControlSize mods
+    in
+    [ controlStyle size
     , Css.backgroundColor Colors.white
     , Css.borderColor Colors.light
     , Css.borderWidth (px 1)
@@ -141,7 +143,7 @@ buttonStyles modifiers =
     , active
         [ Css.borderColor Colors.dark
         ]
-    , buttonModifiers buttonModifier modifiers
+    , buttonModifiers buttonModifier mods
     , disabled
         [ Css.backgroundColor transparent
         , Css.borderColor transparent
@@ -170,8 +172,8 @@ buttonStyles modifiers =
 
 
 staticButtonStyles : List Modifier -> List Style
-staticButtonStyles modifiers =
-    buttonStyles modifiers
+staticButtonStyles mods =
+    buttonStyles mods
         ++ [ important (Css.backgroundColor Colors.lightest)
            , important (Css.borderColor Colors.base)
            , important (Css.color Colors.dark)
@@ -180,8 +182,8 @@ staticButtonStyles modifiers =
 
 
 buttonModifiers : (Modifier -> Style) -> List Modifier -> Style
-buttonModifiers callback modifiers =
-    Css.batch (List.map callback modifiers)
+buttonModifiers callback mods =
+    Css.batch (List.map callback mods)
 
 
 buttonModifier : Modifier -> Style
@@ -455,6 +457,15 @@ buttonModifier modifier =
                     ]
                 ]
 
+        Size _ ->
+            Css.batch []
+
+        Fullwidth ->
+            Css.batch
+                [ Css.displayFlex
+                , Css.width (pct 100)
+                ]
+
         Loading ->
             Css.batch
                 [ important (Css.color transparent)
@@ -466,23 +477,20 @@ buttonModifier modifier =
                     ]
                 ]
 
-        Fullwidth ->
-            Css.batch
-                [ Css.displayFlex
-                , Css.width (pct 100)
-                ]
 
-        Small ->
-            Css.batch
-                [ Css.borderRadius smallRadius
-                , Css.fontSize (rem 0.75)
-                ]
+extractControlSize : List Modifier -> Control.Size
+extractControlSize mods =
+    List.foldl
+        (\m init ->
+            case m of
+                Size s ->
+                    s
 
-        Medium ->
-            Css.fontSize (rem 1.25)
-
-        Large ->
-            Css.fontSize (rem 1.5)
+                _ ->
+                    init
+        )
+        Control.Normal
+        mods
 
 
 buttonsStyles : List ButtonsModifier -> List Style

@@ -26,7 +26,7 @@ see <https://bulma.io/documentation/form/>
 # Unsupported features
 
   - Horizontal form
-  - Size modifier
+  - Size modifier (for some elements)
   - .help
   - icons in input, textarea, select .control
 
@@ -39,7 +39,7 @@ import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onInput)
 import SE.Framework.Colors as Colors exposing (base, black, danger, darker, info, light, link, primary, success, warning, white)
-import SE.Framework.Control exposing (controlStyle)
+import SE.Framework.Control as Control exposing (controlStyle)
 import SE.Framework.Utils as Utils exposing (loader, radius)
 
 
@@ -75,7 +75,7 @@ type alias Option =
     }
 
 
-{-| Size modifiers are not supported at the moment.
+{-| Available input modifiers
 -}
 type
     InputModifier
@@ -85,6 +85,8 @@ type
     | Success
     | Warning
     | Danger
+      -- Size
+    | Size Control.Size
       -- State
     | Loading
     | Disabled
@@ -137,17 +139,18 @@ label s =
 input : InputRecord msg -> Html msg
 input rec =
     styled Html.Styled.input
-        (inputStyle
-            ++ List.map inputModifierStyle
-                rec.modifiers
-        )
+        (inputStyle rec.modifiers)
         [ Html.Styled.Events.onInput rec.onInput, Html.Styled.Attributes.placeholder rec.placeholder, Html.Styled.Attributes.value rec.value ]
         []
 
 
-inputStyle : List Style
-inputStyle =
-    [ controlStyle
+inputStyle : List InputModifier -> List Style
+inputStyle mods =
+    let
+        size =
+            extractControlSize mods
+    in
+    [ controlStyle size
     , Css.borderColor base
     , Css.color darker
     , Css.maxWidth (pct 100)
@@ -167,6 +170,7 @@ inputStyle =
         , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
         ]
     ]
+        ++ List.map inputModifierStyle mods
 
 
 inputModifierStyle : InputModifier -> Style
@@ -196,6 +200,9 @@ inputModifierStyle modifier =
         Danger ->
             style danger (Css.property "box-shadow" "0 0 0 0.125em rgba(255,56,96, 0.25)")
 
+        Size _ ->
+            Css.batch []
+
         Loading ->
             Css.batch []
 
@@ -209,6 +216,21 @@ inputModifierStyle modifier =
             Css.batch []
 
 
+extractControlSize : List InputModifier -> Control.Size
+extractControlSize mods =
+    List.foldl
+        (\m init ->
+            case m of
+                Size s ->
+                    s
+
+                _ ->
+                    init
+        )
+        Control.Normal
+        mods
+
+
 
 -- TEXTAREA
 
@@ -218,10 +240,7 @@ inputModifierStyle modifier =
 textarea : TextareaRecord (InputRecord msg) -> Html msg
 textarea rec =
     styled Html.Styled.textarea
-        (textareaStyle
-            ++ List.map inputModifierStyle
-                rec.modifiers
-        )
+        (textareaStyle rec.modifiers)
         [ Html.Styled.Events.onInput rec.onInput
         , Html.Styled.Attributes.placeholder rec.placeholder
         , Html.Styled.Attributes.value rec.value
@@ -230,9 +249,9 @@ textarea rec =
         []
 
 
-textareaStyle : List Style
-textareaStyle =
-    inputStyle
+textareaStyle : List InputModifier -> List Style
+textareaStyle mods =
+    inputStyle mods
         ++ [ Css.display block
            , Css.maxWidth (pct 100)
            , Css.minWidth (pct 100)
@@ -287,17 +306,14 @@ select rec =
         ]
         []
         [ styled Html.Styled.select
-            (inputStyle
+            (inputStyle rec.modifiers
                 ++ [ Css.cursor pointer
                    , Css.display block
-                   , Css.fontSize (em 1)
                    , Css.maxWidth (pct 100)
                    , Css.outline none
                    , Css.paddingRight (em 2.5)
                    , pseudoElement "ms-expand" [ Css.display none ]
                    ]
-                ++ List.map inputModifierStyle
-                    rec.modifiers
             )
             [ Utils.onChange rec.onInput
             ]
@@ -339,6 +355,7 @@ arrow =
 
 
 {-| The checkbox depart from Bulma, instead we use a styled span to get a "better looking" checkbox.
+TODO checkbox does not support modifiers, should it?
 -}
 checkbox : String -> IsChecked -> msg -> Html msg
 checkbox l checked onClick =
@@ -367,7 +384,7 @@ checkbox l checked onClick =
         ]
         [ Html.Styled.Events.onClick onClick ]
         [ styled Html.Styled.span
-            (inputStyle
+            (inputStyle []
                 ++ [ Css.width (rem 1.25)
                    , Css.height (rem 1.25)
                    , Css.padding zero
@@ -402,6 +419,7 @@ checkbox l checked onClick =
 
 
 {-| The radio depart from Bulma, instead we use a styled span to get a "better looking" radio.
+TODO radio does not support modifiers, should it?
 -}
 radio : String -> IsChecked -> msg -> Html msg
 radio l checked onClick =
@@ -425,7 +443,7 @@ radio l checked onClick =
         ]
         [ Html.Styled.Events.onClick onClick ]
         [ styled Html.Styled.span
-            (inputStyle
+            (inputStyle []
                 ++ [ Css.width (rem 1.25)
                    , Css.height (rem 1.25)
                    , Css.padding zero
