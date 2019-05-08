@@ -198,7 +198,7 @@ columnsStyles gap isMultiline isMobile =
     , pseudoClass ":last-child"
         [ Css.marginBottom (negativeColumnGap gap)
         ]
-    , tablet [ Css.displayFlex ]
+    , desktop [ Css.displayFlex ]
     , children
         [ typeSelector "div"
             [ Css.padding (columnGap gap)

@@ -1,17 +1,19 @@
 module SE.Framework.Utils exposing
-    ( desktop, tablet, mobile
+    ( mobile, tabletWidth, tablet, desktopWidth, desktop, widescreenWidth, widescreen, extendedWidth, extended, fullhdWidth, fullhd
     , loader
     , onChange
     , block, centerEm, overflowTouch, unselectable
-    , desktopWidth, gap, radius, smallRadius, tabletWidth
+    , gap, radius, smallRadius
     )
 
 {-| Utility functions mostly used by the framework itself.
 
+Mostly notably is the extra breakpoint we have compared to Bulma. Bulmas "fullhd" has been renamed to "extended" and fullhd is not targeting screens with 1920 pixel resolution or above.
+
 
 # Media queries
 
-@docs desktop, tablet, mobile
+@docs mobile, tabletWidth, tablet, desktopWidth, desktop, widescreenWidth, widescreen, extendedWidth, extended, fullhdWidth, fullhd
 
 
 # Animation helpers
@@ -31,7 +33,7 @@ module SE.Framework.Utils exposing
 
 # Constants
 
-@docs desktopWidth, gap, radius, smallRadius, tabletWidth
+@docs gap, radius, smallRadius
 
 -}
 
@@ -51,13 +53,6 @@ gap =
     64
 
 
-{-| Threshold for desktops
--}
-desktopWidth : Float
-desktopWidth =
-    960 + (2 * gap)
-
-
 {-| Threshold for tablets
 -}
 tabletWidth : Float
@@ -65,11 +60,39 @@ tabletWidth =
     769
 
 
-{-| Media query that maps to @media screen and (min-width: $desktop)
+{-| Threshold for desktops
 -}
-desktop : List Style -> Style
-desktop =
-    Media.withMedia [ only screen [ minWidth (px desktopWidth) ] ]
+desktopWidth : Float
+desktopWidth =
+    960 + (2 * gap)
+
+
+{-| Threshold for widescreens
+-}
+widescreenWidth : Float
+widescreenWidth =
+    1152 + (2 * gap)
+
+
+{-| Threshold for extendeds
+-}
+extendedWidth : Float
+extendedWidth =
+    1344 + (2 * gap)
+
+
+{-| Threshold for fullHDs
+-}
+fullhdWidth : Float
+fullhdWidth =
+    1776 + (2 * gap)
+
+
+{-| Media query for mobile devices
+-}
+mobile : List Style -> Style
+mobile =
+    Media.withMedia [ only screen [ maxWidth (px (tabletWidth - 1)) ] ]
 
 
 {-| Media query that maps to @media screen and (min-width: $tablet)
@@ -80,11 +103,32 @@ tablet =
     Media.withMedia [ only screen [ minWidth (px tabletWidth) ] ]
 
 
-{-| Media query for mobile devices
+{-| Media query that maps to @media screen and (min-width: $desktop)
 -}
-mobile : List Style -> Style
-mobile =
-    Media.withMedia [ only screen [ maxWidth (px (tabletWidth - 1)) ] ]
+desktop : List Style -> Style
+desktop =
+    Media.withMedia [ only screen [ minWidth (px desktopWidth) ] ]
+
+
+{-| Media query that maps to @media screen and (min-width: $widescreen)
+-}
+widescreen : List Style -> Style
+widescreen =
+    Media.withMedia [ only screen [ minWidth (px widescreenWidth) ] ]
+
+
+{-| Media query that maps to @media screen and (min-width: $extended)
+-}
+extended : List Style -> Style
+extended =
+    Media.withMedia [ only screen [ minWidth (px extendedWidth) ] ]
+
+
+{-| Media query that maps to @media screen and (min-width: $fullhd)
+-}
+fullhd : List Style -> Style
+fullhd =
+    Media.withMedia [ only screen [ minWidth (px fullhdWidth) ] ]
 
 
 {-| Standard radius value
