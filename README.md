@@ -10,7 +10,8 @@
 
 # TODO
  - [ ] Form File button
- - Documentation (type that takes a label, description, code examples)
+ - [ ] Documentation (type that takes a label, description, code examples)
+ - [ ] Refactor Image, add alt text and improve dimensions (figure tag, width and height optional and is should be responsive)
 
 # Maybe TODO
  - [ ] Message (can be useful to insert into a product listing to announce stuff)
@@ -29,6 +30,7 @@
  - [x] Form addons
     - [x] Field attached modifier (.has-addons)
     - [x] Control Expanded modifier
+    - [x] Control size
  - [x] Image (Picture) with support for different sizes and resolutions
  - [x] Dropdown
  - [x] Modal (To display enlarged product images)

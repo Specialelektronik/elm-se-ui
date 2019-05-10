@@ -61,8 +61,12 @@ image ( w, h ) sources =
             text ""
 
         Just fallback ->
-            styled Html.Styled.div
-                containerStyles
+            styled Html.Styled.figure
+                (containerStyles
+                    ++ [ Css.maxWidth (Css.px (toFloat w))
+                       , Css.maxHeight (Css.px (toFloat h))
+                       ]
+                )
                 []
                 [ Html.Styled.img
                     [ src fallback.url
