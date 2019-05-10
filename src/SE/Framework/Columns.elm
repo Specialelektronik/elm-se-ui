@@ -41,7 +41,7 @@ The `column` function takes a `Sizes` parameter, a List (Device, Width)
 import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap, zero)
 import Css.Global exposing (children, typeSelector)
 import Html.Styled exposing (Html, styled, text)
-import SE.Framework.Utils exposing (desktop, mobile, tablet)
+import SE.Framework.Utils exposing (desktop, extended, fullhd, mobile, tablet, widescreen)
 
 
 columnGap : Gap -> Css.Rem
@@ -93,6 +93,9 @@ type Device
     | Mobile
     | Tablet
     | Desktop
+    | Widescreen
+    | Extended
+    | FullHD
 
 
 type alias Sizes =
@@ -276,6 +279,15 @@ columnSize ( device, width ) =
 
         Desktop ->
             desktop [ translateWidth width ]
+
+        Widescreen ->
+            widescreen [ translateWidth width ]
+
+        Extended ->
+            extended [ translateWidth width ]
+
+        FullHD ->
+            fullhd [ translateWidth width ]
 
 
 translateWidth : Width -> Style
