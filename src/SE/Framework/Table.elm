@@ -27,7 +27,7 @@ The table element has several helper functions to make it easy to create the tab
 
 import Css exposing (Style, auto, bold, currentColor, em, hidden, important, int, left, num, pct, px, rem, solid, top, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
-import Html.Styled exposing (Html, styled, text)
+import Html.Styled exposing (Attribute, Html, styled, text)
 import SE.Framework.Colors exposing (darker, darkest, light, lighter, primary, white)
 import SE.Framework.Utils exposing (block, overflowTouch)
 
@@ -49,7 +49,7 @@ type Row msg
 
 
 type Cell msg
-    = Cell (Html msg)
+    = Cell (List (Attribute msg)) (Html msg)
 
 
 {-| All Bulma table modifiers are supported, including the currently undocumented MobileFriendly.
@@ -107,11 +107,6 @@ tableStyles =
             , Css.borderWidth3 zero zero (px 1)
             , Css.padding2 (em 0.5) (em 0.75)
             , Css.verticalAlign top
-            , descendants
-                [ each [ typeSelector "a", typeSelector "strong" ]
-                    [ Css.color currentColor
-                    ]
-                ]
             ]
         , typeSelector "th"
             [ Css.textAlign left
@@ -231,7 +226,7 @@ row =
 
 {-| Renders th tag if created as a child to the `head` function, otherwise it renders a td tag
 -}
-cell : Html msg -> Cell msg
+cell : List (Attribute msg) -> Html msg -> Cell msg
 cell =
     Cell
 
@@ -254,10 +249,10 @@ rowToHtml (Row cells) =
 
 
 cellToHtml : Cell msg -> Html msg
-cellToHtml (Cell html) =
-    Html.Styled.td [] [ html ]
+cellToHtml (Cell attrs html) =
+    Html.Styled.td attrs [ html ]
 
 
 headCelltoHtml : Cell msg -> Html msg
-headCelltoHtml (Cell html) =
-    Html.Styled.th [] [ html ]
+headCelltoHtml (Cell attrs html) =
+    Html.Styled.th attrs [ html ]
