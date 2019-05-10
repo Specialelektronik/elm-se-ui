@@ -20,7 +20,7 @@ see <https://bulma.io/documentation/elements/button/>
 -}
 
 import Css exposing (Style, absolute, active, bold, calc, center, disabled, em, flexEnd, flexStart, focus, hover, important, minus, noWrap, none, num, pct, pointer, pseudoClass, px, rem, rgba, transparent, underline, wrap, zero)
-import Css.Global exposing (descendants, typeSelector)
+import Css.Global exposing (children, descendants, typeSelector)
 import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (class)
@@ -499,8 +499,8 @@ buttonsStyles mods =
     , Css.displayFlex
     , Css.flexWrap wrap
     , Css.justifyContent flexStart
-    , descendants
-        [ typeSelector "button"
+    , children
+        [ typeSelector "*"
             [ Css.marginBottom (rem 0.5)
             , pseudoClass "not(:last-child)"
                 [ Css.marginRight (rem 0.5) ]
@@ -524,7 +524,7 @@ buttonsModifier mod =
         (case mod of
             Attached ->
                 [ descendants
-                    [ typeSelector "button"
+                    [ typeSelector "*"
                         [ pseudoClass "not(:first-child)"
                             [ Css.borderBottomLeftRadius zero
                             , Css.borderTopLeftRadius zero

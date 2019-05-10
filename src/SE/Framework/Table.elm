@@ -1,6 +1,6 @@
 module SE.Framework.Table exposing
     ( table, Modifier(..)
-    , head, body, foot, row, cell
+    , head, body, foot, row, cell, rightCell
     )
 
 {-| Bulmas table element
@@ -21,7 +21,7 @@ The table element has several helper functions to make it easy to create the tab
 
 # Header, Body and Footer
 
-@docs head, body, foot, row, cell
+@docs head, body, foot, row, cell, rightCell
 
 -}
 
@@ -49,7 +49,7 @@ type Row msg
 
 
 type Cell msg
-    = Cell (List (Attribute msg)) (Html msg)
+    = Cell (List Style) (List (Attribute msg)) (Html msg)
 
 
 {-| All Bulma table modifiers are supported, including the currently undocumented MobileFriendly.
@@ -99,7 +99,6 @@ wrapper mods t =
 tableStyles : List Style
 tableStyles =
     [ block
-    , Css.backgroundColor white
     , Css.color darker
     , descendants
         [ each [ typeSelector "td", typeSelector "th" ]
@@ -228,7 +227,14 @@ row =
 -}
 cell : List (Attribute msg) -> Html msg -> Cell msg
 cell =
-    Cell
+    Cell []
+
+
+{-| Renders right aligned th tag if created as a child to the `head` function, otherwise it renders a right aligned td tag
+-}
+rightCell : List (Attribute msg) -> Html msg -> Cell msg
+rightCell =
+    Cell [ Css.textAlign Css.right ]
 
 
 headToHtml : Head msg -> Html msg
@@ -249,10 +255,10 @@ rowToHtml (Row cells) =
 
 
 cellToHtml : Cell msg -> Html msg
-cellToHtml (Cell attrs html) =
-    Html.Styled.td attrs [ html ]
+cellToHtml (Cell styles attrs html) =
+    styled Html.Styled.td styles attrs [ html ]
 
 
 headCelltoHtml : Cell msg -> Html msg
-headCelltoHtml (Cell attrs html) =
-    Html.Styled.th attrs [ html ]
+headCelltoHtml (Cell styles attrs html) =
+    styled Html.Styled.th styles attrs [ html ]
