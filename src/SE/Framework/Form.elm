@@ -2,6 +2,7 @@ module SE.Framework.Form exposing
     ( label, input, textarea, select, checkbox, radio
     , InputModifier(..), InputRecord
     , field, FieldModifier(..), control, expandedControl
+    , number
     )
 
 {-| Bulmas Form elements
@@ -50,6 +51,13 @@ type alias InputRecord msg =
     , placeholder : String
     , modifiers : List InputModifier
     , onInput : String -> msg
+    }
+
+
+type alias NumberRecord a =
+    { a
+        | range : ( Float, Float )
+        , step : Float
     }
 
 
@@ -141,6 +149,22 @@ input rec =
     styled Html.Styled.input
         (inputStyle rec.modifiers)
         [ Html.Styled.Events.onInput rec.onInput, Html.Styled.Attributes.placeholder rec.placeholder, Html.Styled.Attributes.value rec.value ]
+        []
+
+
+{-| `input[type="number"].input`
+-}
+number : NumberRecord (InputRecord msg) -> Html msg
+number rec =
+    let
+        ( min, max ) =
+            ( Basics.min (Tuple.first rec.range) (Tuple.second rec.range)
+            , Basics.max (Tuple.first rec.range) (Tuple.second rec.range)
+            )
+    in
+    styled Html.Styled.input
+        (inputStyle rec.modifiers)
+        [ Html.Styled.Attributes.type_ "number", Html.Styled.Attributes.min (String.fromFloat min), Html.Styled.Attributes.max (String.fromFloat max), Html.Styled.Attributes.step (String.fromFloat rec.step), Html.Styled.Events.onInput rec.onInput, Html.Styled.Attributes.placeholder rec.placeholder, Html.Styled.Attributes.value rec.value ]
         []
 
 
