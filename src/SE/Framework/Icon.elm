@@ -1,6 +1,7 @@
 module SE.Framework.Icon exposing
     ( bid, box, boxes, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, notification, pdf, phone, satelliteDish, th, thList, truck, tv, user, wifi
     , Size(..)
+    , trash
     )
 
 {-| Creates a Bulma Icon element set.
@@ -260,6 +261,13 @@ th size =
 thList : Size -> Html msg
 thList size =
     internalIcon size (viewBox 512 512) [ Svg.path [ d "M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/trash-alt?style=solid>
+-}
+trash : Size -> Html msg
+trash size =
+    internalIcon size (viewBox 448 512) [ Svg.path [ d "M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/truck?style=solid>
