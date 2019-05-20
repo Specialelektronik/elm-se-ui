@@ -234,7 +234,7 @@ cell =
 -}
 rightCell : List (Attribute msg) -> Html msg -> Cell msg
 rightCell =
-    Cell [ Css.textAlign Css.right ]
+    Cell [ Css.important (Css.textAlign Css.right) ]
 
 
 headToHtml : Head msg -> Html msg
