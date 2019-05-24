@@ -28,7 +28,7 @@ The table element has several helper functions to make it easy to create the tab
 import Css exposing (Style, auto, bold, currentColor, em, hidden, important, int, left, num, pct, px, rem, solid, top, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
 import Html.Styled exposing (Attribute, Html, styled, text)
-import SE.Framework.Colors exposing (darker, darkest, light, lighter, primary, white)
+import SE.Framework.Colors as Colors
 import SE.Framework.Utils exposing (block, overflowTouch)
 
 
@@ -60,6 +60,7 @@ type Modifier
     | Hoverable
     | Narrow
     | Striped
+    | White
     | Mobilefriendly
 
 
@@ -69,7 +70,7 @@ table : List Modifier -> Head msg -> Foot msg -> Body msg -> Html msg
 table mods h f b =
     wrapper mods
         (styled Html.Styled.table
-            (tableModifierStyles mods ++ tableStyles)
+            (tableStyles ++ tableModifierStyles mods)
             []
             [ headToHtml h
             , bodyToHtml b
@@ -99,10 +100,10 @@ wrapper mods t =
 tableStyles : List Style
 tableStyles =
     [ block
-    , Css.color darker
+    , Css.color Colors.darker
     , descendants
         [ each [ typeSelector "td", typeSelector "th" ]
-            [ Css.border3 (px 1) solid light
+            [ Css.border3 (px 1) solid Colors.light
             , Css.borderWidth3 zero zero (px 1)
             , Css.padding2 (em 0.5) (em 0.75)
             , Css.verticalAlign top
@@ -112,11 +113,11 @@ tableStyles =
             ]
         , selector "thead th"
             [ Css.borderWidth3 zero zero (px 2)
-            , Css.color darkest
+            , Css.color Colors.darkest
             ]
         , selector "tfoot td"
             [ Css.borderWidth3 (px 2) zero zero
-            , Css.color darkest
+            , Css.color Colors.darkest
             ]
         , selector "tbody tr:last-child td"
             [ Css.borderBottomWidth zero
@@ -154,12 +155,12 @@ tableModifierStyle allMods mod =
             Css.batch
                 [ descendants
                     ([ selector "tbody tr:not([selected]):hover"
-                        [ Css.backgroundColor lighter
+                        [ Css.backgroundColor Colors.lighter
                         ]
                      ]
                         ++ (if List.member Striped allMods then
                                 [ selector "tbody tr:not([selected]):hover:nth-child(even)"
-                                    [ Css.backgroundColor light
+                                    [ Css.backgroundColor Colors.light
                                     ]
                                 ]
 
@@ -185,7 +186,20 @@ tableModifierStyle allMods mod =
             Css.batch
                 [ descendants
                     [ selector "tbody tr:not([selected]):nth-child(even)"
-                        [ Css.backgroundColor lighter
+                        [ Css.backgroundColor Colors.lighter
+                        ]
+                    ]
+                ]
+
+        White ->
+            Css.batch
+                [ Css.color Colors.lighter
+                , descendants
+                    [ selector "thead th"
+                        [ Css.color Colors.lightest
+                        ]
+                    , selector "tfoot td"
+                        [ Css.color Colors.lightest
                         ]
                     ]
                 ]
