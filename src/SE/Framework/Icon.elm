@@ -1,6 +1,5 @@
 module SE.Framework.Icon exposing
-    ( bid, box, boxes, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, notification, pdf, phone, satelliteDish, th, thList, truck, tv, user, wifi
-    , Size(..)
+    ( bid, box, boxes, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, truck, tv, user, wifi
     , trash
     )
 
@@ -13,7 +12,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs bid, box, boxes, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, notification, pdf, phone, satelliteDish, th, thList, truck, tv, user, wifi
+@docs bid, box, boxes, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, truck, tv, user, wifi
 
 
 # Sizes
@@ -241,11 +240,25 @@ satelliteDish size =
     internalIcon size (viewBox 512 512) [ Svg.path [ d "M188.8 345.9l27.4-27.4c2.6.7 5 1.6 7.8 1.6 17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32c0 2.8.9 5.2 1.6 7.8l-27.4 27.4L49.4 206.5c-7.3-7.3-20.1-6.1-25 3-41.8 77.8-29.9 176.7 35.7 242.3 65.6 65.6 164.6 77.5 242.3 35.7 9.2-4.9 10.4-17.7 3-25L188.8 345.9zM209 0c-9.2-.5-17 6.8-17 16v31.6c0 8.5 6.6 15.5 15 15.9 129.4 7 233.4 112 240.9 241.5.5 8.4 7.5 15 15.9 15h32.1c9.2 0 16.5-7.8 16-17C503.4 139.8 372.2 8.6 209 0zm.3 96c-9.3-.7-17.3 6.7-17.3 16.1v32.1c0 8.4 6.5 15.3 14.8 15.9 76.8 6.3 138 68.2 144.9 145.2.8 8.3 7.6 14.7 15.9 14.7h32.2c9.3 0 16.8-8 16.1-17.3-8.4-110.1-96.5-198.2-206.6-206.7z" ] [] ]
 
 
+{-| Custom icon to mediate a tight product view table
+-}
+table : Control.Size -> Html msg
+table size =
+    internalIcon size (viewBox 448 512) [ Svg.path [ d "M495.5 120h-479C7.4 120 0 112.5 0 103.4V48.5C0 39.4 7.4 32 16.5 32h478.9c9.1 0 16.5 7.4 16.5 16.5v54.9c.1 9.1-7.3 16.6-16.4 16.6zM495.5 240h-479C7.4 240 0 232.5 0 223.4v-54.9c0-9.1 7.4-16.5 16.5-16.5h478.9c9.1 0 16.5 7.4 16.5 16.5v54.9c.1 9.1-7.3 16.6-16.4 16.6zM495.5 360h-479C7.4 360 0 352.6 0 343.5v-54.9c0-9.1 7.4-16.5 16.5-16.5h478.9c9.1 0 16.5 7.4 16.5 16.5v54.9c.1 9.1-7.3 16.5-16.4 16.5zM495.5 480h-479C7.4 480 0 472.6 0 463.5v-54.9c0-9.1 7.4-16.5 16.5-16.5h478.9c9.1 0 16.5 7.4 16.5 16.5v54.9c.1 9.1-7.3 16.5-16.4 16.5z" ] [] ]
+
+
 {-| <https://fontawesome.com/icons/th?style=solid>
 -}
 th : Control.Size -> Html msg
 th size =
     internalIcon size (viewBox 512 512) [ Svg.path [ d "M149.333 56v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zm181.334 240v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm32-240v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24zm-32 80V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm-205.334 56H24c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm386.667-56H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm0 160H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zM181.333 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/th-large?style=solid>
+-}
+thLarge : Control.Size -> Html msg
+thLarge size =
+    internalIcon size (viewBox 512 512) [ Svg.path [ d "M296 32h192c13.255 0 24 10.745 24 24v160c0 13.255-10.745 24-24 24H296c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24zm-80 0H24C10.745 32 0 42.745 0 56v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zM0 296v160c0 13.255 10.745 24 24 24h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm296 184h192c13.255 0 24-10.745 24-24V296c0-13.255-10.745-24-24-24H296c-13.255 0-24 10.745-24 24v160c0 13.255 10.745 24 24 24z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/th-list?style=solid>
