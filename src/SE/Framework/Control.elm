@@ -13,8 +13,8 @@ import SE.Framework.Utils exposing (radius, smallRadius)
 {-| Form input controls and buttons use this type as an argument to their Size Modifier
 -}
 type Size
-    = Small
-    | Normal
+    = Regular
+    | Small
     | Medium
     | Large
 
@@ -73,14 +73,14 @@ modifier : Size -> Style
 modifier size =
     Css.batch
         (case size of
+            Regular ->
+                [ Css.fontSize (px 16)
+                , Css.borderRadius radius
+                ]
+
             Small ->
                 [ Css.fontSize (px 12)
                 , Css.borderRadius smallRadius
-                ]
-
-            Normal ->
-                [ Css.fontSize (px 16)
-                , Css.borderRadius radius
                 ]
 
             Medium ->
