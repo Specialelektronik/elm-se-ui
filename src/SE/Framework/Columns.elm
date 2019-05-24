@@ -72,11 +72,17 @@ negativeColumnGap gap =
 type Width
     = Auto
     | Narrow
+    | OneSixth
+    | OneFifth
     | OneQuarter
     | OneThird
+    | TwoFifths
     | Half
+    | ThreeFifths
     | TwoThirds
     | ThreeQuarters
+    | FourFifths
+    | FiveSixths
     | Full
 
 
@@ -299,6 +305,18 @@ translateWidth width =
         Narrow ->
             Css.flex none
 
+        OneSixth ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct (100 / 6))
+                ]
+
+        OneFifth ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct 20)
+                ]
+
         OneQuarter ->
             Css.batch
                 [ Css.flex none
@@ -308,7 +326,13 @@ translateWidth width =
         OneThird ->
             Css.batch
                 [ Css.flex none
-                , Css.width (pct 33.3333)
+                , Css.width (pct (100 / 3))
+                ]
+
+        TwoFifths ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct 40)
                 ]
 
         Half ->
@@ -317,16 +341,34 @@ translateWidth width =
                 , Css.width (pct 50)
                 ]
 
+        ThreeFifths ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct 60)
+                ]
+
         TwoThirds ->
             Css.batch
                 [ Css.flex none
-                , Css.width (pct 66.6666)
+                , Css.width (pct (100 / 1.5))
                 ]
 
         ThreeQuarters ->
             Css.batch
                 [ Css.flex none
                 , Css.width (pct 75)
+                ]
+
+        FourFifths ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct 80)
+                ]
+
+        FiveSixths ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct ((100 / 6) * 5))
                 ]
 
         Full ->
