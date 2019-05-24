@@ -1,8 +1,7 @@
 module SE.Framework.Form exposing
-    ( label, input, textarea, select, checkbox, radio
+    ( label, input, textarea, select, checkbox, radio, number, date, email, password, tel
     , InputModifier(..), InputRecord
     , field, FieldModifier(..), control, expandedControl
-    , number
     )
 
 {-| Bulmas Form elements
@@ -11,12 +10,12 @@ see <https://bulma.io/documentation/form/>
 
 # General
 
-@docs label, input, textarea, select, checkbox, radio
+@docs label, input, textarea, select, checkbox, radio, number, date, email, password, tel
 
 
 # Input Record and Modifiers
 
-@docs InputModifier, InputRecord
+@docs InputModifier, InputRecord, NumberRecord, TextareaRecord, SelectRecord, Option
 
 
 # Fields and Controls
@@ -59,6 +58,24 @@ type alias NumberRecord a =
         | range : ( Float, Float )
         , step : Float
     }
+
+
+type alias DateRecord a =
+    { a
+        | min : String
+        , max : String
+    }
+
+
+type alias PasswordRecord a =
+    { a
+        | autocomplete : PasswordAutocomplete
+    }
+
+
+type PasswordAutocomplete
+    = Current
+    | New
 
 
 {-| Textareas also need a rows attribute
@@ -164,8 +181,85 @@ number rec =
     in
     styled Html.Styled.input
         (inputStyle rec.modifiers)
-        [ Html.Styled.Attributes.type_ "number", Html.Styled.Attributes.min (String.fromFloat min), Html.Styled.Attributes.max (String.fromFloat max), Html.Styled.Attributes.step (String.fromFloat rec.step), Html.Styled.Events.onInput rec.onInput, Html.Styled.Attributes.placeholder rec.placeholder, Html.Styled.Attributes.value rec.value ]
+        [ Html.Styled.Attributes.type_ "number"
+        , Html.Styled.Attributes.min (String.fromFloat min)
+        , Html.Styled.Attributes.max (String.fromFloat max)
+        , Html.Styled.Attributes.step (String.fromFloat rec.step)
+        , Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        ]
         []
+
+
+{-| `input[type="date"].input`
+-}
+date : DateRecord (InputRecord msg) -> Html msg
+date rec =
+    styled Html.Styled.input
+        (inputStyle rec.modifiers)
+        [ Html.Styled.Attributes.type_ "date"
+        , Html.Styled.Attributes.min rec.min
+        , Html.Styled.Attributes.max rec.max
+        , Html.Styled.Attributes.pattern "(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))" -- Pattern is for backward compatibility, leap year validation https://stackoverflow.com/a/55025950
+        , Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        ]
+        []
+
+
+{-| `input[type="email"].input`
+-}
+email : InputRecord msg -> Html msg
+email rec =
+    styled Html.Styled.input
+        (inputStyle rec.modifiers)
+        [ Html.Styled.Attributes.type_ "email"
+        , Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        ]
+        []
+
+
+{-| `input[type="tel"].input`
+-}
+tel : InputRecord msg -> Html msg
+tel rec =
+    styled Html.Styled.input
+        (inputStyle rec.modifiers)
+        [ Html.Styled.Attributes.type_ "tel"
+        , Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        ]
+        []
+
+
+{-| `input[type="password"].input`
+-}
+password : PasswordRecord (InputRecord msg) -> Html msg
+password rec =
+    styled Html.Styled.input
+        (inputStyle rec.modifiers)
+        [ Html.Styled.Attributes.type_ "password"
+        , Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        , Html.Styled.Attributes.attribute "autocomplete" (passwordAutocompleteToString rec.autocomplete)
+        ]
+        []
+
+
+passwordAutocompleteToString : PasswordAutocomplete -> String
+passwordAutocompleteToString a =
+    case a of
+        Current ->
+            "current-password"
+
+        New ->
+            "new-password"
 
 
 inputStyle : List InputModifier -> List Style
@@ -251,7 +345,7 @@ extractControlSize mods =
                 _ ->
                     init
         )
-        Control.Normal
+        Control.Regular
         mods
 
 

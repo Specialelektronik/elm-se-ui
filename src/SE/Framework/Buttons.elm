@@ -1,6 +1,6 @@
 module SE.Framework.Buttons exposing
     ( buttons, ButtonsModifier(..)
-    , button, staticButton, Modifier(..)
+    , button, staticButton, iconButton, Modifier(..)
     )
 
 {-| Buttons from Bulma with some small design adjustments. Supports all colors and the `buttons` container.
@@ -15,7 +15,7 @@ see <https://bulma.io/documentation/elements/button/>
 
 # Buttons
 
-@docs button, staticButton, Modifier
+@docs button, staticButton, iconButton, Modifier
 
 -}
 
@@ -27,6 +27,7 @@ import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Colors as Colors
 import SE.Framework.Control as Control exposing (controlStyle)
+import SE.Framework.Icon as Icon
 import SE.Framework.Utils exposing (centerEm, loader, smallRadius)
 
 
@@ -66,6 +67,10 @@ type ButtonsModifier
     | Right
 
 
+type alias HasIcon =
+    Bool
+
+
 buttonShadow : Style
 buttonShadow =
     --Css.boxShadow4 zero (px 2) (px 3) (rgba 135 149 161 0.2)
@@ -93,19 +98,38 @@ button mods onPress html =
                     [ onClick msg ]
     in
     styled Html.Styled.button
-        (buttonStyles mods)
+        (buttonStyles mods False)
         eventAttribs
         html
 
 
+iconButton : (Control.Size -> Html msg) -> List Modifier -> Maybe msg -> String -> Html msg
+iconButton icon mods onPress label =
+    let
+        eventAttribs =
+            case onPress of
+                Nothing ->
+                    [ Html.Styled.Attributes.disabled True ]
+
+                Just msg ->
+                    [ onClick msg ]
+    in
+    styled Html.Styled.button
+        (buttonStyles mods True)
+        eventAttribs
+        [ icon (extractControlSize mods)
+        , Html.Styled.span [] [ text label ]
+        ]
+
+
 {-| Static button without onclick message
 -}
-staticButton : List Modifier -> List (Html msg) -> Html msg
-staticButton mods html =
+staticButton : List Modifier -> String -> Html msg
+staticButton mods label =
     styled Html.Styled.span
         (staticButtonStyles mods)
         []
-        html
+        [ text label ]
 
 
 {-| A "List of buttons" container.
@@ -116,8 +140,8 @@ buttons mods btns =
     styled Html.Styled.div (buttonsStyles mods) [] btns
 
 
-buttonStyles : List Modifier -> List Style
-buttonStyles mods =
+buttonStyles : List Modifier -> HasIcon -> List Style
+buttonStyles mods hasIcon =
     let
         size =
             extractControlSize mods
@@ -152,15 +176,16 @@ buttonStyles mods =
         ]
     , descendants
         [ Css.Global.selector ".icon"
-            [ important (Css.height (em 1.5))
-            , important (Css.width (em 1.5))
-            , pseudoClass "first-child:not(:last-child)"
-                [ Css.marginLeft (calc (em -0.375) minus (px 1))
+            [ pseudoClass "first-child:not(:last-child)"
+                [ Css.position absolute
+                , Css.top (px -1)
+                , Css.left (px -1)
+                , Css.backgroundColor (rgba 0 0 0 0.1)
+                , Css.width (em 2.5)
+                , Css.height (em 2.5)
+
+                -- , Css.marginLeft (calc (em -0.375) minus (px 1))
                 , Css.marginRight (em 0.1875)
-                ]
-            , pseudoClass "last-child:not(:first-child)"
-                [ Css.marginLeft (em 0.1875)
-                , Css.marginRight (calc (em -0.375) minus (px 1))
                 ]
             , pseudoClass "first-child:last-child"
                 [ Css.marginLeft (calc (em -0.375) minus (px 1))
@@ -168,12 +193,17 @@ buttonStyles mods =
                 ]
             ]
         ]
+    , if hasIcon then
+        important (Css.paddingLeft (em 3.25))
+
+      else
+        Css.batch []
     ]
 
 
 staticButtonStyles : List Modifier -> List Style
 staticButtonStyles mods =
-    buttonStyles mods
+    buttonStyles mods False
         ++ [ important (Css.backgroundColor Colors.lightest)
            , important (Css.borderColor Colors.base)
            , important (Css.color Colors.dark)
@@ -489,7 +519,7 @@ extractControlSize mods =
                 _ ->
                     init
         )
-        Control.Normal
+        Control.Regular
         mods
 
 
