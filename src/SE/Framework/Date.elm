@@ -1,13 +1,11 @@
-module SE.Framework.Date exposing (date, toISO)
+module SE.Framework.Date exposing (parse)
 
 
-type Date
-    = Date
-        { text : String
-        , year : Maybe Int
-        , month : Maybe Month
-        , day : Maybe Int
-        }
+type alias Date =
+    { year : ( String, Maybe Int )
+    , month : ( String, Maybe Month )
+    , day : ( String, Maybe Int )
+    }
 
 
 type Month
@@ -25,42 +23,77 @@ type Month
     | Dec
 
 
-type alias AllowFraction =
-    Bool
+type Status
+    = Valid
+    | Invalid
 
 
-date : String -> Date
-date string =
-    Date
-        { text = string
-        , year = extractYear string
-        , month = extractMonth string
-        , day = extractDay string
-        }
+parse : String -> String
+parse input =
+    let
+        cleanInput =
+            String.replace "-" "" input
+
+        newDate =
+            { year = extractYear cleanInput
+            , month = extractMonth cleanInput
+            , day = ( "", Nothing )
+            }
+
+        newDateWithDay =
+            case Maybe.map2 (extractDay cleanInput) (Tuple.second newDate.year) (Tuple.second newDate.month) of
+                Just day ->
+                    { newDate | day = day }
+
+                Nothing ->
+                    newDate
+    in
+    Maybe.withDefault (Tuple.first newDateWithDay.year) (Maybe.map (\y -> String.fromInt y ++ "-") (Tuple.second newDateWithDay.year))
+        ++ Maybe.withDefault (Tuple.first newDateWithDay.month)
+            (Maybe.map
+                (\m -> String.padLeft 2 '0' (String.fromInt (monthToInt m)) ++ "-")
+                (Tuple.second newDateWithDay.month)
+            )
+        ++ Maybe.withDefault (Tuple.first newDateWithDay.day)
+            (Maybe.map
+                (\d -> String.padLeft 2 '0' (String.fromInt d))
+                (Tuple.second newDateWithDay.day)
+            )
 
 
-toISO : AllowFraction -> Date -> String
-toISO allowFraction (Date { year, month, day }) =
-    [ Maybe.map String.fromInt year
-        |> Maybe.withDefault ""
-    , Maybe.map (\m -> String.right 2 ("0" ++ String.fromInt (monthToInt m))) month
-        |> Maybe.withDefault ""
-    , Maybe.map (\d -> String.right 2 ("0" ++ String.fromInt d)) day
-        |> Maybe.withDefault ""
-    ]
-        |> List.filter (not << String.isEmpty)
-        |> String.join "-"
-
-
-extractYear : String -> Maybe Int
+extractYear : String -> ( String, Maybe Int )
 extractYear text =
-    String.toInt (String.left 4 text)
+    let
+        year =
+            String.left 4 text
+
+        maybeYear =
+            if String.length text >= 4 then
+                String.toInt year
+
+            else
+                Nothing
+    in
+    ( year, maybeYear )
 
 
-extractMonth : String -> Maybe Month
+extractMonth : String -> ( String, Maybe Month )
 extractMonth text =
-    String.toInt (String.slice 4 6 (String.replace "-" "" text))
+    let
+        month =
+            String.slice 4 6 text
+
+        maybeMonth =
+            if String.length text >= 6 then
+                String.toInt month
+
+            else
+                Nothing
+    in
+    ( month
+    , maybeMonth
         |> Maybe.andThen toValidMonth
+    )
 
 
 toValidMonth : Int -> Maybe Month
@@ -146,36 +179,40 @@ monthToInt month =
             12
 
 
-extractDay : String -> Maybe Int
-extractDay text =
+extractDay : String -> Int -> Month -> ( String, Maybe Int )
+extractDay text year month =
     let
-        maybeYear =
-            extractYear text
+        day =
+            Debug.log "slice " (String.slice 6 8 text)
 
-        maybeMonth =
-            extractMonth text
+        maxDay =
+            daysInMonth year month
 
         maybeDay =
-            case String.length text == 8 || String.length text == 10 of
-                True ->
-                    String.toInt (String.right 2 text)
-
-                False ->
-                    Nothing
-
-        maybeMaxDay =
-            Maybe.map2 daysInMonth maybeYear maybeMonth
-    in
-    case ( maybeDay, maybeMaxDay ) of
-        ( Just day, Just max ) ->
-            if day > 1 && day <= max then
-                Just day
+            if String.length text == 8 then
+                String.toInt day
 
             else
                 Nothing
+    in
+    ( day
+    , maybeDay
+        |> Maybe.andThen
+            (\d ->
+                if d > 1 && d <= maxDay then
+                    Just d
 
-        _ ->
-            Nothing
+                else
+                    Nothing
+            )
+    )
+
+
+
+-- case   of
+--     Just d ->
+--
+--     Nothing -> Nothing
 
 
 daysInMonth : Int -> Month -> Int

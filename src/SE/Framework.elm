@@ -3,13 +3,15 @@ module SE.Framework exposing (main)
 import Browser
 import Css exposing (absolute, block, calc, column, em, fixed, hover, int, minus, px, relative, rem, rgba, vh, zero)
 import Html.Styled as Html exposing (Html, a, article, aside, div, li, main_, span, styled, text, toUnstyled, ul)
-import Html.Styled.Attributes exposing (align, colspan, href, id)
+import Html.Styled.Attributes as Attributes exposing (align, colspan, href, id)
+import Html.Styled.Events as Events
 import SE.Framework.Buttons as Buttons
 import SE.Framework.Colors as Colors
 import SE.Framework.Columns as Columns
 import SE.Framework.Container as Container
 import SE.Framework.Content as Content
 import SE.Framework.Control as Control
+import SE.Framework.Date as Date
 import SE.Framework.Form as Form
 import SE.Framework.Icon as Icon
 import SE.Framework.Image as Image
@@ -29,12 +31,13 @@ import SE.Framework.Utils as Utils exposing (radius, smallRadius)
 
 type alias Model =
     { count : Int
+    , date : String
     }
 
 
 initialModel : Model
 initialModel =
-    { count = 1 }
+    { count = 1, date = "" }
 
 
 
@@ -44,6 +47,7 @@ initialModel =
 type Msg
     = NoOp
     | CountSet String
+    | EnteredDate String
 
 
 update : Msg -> Model -> Model
@@ -59,19 +63,20 @@ update msg model =
             in
             { model | count = newCount }
 
+        EnteredDate d ->
+            { model | date = d }
+
 
 
 -- VIEW
--- view model =
---     styled div
---         [ Css.backgroundColor Colors.white ]
---         []
---         [ Icon.wifi Icon.Large
---         ]
 
 
-view : Model -> Html Msg
 view model =
+    Html.input [ Attributes.value model.date, Events.onInput EnteredDate, Attributes.pattern "(?:19|20)(?:(?:[13579][26]|[02468][048])-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))|(?:[0-9]{2}-(?:0[1-9]|1[0-2])-(?:0[1-9]|1[0-9]|2[0-8])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:29|30))|(?:(?:0[13578]|1[02])-31)))" ] []
+
+
+views : Model -> Html Msg
+views model =
     styled div
         [ Css.displayFlex ]
         []
@@ -115,7 +120,7 @@ viewCheckout model =
                     )
                     (Table.body
                         [ Table.row
-                            [ Table.cell [ Html.Styled.Attributes.width 150 ]
+                            [ Table.cell [ Attributes.width 150 ]
                                 (Image.image ( 150, 150 )
                                     [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                                     ]
@@ -147,7 +152,7 @@ viewCheckout model =
                             , Table.rightCell [] (Icon.trash Icon.Regular)
                             ]
                         , Table.row
-                            [ Table.cell [ Html.Styled.Attributes.width 150 ]
+                            [ Table.cell [ Attributes.width 150 ]
                                 (Image.image ( 150, 150 )
                                     [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                                     ]
@@ -378,7 +383,7 @@ viewBidPrices =
                             , Html.br [] []
                             , text "A123456 (15st)"
                             , Html.br [] []
-                            , span [ Html.Styled.Attributes.title "Giltig t.o.m." ] [ text "2019-06-01" ]
+                            , span [ Attributes.title "Giltig t.o.m." ] [ text "2019-06-01" ]
                             ]
                         )
                     , Table.rightCell [] (Html.strong [] [ text "20 000 kr" ])
@@ -396,7 +401,7 @@ viewBidPrices =
                             , Html.br [] []
                             , text "A123456 (15st)"
                             , Html.br [] []
-                            , span [ Html.Styled.Attributes.title "Giltig t.o.m." ] [ text "2019-07-01" ]
+                            , span [ Attributes.title "Giltig t.o.m." ] [ text "2019-07-01" ]
                             ]
                         )
                     , Table.rightCell [] (Html.strong [] [ text "21 000 kr" ])
