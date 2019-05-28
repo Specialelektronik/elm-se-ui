@@ -1,5 +1,5 @@
 module SE.Framework.Icon exposing
-    ( bid, box, boxes, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, truck, tv, user, wifi
+    ( bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, truck, tv, user, wifi
     , trash
     )
 
@@ -12,7 +12,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs bid, box, boxes, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, truck, tv, user, wifi
+@docs bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, truck, tv, user, wifi
 
 
 # Sizes
@@ -121,6 +121,13 @@ containerStyles size =
 -- ICON PATHS
 
 
+{-| <https://fontawesome.com/icons/piggy-bank?style=solid>
+-}
+bargain : Control.Size -> Html msg
+bargain size =
+    internalIcon size (viewBox 576 512) [ Svg.path [ d "M560 224h-29.5c-8.8-20-21.6-37.7-37.4-52.5L512 96h-32c-29.4 0-55.4 13.5-73 34.3-7.6-1.1-15.1-2.3-23-2.3H256c-77.4 0-141.9 55-156.8 128H56c-14.8 0-26.5-13.5-23.5-28.8C34.7 215.8 45.4 208 57 208h1c3.3 0 6-2.7 6-6v-20c0-3.3-2.7-6-6-6-28.5 0-53.9 20.4-57.5 48.6C-3.9 258.8 22.7 288 56 288h40c0 52.2 25.4 98.1 64 127.3V496c0 8.8 7.2 16 16 16h64c8.8 0 16-7.2 16-16v-48h128v48c0 8.8 7.2 16 16 16h64c8.8 0 16-7.2 16-16v-80.7c11.8-8.9 22.3-19.4 31.3-31.3H560c8.8 0 16-7.2 16-16V240c0-8.8-7.2-16-16-16zm-128 64c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16zM256 96h128c5.4 0 10.7.4 15.9.8 0-.3.1-.5.1-.8 0-53-43-96-96-96s-96 43-96 96c0 2.1.5 4.1.6 6.2 15.2-3.9 31-6.2 47.4-6.2z" ] [] ]
+
+
 {-| <https://fontawesome.com/icons/gavel?style=solid>
 -}
 bid : Control.Size -> Html msg
@@ -140,6 +147,13 @@ box size =
 boxes : Control.Size -> Html msg
 boxes size =
     internalIcon size (viewBox 576 512) [ Svg.path [ d "M560 288h-80v96l-32-21.3-32 21.3v-96h-80c-8.8 0-16 7.2-16 16v192c0 8.8 7.2 16 16 16h224c8.8 0 16-7.2 16-16V304c0-8.8-7.2-16-16-16zm-384-64h224c8.8 0 16-7.2 16-16V16c0-8.8-7.2-16-16-16h-80v96l-32-21.3L256 96V0h-80c-8.8 0-16 7.2-16 16v192c0 8.8 7.2 16 16 16zm64 64h-80v96l-32-21.3L96 384v-96H16c-8.8 0-16 7.2-16 16v192c0 8.8 7.2 16 16 16h224c8.8 0 16-7.2 16-16V304c0-8.8-7.2-16-16-16z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/tag?style=solid>
+-}
+campaign : Control.Size -> Html msg
+campaign size =
+    internalIcon size (viewBox 512 512) [ Svg.path [ d "M0 252.118V48C0 21.49 21.49 0 48 0h204.118a48 48 0 0 1 33.941 14.059l211.882 211.882c18.745 18.745 18.745 49.137 0 67.882L293.823 497.941c-18.745 18.745-49.137 18.745-67.882 0L14.059 286.059A48 48 0 0 1 0 252.118zM112 64c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/shopping-cart?style=solid>
@@ -217,6 +231,13 @@ linkedin size =
 notification : Control.Size -> Html msg
 notification size =
     internalIcon size (viewBox 448 512) [ Svg.path [ d "M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/certificate?style=solid>
+-}
+new : Control.Size -> Html msg
+new size =
+    internalIcon size (viewBox 512 512) [ Svg.path [ d "M458.622 255.92l45.985-45.005c13.708-12.977 7.316-36.039-10.664-40.339l-62.65-15.99 17.661-62.015c4.991-17.838-11.829-34.663-29.661-29.671l-61.994 17.667-15.984-62.671C337.085.197 313.765-6.276 300.99 7.228L256 53.57 211.011 7.229c-12.63-13.351-36.047-7.234-40.325 10.668l-15.984 62.671-61.995-17.667C74.87 57.907 58.056 74.738 63.046 92.572l17.661 62.015-62.65 15.99C.069 174.878-6.31 197.944 7.392 210.915l45.985 45.005-45.985 45.004c-13.708 12.977-7.316 36.039 10.664 40.339l62.65 15.99-17.661 62.015c-4.991 17.838 11.829 34.663 29.661 29.671l61.994-17.667 15.984 62.671c4.439 18.575 27.696 24.018 40.325 10.668L256 458.61l44.989 46.001c12.5 13.488 35.987 7.486 40.325-10.668l15.984-62.671 61.994 17.667c17.836 4.994 34.651-11.837 29.661-29.671l-17.661-62.015 62.65-15.99c17.987-4.302 24.366-27.367 10.664-40.339l-45.984-45.004z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/file-pdf?style=solid>
