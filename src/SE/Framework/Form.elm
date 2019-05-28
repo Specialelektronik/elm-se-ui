@@ -41,6 +41,8 @@ import Html.Styled.Events exposing (onInput)
 import SE.Framework.Colors as Colors exposing (base, black, danger, darker, info, light, link, primary, success, warning, white)
 import SE.Framework.Control as Control exposing (controlStyle)
 import SE.Framework.Utils as Utils exposing (loader, radius)
+import Svg.Styled as Svg exposing (Attribute, Svg)
+import Svg.Styled.Attributes exposing (d, fill, height, stroke, strokeLinecap, strokeLinejoin, strokeWidth, viewBox, width)
 
 
 {-| Holds the basic data for inputs, textareas and selects
@@ -478,9 +480,9 @@ TODO checkbox does not support modifiers, should it?
 checkbox : String -> IsChecked -> msg -> Html msg
 checkbox l checked onClick =
     let
-        checkedInt =
+        tickSize =
             if checked then
-                1
+                24
 
             else
                 0
@@ -509,27 +511,22 @@ checkbox l checked onClick =
                    , Css.verticalAlign middle
                    , Css.marginBottom (px 2)
                    , Css.property "margin-right" "calc(0.625em - 1px)"
-                   , Css.before
-                        [ Css.display block
-                        , Css.property "content" "\"\""
-                        , Css.width (rem 1.25)
-                        , Css.height (rem 1.25)
-                        , Css.backgroundImage (url "/images/tick.svg")
-                        , Css.backgroundRepeat noRepeat
-                        , Css.backgroundPosition center
-                        , Css.backgroundSize2 (rem 0.6) auto
-                        , Css.transform (scale checkedInt)
-                        , Css.Transitions.transition
-                            [ Css.Transitions.transform 60
-                            ]
-                        ]
+                   , Css.color Colors.success
+                   , Css.display inlineFlex
+                   , Css.justifyContent center
+                   , Css.alignItems center
                    ]
             )
             []
-            []
+            [ tick tickSize ]
         , text
             l
         ]
+
+
+tick : Int -> Html msg
+tick size =
+    Svg.svg [ width (String.fromInt size), height (String.fromInt size), viewBox "0 0 24 24", fill "none", stroke "currentColor", strokeWidth "4" ] [ Svg.path [ d "M20 6L9 17l-5-5" ] [] ]
 
 
 
