@@ -1,5 +1,5 @@
 module SE.Framework.Columns exposing
-    ( columns, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
+    ( columns, multilineColumns, gaplessColumns, smallColumns, gaplessMultilineColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
     , defaultColumn, column
     , Device(..), Width(..)
     )
@@ -12,7 +12,7 @@ see <https://bulma.io/documentation/columns/>
 
 Too a large extend, these functions works very similar a Bulmas own version. Each container modifier is its own function. The `.is-mobile` modifier isn't needed since the `Sizes` type contains a mobile option. Instead of variable gap, we have 3 different gap widths, small (0.5 rem), normal (0.75 rem) and wide (1 rem).
 
-@docs columns, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
+@docs columns, multilineColumns, gaplessColumns, smallColumns, gaplessMultilineColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
 
 
 # Column
@@ -33,7 +33,6 @@ The `column` function takes a `Sizes` parameter, a List (Device, Width)
 
   - .is-vcentered
   - .is-centered
-  - .is-gapless
   - .is-variable and .is-2-mobile etc.
 
 -}
@@ -52,6 +51,9 @@ columnGap gap =
 columnGapHelper : Gap -> Float
 columnGapHelper gap =
     case gap of
+        Gapless ->
+            0
+
         Small ->
             0.5
 
@@ -109,7 +111,8 @@ type alias Sizes =
 
 
 type Gap
-    = Small
+    = Gapless
+    | Small
     | Normal
     | Large
 
@@ -144,11 +147,25 @@ multilineColumns =
     internalColumns Normal True
 
 
+{-| `div.columns.is-gapless`
+-}
+gaplessColumns : List (Column msg) -> Html msg
+gaplessColumns =
+    internalColumns Gapless False
+
+
 {-| `div.columns.is-2`
 -}
 smallColumns : List (Column msg) -> Html msg
 smallColumns =
     internalColumns Small False
+
+
+{-| `div.columns.is-multiline.is-gapless`
+-}
+gaplessMultilineColumns : List (Column msg) -> Html msg
+gaplessMultilineColumns =
+    internalColumns Gapless True
 
 
 {-| `div.columns.is-multiline.is-2`
