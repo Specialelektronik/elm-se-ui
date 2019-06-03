@@ -1,6 +1,6 @@
 module SE.Framework.Buttons exposing
     ( buttons, ButtonsModifier(..)
-    , button, staticButton, iconButton, Modifier(..)
+    , button, staticButton, Modifier(..)
     )
 
 {-| Buttons from Bulma with some small design adjustments. Supports all colors and the `buttons` container.
@@ -15,7 +15,7 @@ see <https://bulma.io/documentation/elements/button/>
 
 # Buttons
 
-@docs button, staticButton, iconButton, Modifier
+@docs button, staticButton, Modifier
 
 -}
 
@@ -103,25 +103,6 @@ button mods onPress html =
         html
 
 
-iconButton : (Control.Size -> Html msg) -> List Modifier -> Maybe msg -> String -> Html msg
-iconButton icon mods onPress label =
-    let
-        eventAttribs =
-            case onPress of
-                Nothing ->
-                    [ Html.Styled.Attributes.disabled True ]
-
-                Just msg ->
-                    [ onClick msg ]
-    in
-    styled Html.Styled.button
-        (buttonStyles mods True)
-        eventAttribs
-        [ icon (extractControlSize mods)
-        , Html.Styled.span [] [ text label ]
-        ]
-
-
 {-| Static button without onclick message
 -}
 staticButton : List Modifier -> String -> Html msg
@@ -177,15 +158,12 @@ buttonStyles mods hasIcon =
     , descendants
         [ Css.Global.selector ".icon"
             [ pseudoClass "first-child:not(:last-child)"
-                [ Css.position absolute
-                , Css.top (px -1)
-                , Css.left (px -1)
-                , Css.backgroundColor (rgba 0 0 0 0.1)
-                , Css.width (em 2.5)
-                , Css.height (em 2.5)
-
-                -- , Css.marginLeft (calc (em -0.375) minus (px 1))
+                [ Css.marginLeft (calc (em -0.375) minus (px 1))
                 , Css.marginRight (em 0.1875)
+                ]
+            , pseudoClass "last-child:not(:first-child)"
+                [ Css.marginRight (calc (em -0.375) minus (px 1))
+                , Css.marginLeft (em 0.1875)
                 ]
             , pseudoClass "first-child:last-child"
                 [ Css.marginLeft (calc (em -0.375) minus (px 1))

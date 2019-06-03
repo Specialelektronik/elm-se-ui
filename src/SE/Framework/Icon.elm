@@ -1,7 +1,4 @@
-module SE.Framework.Icon exposing
-    ( bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, truck, tv, user, wifi
-    , trash
-    )
+module SE.Framework.Icon exposing (bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, trash, truck, tv, user, wifi)
 
 {-| Creates a Bulma Icon element set.
 
@@ -12,12 +9,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, truck, tv, user, wifi
-
-
-# Sizes
-
-@docs Size
+@docs bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, trash, truck, tv, user, wifi
 
 -}
 

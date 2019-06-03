@@ -28,7 +28,7 @@ import SE.Framework.Table as Table
 import SE.Framework.Tag as Tag
 import SE.Framework.Title as Title
 import SE.Framework.Utils as Utils exposing (radius, smallRadius)
-
+import SE.Framework.Global as Global
 
 
 -- MODEL
@@ -628,16 +628,6 @@ updateFilter option filter =
     }
 
 
-
--- VIEW
--- view model =
---     styled div
---         [ Css.backgroundColor Colors.white ]
---         []
---         [ Buttons.iconButton Icon.cart [ Buttons.CallToAction ] (Just NoOp) "Köp"
---         ]
-
-
 levelItem : ProductView -> ProductView -> (Control.Size -> Html Msg) -> Html Msg
 levelItem toProductView currentProductView icon =
     let
@@ -665,7 +655,8 @@ view model =
             ]
         ]
         []
-        [ viewSidebar
+        [ Global.global
+        , viewSidebar
         , styled main_
             [ Css.flexGrow (int 1) ]
             []
@@ -945,7 +936,7 @@ viewProductsListItemLegacy product =
                 ]
             , span [] [ text " i lager" ]
             ]
-        , styled div [ Css.alignSelf Css.flexEnd, Css.marginLeft (rem 1.5) ] [] [ Buttons.iconButton Icon.cart [ Buttons.CallToAction ] (Just NoOp) "Lägg i varukorg" ]
+        , styled div [ Css.alignSelf Css.flexEnd, Css.marginLeft (rem 1.5) ] [] [ Buttons.button [ Buttons.CallToAction ] (Just NoOp) [ text "Lägg i varukorg" ] ]
         ]
 
 

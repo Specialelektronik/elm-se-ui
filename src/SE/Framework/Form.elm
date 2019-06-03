@@ -1,6 +1,6 @@
 module SE.Framework.Form exposing
     ( label, input, textarea, select, checkbox, radio, number, date, email, password, tel
-    , InputModifier(..), InputRecord
+    , InputModifier(..), InputRecord, NumberRecord, TextareaRecord, SelectRecord, Option, PasswordRecord, PasswordAutocomplete
     , field, FieldModifier(..), control, expandedControl
     )
 
@@ -15,7 +15,7 @@ see <https://bulma.io/documentation/form/>
 
 # Input Record and Modifiers
 
-@docs InputModifier, InputRecord, NumberRecord, TextareaRecord, SelectRecord, Option
+@docs InputModifier, InputRecord, NumberRecord, TextareaRecord, SelectRecord, Option, PasswordRecord, PasswordAutocomplete
 
 
 # Fields and Controls
@@ -55,6 +55,8 @@ type alias InputRecord msg =
     }
 
 
+{-| Number field has range and step as well
+-}
 type alias NumberRecord a =
     { a
         | range : ( Float, Float )
@@ -62,6 +64,8 @@ type alias NumberRecord a =
     }
 
 
+{-| Date field has min and max
+-}
 type alias DateRecord a =
     { a
         | min : String
@@ -69,12 +73,16 @@ type alias DateRecord a =
     }
 
 
+{-| Password fields has an autocomplete property that can hint at the browser what kind is password field it is. That way the browser can suggest new passwords or the current password depending on the situation.
+-}
 type alias PasswordRecord a =
     { a
         | autocomplete : PasswordAutocomplete
     }
 
 
+{-| See <https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/password#Allowing_autocomplete>
+-}
 type PasswordAutocomplete
     = Current
     | New
@@ -96,6 +104,8 @@ type alias SelectRecord a =
     }
 
 
+{-| label and value properties for the <option> tag
+-}
 type alias Option =
     { label : String
     , value : String
