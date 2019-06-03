@@ -12,7 +12,7 @@ see <https://bulma.io/documentation/layout/container/>
 
 import Css exposing (Style, auto, none, px, relative, zero)
 import Html.Styled exposing (Attribute, Html, styled, text)
-import SE.Framework.Utils exposing (desktop, desktopWidth, gap)
+import SE.Framework.Utils as Utils exposing (desktop, desktopWidth, extended, extendedWidth, fullhd, fullhdWidth, gap, widescreen, widescreenWidth)
 
 
 {-| For now, only Fluid modifier is supported
@@ -26,13 +26,32 @@ Only support the Fluid modifier, no is-widescreen or similar.
 -}
 container : List Modifier -> List (Html msg) -> Html msg
 container modifiers =
+    let
+        modStyle =
+            Css.batch (List.map modifier modifiers)
+    in
     styled Html.Styled.div
         [ Css.margin2 zero auto
         , Css.position relative
+        , fullhd
+            [ Css.maxWidth (px (fullhdWidth - (2 * gap)))
+            , Css.width (px (fullhdWidth - (2 * gap)))
+            , modStyle
+            ]
+        , extended
+            [ Css.maxWidth (px (extendedWidth - (2 * gap)))
+            , Css.width (px (extendedWidth - (2 * gap)))
+            , modStyle
+            ]
+        , widescreen
+            [ Css.maxWidth (px (widescreenWidth - (2 * gap)))
+            , Css.width (px (widescreenWidth - (2 * gap)))
+            , modStyle
+            ]
         , desktop
             [ Css.maxWidth (px (desktopWidth - (2 * gap)))
             , Css.width (px (desktopWidth - (2 * gap)))
-            , List.map modifier modifiers |> Css.batch
+            , modStyle
             ]
         ]
         []

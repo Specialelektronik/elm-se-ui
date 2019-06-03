@@ -1,6 +1,6 @@
 module SE.Framework.Buttons exposing
     ( buttons, ButtonsModifier(..)
-    , button, staticButton, Modifier(..)
+    , button, staticButton, iconButton, Modifier(..)
     )
 
 {-| Buttons from Bulma with some small design adjustments. Supports all colors and the `buttons` container.
@@ -15,18 +15,19 @@ see <https://bulma.io/documentation/elements/button/>
 
 # Buttons
 
-@docs button, staticButton, Modifier
+@docs button, staticButton, iconButton, Modifier
 
 -}
 
 import Css exposing (Style, absolute, active, bold, calc, center, disabled, em, flexEnd, flexStart, focus, hover, important, minus, noWrap, none, num, pct, pointer, pseudoClass, px, rem, rgba, transparent, underline, wrap, zero)
-import Css.Global exposing (descendants, typeSelector)
+import Css.Global exposing (children, descendants, typeSelector)
 import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onClick)
 import SE.Framework.Colors as Colors
-import SE.Framework.Control exposing (controlStyle)
+import SE.Framework.Control as Control exposing (controlStyle)
+import SE.Framework.Icon as Icon
 import SE.Framework.Utils exposing (centerEm, loader, smallRadius)
 
 
@@ -52,9 +53,7 @@ type
     | Black
     | Text
       -- Sizes
-    | Small
-    | Medium
-    | Large
+    | Size Control.Size
       -- Misc
     | Fullwidth
     | Loading
@@ -66,6 +65,10 @@ type ButtonsModifier
     = Attached
     | Centered
     | Right
+
+
+type alias HasIcon =
+    Bool
 
 
 buttonShadow : Style
@@ -84,7 +87,7 @@ buttonShadowHover =
 If onPress is Nothing, then the button will show as disabled
 -}
 button : List Modifier -> Maybe msg -> List (Html msg) -> Html msg
-button modifiers onPress html =
+button mods onPress html =
     let
         eventAttribs =
             case onPress of
@@ -95,19 +98,38 @@ button modifiers onPress html =
                     [ onClick msg ]
     in
     styled Html.Styled.button
-        (buttonStyles modifiers)
+        (buttonStyles mods False)
         eventAttribs
         html
 
 
+iconButton : (Control.Size -> Html msg) -> List Modifier -> Maybe msg -> String -> Html msg
+iconButton icon mods onPress label =
+    let
+        eventAttribs =
+            case onPress of
+                Nothing ->
+                    [ Html.Styled.Attributes.disabled True ]
+
+                Just msg ->
+                    [ onClick msg ]
+    in
+    styled Html.Styled.button
+        (buttonStyles mods True)
+        eventAttribs
+        [ icon (extractControlSize mods)
+        , Html.Styled.span [] [ text label ]
+        ]
+
+
 {-| Static button without onclick message
 -}
-staticButton : List Modifier -> List (Html msg) -> Html msg
-staticButton modifiers html =
+staticButton : List Modifier -> String -> Html msg
+staticButton mods label =
     styled Html.Styled.span
-        (staticButtonStyles modifiers)
+        (staticButtonStyles mods)
         []
-        html
+        [ text label ]
 
 
 {-| A "List of buttons" container.
@@ -118,9 +140,13 @@ buttons mods btns =
     styled Html.Styled.div (buttonsStyles mods) [] btns
 
 
-buttonStyles : List Modifier -> List Style
-buttonStyles modifiers =
-    [ controlStyle
+buttonStyles : List Modifier -> HasIcon -> List Style
+buttonStyles mods hasIcon =
+    let
+        size =
+            extractControlSize mods
+    in
+    [ controlStyle size
     , Css.backgroundColor Colors.white
     , Css.borderColor Colors.light
     , Css.borderWidth (px 1)
@@ -141,7 +167,7 @@ buttonStyles modifiers =
     , active
         [ Css.borderColor Colors.dark
         ]
-    , buttonModifiers buttonModifier modifiers
+    , buttonModifiers buttonModifier mods
     , disabled
         [ Css.backgroundColor transparent
         , Css.borderColor transparent
@@ -150,15 +176,16 @@ buttonStyles modifiers =
         ]
     , descendants
         [ Css.Global.selector ".icon"
-            [ important (Css.height (em 1.5))
-            , important (Css.width (em 1.5))
-            , pseudoClass "first-child:not(:last-child)"
-                [ Css.marginLeft (calc (em -0.375) minus (px 1))
+            [ pseudoClass "first-child:not(:last-child)"
+                [ Css.position absolute
+                , Css.top (px -1)
+                , Css.left (px -1)
+                , Css.backgroundColor (rgba 0 0 0 0.1)
+                , Css.width (em 2.5)
+                , Css.height (em 2.5)
+
+                -- , Css.marginLeft (calc (em -0.375) minus (px 1))
                 , Css.marginRight (em 0.1875)
-                ]
-            , pseudoClass "last-child:not(:first-child)"
-                [ Css.marginLeft (em 0.1875)
-                , Css.marginRight (calc (em -0.375) minus (px 1))
                 ]
             , pseudoClass "first-child:last-child"
                 [ Css.marginLeft (calc (em -0.375) minus (px 1))
@@ -166,12 +193,17 @@ buttonStyles modifiers =
                 ]
             ]
         ]
+    , if hasIcon then
+        important (Css.paddingLeft (em 3.25))
+
+      else
+        Css.batch []
     ]
 
 
 staticButtonStyles : List Modifier -> List Style
-staticButtonStyles modifiers =
-    buttonStyles modifiers
+staticButtonStyles mods =
+    buttonStyles mods False
         ++ [ important (Css.backgroundColor Colors.lightest)
            , important (Css.borderColor Colors.base)
            , important (Css.color Colors.dark)
@@ -180,8 +212,8 @@ staticButtonStyles modifiers =
 
 
 buttonModifiers : (Modifier -> Style) -> List Modifier -> Style
-buttonModifiers callback modifiers =
-    Css.batch (List.map callback modifiers)
+buttonModifiers callback mods =
+    Css.batch (List.map callback mods)
 
 
 buttonModifier : Modifier -> Style
@@ -455,6 +487,15 @@ buttonModifier modifier =
                     ]
                 ]
 
+        Size _ ->
+            Css.batch []
+
+        Fullwidth ->
+            Css.batch
+                [ Css.displayFlex
+                , Css.width (pct 100)
+                ]
+
         Loading ->
             Css.batch
                 [ important (Css.color transparent)
@@ -466,23 +507,20 @@ buttonModifier modifier =
                     ]
                 ]
 
-        Fullwidth ->
-            Css.batch
-                [ Css.displayFlex
-                , Css.width (pct 100)
-                ]
 
-        Small ->
-            Css.batch
-                [ Css.borderRadius smallRadius
-                , Css.fontSize (rem 0.75)
-                ]
+extractControlSize : List Modifier -> Control.Size
+extractControlSize mods =
+    List.foldl
+        (\m init ->
+            case m of
+                Size s ->
+                    s
 
-        Medium ->
-            Css.fontSize (rem 1.25)
-
-        Large ->
-            Css.fontSize (rem 1.5)
+                _ ->
+                    init
+        )
+        Control.Regular
+        mods
 
 
 buttonsStyles : List ButtonsModifier -> List Style
@@ -491,8 +529,8 @@ buttonsStyles mods =
     , Css.displayFlex
     , Css.flexWrap wrap
     , Css.justifyContent flexStart
-    , descendants
-        [ typeSelector "button"
+    , children
+        [ typeSelector "*"
             [ Css.marginBottom (rem 0.5)
             , pseudoClass "not(:last-child)"
                 [ Css.marginRight (rem 0.5) ]
@@ -516,7 +554,7 @@ buttonsModifier mod =
         (case mod of
             Attached ->
                 [ descendants
-                    [ typeSelector "button"
+                    [ typeSelector "*"
                         [ pseudoClass "not(:first-child)"
                             [ Css.borderBottomLeftRadius zero
                             , Css.borderTopLeftRadius zero

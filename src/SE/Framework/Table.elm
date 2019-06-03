@@ -1,6 +1,6 @@
 module SE.Framework.Table exposing
     ( table, Modifier(..)
-    , head, body, foot, row, cell
+    , head, body, foot, row, cell, rightCell
     )
 
 {-| Bulmas table element
@@ -21,14 +21,14 @@ The table element has several helper functions to make it easy to create the tab
 
 # Header, Body and Footer
 
-@docs head, body, foot, row, cell
+@docs head, body, foot, row, cell, rightCell
 
 -}
 
 import Css exposing (Style, auto, bold, currentColor, em, hidden, important, int, left, num, pct, px, rem, solid, top, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
-import Html.Styled exposing (Html, styled, text)
-import SE.Framework.Colors exposing (darker, darkest, light, lighter, primary, white)
+import Html.Styled exposing (Attribute, Html, styled, text)
+import SE.Framework.Colors as Colors
 import SE.Framework.Utils exposing (block, overflowTouch)
 
 
@@ -49,7 +49,7 @@ type Row msg
 
 
 type Cell msg
-    = Cell (Html msg)
+    = Cell (List Style) (List (Attribute msg)) (Html msg)
 
 
 {-| All Bulma table modifiers are supported, including the currently undocumented MobileFriendly.
@@ -60,6 +60,7 @@ type Modifier
     | Hoverable
     | Narrow
     | Striped
+    | White
     | Mobilefriendly
 
 
@@ -69,7 +70,7 @@ table : List Modifier -> Head msg -> Foot msg -> Body msg -> Html msg
 table mods h f b =
     wrapper mods
         (styled Html.Styled.table
-            (tableModifierStyles mods ++ tableStyles)
+            (tableStyles ++ tableModifierStyles mods)
             []
             [ headToHtml h
             , bodyToHtml b
@@ -99,30 +100,24 @@ wrapper mods t =
 tableStyles : List Style
 tableStyles =
     [ block
-    , Css.backgroundColor white
-    , Css.color darker
+    , Css.color Colors.darker
     , descendants
         [ each [ typeSelector "td", typeSelector "th" ]
-            [ Css.border3 (px 1) solid light
+            [ Css.border3 (px 1) solid Colors.light
             , Css.borderWidth3 zero zero (px 1)
             , Css.padding2 (em 0.5) (em 0.75)
             , Css.verticalAlign top
-            , descendants
-                [ each [ typeSelector "a", typeSelector "strong" ]
-                    [ Css.color currentColor
-                    ]
-                ]
             ]
         , typeSelector "th"
             [ Css.textAlign left
             ]
         , selector "thead th"
             [ Css.borderWidth3 zero zero (px 2)
-            , Css.color darkest
+            , Css.color Colors.darkest
             ]
         , selector "tfoot td"
             [ Css.borderWidth3 (px 2) zero zero
-            , Css.color darkest
+            , Css.color Colors.darkest
             ]
         , selector "tbody tr:last-child td"
             [ Css.borderBottomWidth zero
@@ -160,12 +155,12 @@ tableModifierStyle allMods mod =
             Css.batch
                 [ descendants
                     ([ selector "tbody tr:not([selected]):hover"
-                        [ Css.backgroundColor lighter
+                        [ Css.backgroundColor Colors.lighter
                         ]
                      ]
                         ++ (if List.member Striped allMods then
                                 [ selector "tbody tr:not([selected]):hover:nth-child(even)"
-                                    [ Css.backgroundColor light
+                                    [ Css.backgroundColor Colors.light
                                     ]
                                 ]
 
@@ -191,7 +186,20 @@ tableModifierStyle allMods mod =
             Css.batch
                 [ descendants
                     [ selector "tbody tr:not([selected]):nth-child(even)"
-                        [ Css.backgroundColor lighter
+                        [ Css.backgroundColor Colors.lighter
+                        ]
+                    ]
+                ]
+
+        White ->
+            Css.batch
+                [ Css.color Colors.lighter
+                , descendants
+                    [ selector "thead th"
+                        [ Css.color Colors.lightest
+                        ]
+                    , selector "tfoot td"
+                        [ Css.color Colors.lightest
                         ]
                     ]
                 ]
@@ -231,9 +239,16 @@ row =
 
 {-| Renders th tag if created as a child to the `head` function, otherwise it renders a td tag
 -}
-cell : Html msg -> Cell msg
+cell : List (Attribute msg) -> Html msg -> Cell msg
 cell =
-    Cell
+    Cell []
+
+
+{-| Renders right aligned th tag if created as a child to the `head` function, otherwise it renders a right aligned td tag
+-}
+rightCell : List (Attribute msg) -> Html msg -> Cell msg
+rightCell =
+    Cell [ Css.important (Css.textAlign Css.right) ]
 
 
 headToHtml : Head msg -> Html msg
@@ -254,10 +269,10 @@ rowToHtml (Row cells) =
 
 
 cellToHtml : Cell msg -> Html msg
-cellToHtml (Cell html) =
-    Html.Styled.td [] [ html ]
+cellToHtml (Cell styles attrs html) =
+    styled Html.Styled.td styles attrs [ html ]
 
 
 headCelltoHtml : Cell msg -> Html msg
-headCelltoHtml (Cell html) =
-    Html.Styled.th [] [ html ]
+headCelltoHtml (Cell styles attrs html) =
+    styled Html.Styled.th styles attrs [ html ]

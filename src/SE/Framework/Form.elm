@@ -1,5 +1,5 @@
 module SE.Framework.Form exposing
-    ( label, input, textarea, select, checkbox, radio
+    ( label, input, textarea, select, checkbox, radio, number, date, email, password, tel
     , InputModifier(..), InputRecord
     , field, FieldModifier(..), control, expandedControl
     )
@@ -10,12 +10,12 @@ see <https://bulma.io/documentation/form/>
 
 # General
 
-@docs label, input, textarea, select, checkbox, radio
+@docs label, input, textarea, select, checkbox, radio, number, date, email, password, tel
 
 
 # Input Record and Modifiers
 
-@docs InputModifier, InputRecord
+@docs InputModifier, InputRecord, NumberRecord, TextareaRecord, SelectRecord, Option
 
 
 # Fields and Controls
@@ -26,7 +26,7 @@ see <https://bulma.io/documentation/form/>
 # Unsupported features
 
   - Horizontal form
-  - Size modifier
+  - Size modifier (for some elements)
   - .help
   - icons in input, textarea, select .control
 
@@ -39,8 +39,10 @@ import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onInput)
 import SE.Framework.Colors as Colors exposing (base, black, danger, darker, info, light, link, primary, success, warning, white)
-import SE.Framework.Control exposing (controlStyle)
+import SE.Framework.Control as Control exposing (controlStyle)
 import SE.Framework.Utils as Utils exposing (loader, radius)
+import Svg.Styled as Svg exposing (Attribute, Svg)
+import Svg.Styled.Attributes exposing (d, fill, height, stroke, strokeLinecap, strokeLinejoin, strokeWidth, viewBox, width)
 
 
 {-| Holds the basic data for inputs, textareas and selects
@@ -51,6 +53,31 @@ type alias InputRecord msg =
     , modifiers : List InputModifier
     , onInput : String -> msg
     }
+
+
+type alias NumberRecord a =
+    { a
+        | range : ( Float, Float )
+        , step : Float
+    }
+
+
+type alias DateRecord a =
+    { a
+        | min : String
+        , max : String
+    }
+
+
+type alias PasswordRecord a =
+    { a
+        | autocomplete : PasswordAutocomplete
+    }
+
+
+type PasswordAutocomplete
+    = Current
+    | New
 
 
 {-| Textareas also need a rows attribute
@@ -75,7 +102,7 @@ type alias Option =
     }
 
 
-{-| Size modifiers are not supported at the moment.
+{-| Available input modifiers
 -}
 type
     InputModifier
@@ -85,6 +112,8 @@ type
     | Success
     | Warning
     | Danger
+      -- Size
+    | Size Control.Size
       -- State
     | Loading
     | Disabled
@@ -137,17 +166,111 @@ label s =
 input : InputRecord msg -> Html msg
 input rec =
     styled Html.Styled.input
-        (inputStyle
-            ++ List.map inputModifierStyle
-                rec.modifiers
-        )
+        (inputStyle rec.modifiers)
         [ Html.Styled.Events.onInput rec.onInput, Html.Styled.Attributes.placeholder rec.placeholder, Html.Styled.Attributes.value rec.value ]
         []
 
 
-inputStyle : List Style
-inputStyle =
-    [ controlStyle
+{-| `input[type="number"].input`
+-}
+number : NumberRecord (InputRecord msg) -> Html msg
+number rec =
+    let
+        ( min, max ) =
+            ( Basics.min (Tuple.first rec.range) (Tuple.second rec.range)
+            , Basics.max (Tuple.first rec.range) (Tuple.second rec.range)
+            )
+    in
+    styled Html.Styled.input
+        (inputStyle rec.modifiers)
+        [ Html.Styled.Attributes.type_ "number"
+        , Html.Styled.Attributes.min (String.fromFloat min)
+        , Html.Styled.Attributes.max (String.fromFloat max)
+        , Html.Styled.Attributes.step (String.fromFloat rec.step)
+        , Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        ]
+        []
+
+
+{-| `input[type="date"].input`
+-}
+date : DateRecord (InputRecord msg) -> Html msg
+date rec =
+    styled Html.Styled.input
+        (inputStyle rec.modifiers)
+        [ Html.Styled.Attributes.type_ "date"
+        , Html.Styled.Attributes.min rec.min
+        , Html.Styled.Attributes.max rec.max
+        , Html.Styled.Attributes.pattern "(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))" -- Pattern is for backward compatibility, leap year validation https://stackoverflow.com/a/55025950
+        , Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        ]
+        []
+
+
+{-| `input[type="email"].input`
+-}
+email : InputRecord msg -> Html msg
+email rec =
+    styled Html.Styled.input
+        (inputStyle rec.modifiers)
+        [ Html.Styled.Attributes.type_ "email"
+        , Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        ]
+        []
+
+
+{-| `input[type="tel"].input`
+-}
+tel : InputRecord msg -> Html msg
+tel rec =
+    styled Html.Styled.input
+        (inputStyle rec.modifiers)
+        [ Html.Styled.Attributes.type_ "tel"
+        , Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        ]
+        []
+
+
+{-| `input[type="password"].input`
+-}
+password : PasswordRecord (InputRecord msg) -> Html msg
+password rec =
+    styled Html.Styled.input
+        (inputStyle rec.modifiers)
+        [ Html.Styled.Attributes.type_ "password"
+        , Html.Styled.Events.onInput rec.onInput
+        , Html.Styled.Attributes.placeholder rec.placeholder
+        , Html.Styled.Attributes.value rec.value
+        , Html.Styled.Attributes.attribute "autocomplete" (passwordAutocompleteToString rec.autocomplete)
+        ]
+        []
+
+
+passwordAutocompleteToString : PasswordAutocomplete -> String
+passwordAutocompleteToString a =
+    case a of
+        Current ->
+            "current-password"
+
+        New ->
+            "new-password"
+
+
+inputStyle : List InputModifier -> List Style
+inputStyle mods =
+    let
+        size =
+            extractControlSize mods
+    in
+    [ controlStyle size
     , Css.borderColor base
     , Css.color darker
     , Css.maxWidth (pct 100)
@@ -167,6 +290,7 @@ inputStyle =
         , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
         ]
     ]
+        ++ List.map inputModifierStyle mods
 
 
 inputModifierStyle : InputModifier -> Style
@@ -196,6 +320,9 @@ inputModifierStyle modifier =
         Danger ->
             style danger (Css.property "box-shadow" "0 0 0 0.125em rgba(255,56,96, 0.25)")
 
+        Size _ ->
+            Css.batch []
+
         Loading ->
             Css.batch []
 
@@ -209,6 +336,21 @@ inputModifierStyle modifier =
             Css.batch []
 
 
+extractControlSize : List InputModifier -> Control.Size
+extractControlSize mods =
+    List.foldl
+        (\m init ->
+            case m of
+                Size s ->
+                    s
+
+                _ ->
+                    init
+        )
+        Control.Regular
+        mods
+
+
 
 -- TEXTAREA
 
@@ -218,10 +360,7 @@ inputModifierStyle modifier =
 textarea : TextareaRecord (InputRecord msg) -> Html msg
 textarea rec =
     styled Html.Styled.textarea
-        (textareaStyle
-            ++ List.map inputModifierStyle
-                rec.modifiers
-        )
+        (textareaStyle rec.modifiers)
         [ Html.Styled.Events.onInput rec.onInput
         , Html.Styled.Attributes.placeholder rec.placeholder
         , Html.Styled.Attributes.value rec.value
@@ -230,9 +369,9 @@ textarea rec =
         []
 
 
-textareaStyle : List Style
-textareaStyle =
-    inputStyle
+textareaStyle : List InputModifier -> List Style
+textareaStyle mods =
+    inputStyle mods
         ++ [ Css.display block
            , Css.maxWidth (pct 100)
            , Css.minWidth (pct 100)
@@ -287,17 +426,14 @@ select rec =
         ]
         []
         [ styled Html.Styled.select
-            (inputStyle
+            (inputStyle rec.modifiers
                 ++ [ Css.cursor pointer
                    , Css.display block
-                   , Css.fontSize (em 1)
                    , Css.maxWidth (pct 100)
                    , Css.outline none
                    , Css.paddingRight (em 2.5)
                    , pseudoElement "ms-expand" [ Css.display none ]
                    ]
-                ++ List.map inputModifierStyle
-                    rec.modifiers
             )
             [ Utils.onChange rec.onInput
             ]
@@ -339,13 +475,14 @@ arrow =
 
 
 {-| The checkbox depart from Bulma, instead we use a styled span to get a "better looking" checkbox.
+TODO checkbox does not support modifiers, should it?
 -}
 checkbox : String -> IsChecked -> msg -> Html msg
 checkbox l checked onClick =
     let
-        checkedInt =
+        tickSize =
             if checked then
-                1
+                24
 
             else
                 0
@@ -367,34 +504,29 @@ checkbox l checked onClick =
         ]
         [ Html.Styled.Events.onClick onClick ]
         [ styled Html.Styled.span
-            (inputStyle
+            (inputStyle []
                 ++ [ Css.width (rem 1.25)
                    , Css.height (rem 1.25)
                    , Css.padding zero
                    , Css.verticalAlign middle
                    , Css.marginBottom (px 2)
                    , Css.property "margin-right" "calc(0.625em - 1px)"
-                   , Css.before
-                        [ Css.display block
-                        , Css.property "content" "\"\""
-                        , Css.width (rem 1.25)
-                        , Css.height (rem 1.25)
-                        , Css.backgroundImage (url "/images/tick.svg")
-                        , Css.backgroundRepeat noRepeat
-                        , Css.backgroundPosition center
-                        , Css.backgroundSize2 (rem 0.6) auto
-                        , Css.transform (scale checkedInt)
-                        , Css.Transitions.transition
-                            [ Css.Transitions.transform 60
-                            ]
-                        ]
+                   , Css.color Colors.success
+                   , Css.display inlineFlex
+                   , Css.justifyContent center
+                   , Css.alignItems center
                    ]
             )
             []
-            []
+            [ tick tickSize ]
         , text
             l
         ]
+
+
+tick : Int -> Html msg
+tick size =
+    Svg.svg [ width (String.fromInt size), height (String.fromInt size), viewBox "0 0 24 24", fill "none", stroke "currentColor", strokeWidth "4" ] [ Svg.path [ d "M20 6L9 17l-5-5" ] [] ]
 
 
 
@@ -402,6 +534,7 @@ checkbox l checked onClick =
 
 
 {-| The radio depart from Bulma, instead we use a styled span to get a "better looking" radio.
+TODO radio does not support modifiers, should it?
 -}
 radio : String -> IsChecked -> msg -> Html msg
 radio l checked onClick =
@@ -425,7 +558,7 @@ radio l checked onClick =
         ]
         [ Html.Styled.Events.onClick onClick ]
         [ styled Html.Styled.span
-            (inputStyle
+            (inputStyle []
                 ++ [ Css.width (rem 1.25)
                    , Css.height (rem 1.25)
                    , Css.padding zero

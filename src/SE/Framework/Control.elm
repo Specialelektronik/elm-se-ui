@@ -1,13 +1,22 @@
-module SE.Framework.Control exposing (controlHeight, controlStyle)
+module SE.Framework.Control exposing (controlHeight, controlStyle, Size(..))
 
 {-| Helper functions for form elements and buttons.
 
-@docs controlHeight, controlStyle
+@docs controlHeight, controlStyle, Size
 
 -}
 
 import Css exposing (Style, active, alignItems, border3, borderRadius, boxShadow, boxShadow5, center, cursor, disabled, display, em, flexStart, focus, fontSize, height, inlineFlex, justifyContent, lineHeight, none, notAllowed, num, paddingBottom, paddingLeft, paddingRight, paddingTop, position, property, px, relative, rem, rgba, solid, top, transparent, verticalAlign, zero)
-import SE.Framework.Utils exposing (radius)
+import SE.Framework.Utils exposing (radius, smallRadius)
+
+
+{-| Form input controls and buttons use this type as an argument to their Size Modifier
+-}
+type Size
+    = Regular
+    | Small
+    | Medium
+    | Large
 
 
 controlBorderWidth : Css.Px
@@ -29,17 +38,15 @@ controlLineHeight =
 
 {-| "Normalized" style for controls like buttons and input text fields.
 -}
-controlStyle : Style
-controlStyle =
+controlStyle : Size -> Style
+controlStyle size =
     Css.batch
         [ property "-moz-appearance" "none"
         , property "-webkit-appearance" "none"
         , alignItems center
         , border3 controlBorderWidth solid transparent
-        , borderRadius radius
         , boxShadow none
         , display inlineFlex
-        , fontSize (px 16)
         , height controlHeight
         , justifyContent flexStart
         , lineHeight controlLineHeight
@@ -58,4 +65,31 @@ controlStyle =
         , disabled
             [ Css.cursor notAllowed
             ]
+        , modifier size
         ]
+
+
+modifier : Size -> Style
+modifier size =
+    Css.batch
+        (case size of
+            Regular ->
+                [ Css.fontSize (px 16)
+                , Css.borderRadius radius
+                ]
+
+            Small ->
+                [ Css.fontSize (px 12)
+                , Css.borderRadius smallRadius
+                ]
+
+            Medium ->
+                [ Css.fontSize (px 20)
+                , Css.borderRadius radius
+                ]
+
+            Large ->
+                [ Css.fontSize (px 24)
+                , Css.borderRadius radius
+                ]
+        )

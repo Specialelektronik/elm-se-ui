@@ -1,5 +1,5 @@
 module SE.Framework.Columns exposing
-    ( columns, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
+    ( columns, multilineColumns, gaplessColumns, smallColumns, gaplessMultilineColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
     , defaultColumn, column
     , Device(..), Width(..)
     )
@@ -12,7 +12,7 @@ see <https://bulma.io/documentation/columns/>
 
 Too a large extend, these functions works very similar a Bulmas own version. Each container modifier is its own function. The `.is-mobile` modifier isn't needed since the `Sizes` type contains a mobile option. Instead of variable gap, we have 3 different gap widths, small (0.5 rem), normal (0.75 rem) and wide (1 rem).
 
-@docs columns, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
+@docs columns, multilineColumns, gaplessColumns, smallColumns, gaplessMultilineColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
 
 
 # Column
@@ -33,7 +33,6 @@ The `column` function takes a `Sizes` parameter, a List (Device, Width)
 
   - .is-vcentered
   - .is-centered
-  - .is-gapless
   - .is-variable and .is-2-mobile etc.
 
 -}
@@ -41,7 +40,7 @@ The `column` function takes a `Sizes` parameter, a List (Device, Width)
 import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap, zero)
 import Css.Global exposing (children, typeSelector)
 import Html.Styled exposing (Html, styled, text)
-import SE.Framework.Utils exposing (desktop, mobile, tablet)
+import SE.Framework.Utils exposing (desktop, extended, fullhd, mobile, tablet, widescreen)
 
 
 columnGap : Gap -> Css.Rem
@@ -52,6 +51,9 @@ columnGap gap =
 columnGapHelper : Gap -> Float
 columnGapHelper gap =
     case gap of
+        Gapless ->
+            0
+
         Small ->
             0.5
 
@@ -72,11 +74,17 @@ negativeColumnGap gap =
 type Width
     = Auto
     | Narrow
+    | OneSixth
+    | OneFifth
     | OneQuarter
     | OneThird
+    | TwoFifths
     | Half
+    | ThreeFifths
     | TwoThirds
     | ThreeQuarters
+    | FourFifths
+    | FiveSixths
     | Full
 
 
@@ -93,6 +101,9 @@ type Device
     | Mobile
     | Tablet
     | Desktop
+    | Widescreen
+    | Extended
+    | FullHD
 
 
 type alias Sizes =
@@ -100,7 +111,8 @@ type alias Sizes =
 
 
 type Gap
-    = Small
+    = Gapless
+    | Small
     | Normal
     | Large
 
@@ -135,11 +147,25 @@ multilineColumns =
     internalColumns Normal True
 
 
+{-| `div.columns.is-gapless`
+-}
+gaplessColumns : List (Column msg) -> Html msg
+gaplessColumns =
+    internalColumns Gapless False
+
+
 {-| `div.columns.is-2`
 -}
 smallColumns : List (Column msg) -> Html msg
 smallColumns =
     internalColumns Small False
+
+
+{-| `div.columns.is-multiline.is-gapless`
+-}
+gaplessMultilineColumns : List (Column msg) -> Html msg
+gaplessMultilineColumns =
+    internalColumns Gapless True
 
 
 {-| `div.columns.is-multiline.is-2`
@@ -198,7 +224,7 @@ columnsStyles gap isMultiline isMobile =
     , pseudoClass ":last-child"
         [ Css.marginBottom (negativeColumnGap gap)
         ]
-    , tablet [ Css.displayFlex ]
+    , desktop [ Css.displayFlex ]
     , children
         [ typeSelector "div"
             [ Css.padding (columnGap gap)
@@ -277,6 +303,15 @@ columnSize ( device, width ) =
         Desktop ->
             desktop [ translateWidth width ]
 
+        Widescreen ->
+            widescreen [ translateWidth width ]
+
+        Extended ->
+            extended [ translateWidth width ]
+
+        FullHD ->
+            fullhd [ translateWidth width ]
+
 
 translateWidth : Width -> Style
 translateWidth width =
@@ -287,6 +322,18 @@ translateWidth width =
         Narrow ->
             Css.flex none
 
+        OneSixth ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct (100 / 6))
+                ]
+
+        OneFifth ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct 20)
+                ]
+
         OneQuarter ->
             Css.batch
                 [ Css.flex none
@@ -296,7 +343,13 @@ translateWidth width =
         OneThird ->
             Css.batch
                 [ Css.flex none
-                , Css.width (pct 33.3333)
+                , Css.width (pct (100 / 3))
+                ]
+
+        TwoFifths ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct 40)
                 ]
 
         Half ->
@@ -305,16 +358,34 @@ translateWidth width =
                 , Css.width (pct 50)
                 ]
 
+        ThreeFifths ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct 60)
+                ]
+
         TwoThirds ->
             Css.batch
                 [ Css.flex none
-                , Css.width (pct 66.6666)
+                , Css.width (pct (100 / 1.5))
                 ]
 
         ThreeQuarters ->
             Css.batch
                 [ Css.flex none
                 , Css.width (pct 75)
+                ]
+
+        FourFifths ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct 80)
+                ]
+
+        FiveSixths ->
+            Css.batch
+                [ Css.flex none
+                , Css.width (pct ((100 / 6) * 5))
                 ]
 
         Full ->
