@@ -1,8 +1,10 @@
 module SE.Framework exposing (main)
 
+import Array exposing (Array)
 import Browser
 import Css exposing (absolute, block, calc, column, em, fixed, hover, int, minus, px, relative, rem, rgba, vh, zero)
 import Css.Global exposing (descendants)
+import Css.Media
 import Css.Transitions
 import Html.Styled as Html exposing (Html, a, article, aside, div, li, main_, span, styled, text, toUnstyled, ul)
 import Html.Styled.Attributes as Attributes exposing (align, colspan, href, id)
@@ -40,6 +42,14 @@ type alias Model =
     , requestedDeliveryDate : String
     , view : ProductView
     , products : List Product
+    , makes : List ( Bool, String )
+    , filters : Array Filter
+    }
+
+
+type alias Filter =
+    { label : String
+    , options : List ( Bool, String )
     }
 
 
@@ -79,6 +89,39 @@ initialModel =
     , message = ""
     , requestedDeliveryDate = ""
     , view = Gallery
+    , filters =
+        Array.fromList
+            [ { label = "Typ"
+              , options = [ ( False, "LED" ), ( False, "D-LED" ), ( False, "E-LED" ) ]
+              }
+            , { label = "Upplösning"
+              , options = [ ( False, "4K / UHD" ), ( False, "HD" ), ( False, "Full-HD" ) ]
+              }
+            , { label = "Ingångar"
+              , options = [ ( False, "1xHDMI" ), ( False, "2xHDMI" ), ( False, "3xHDMI" ), ( False, "4xHDMI" ), ( False, "Digital Link / HDBaseT" ) ]
+              }
+            , { label = "VESA"
+              , options =
+                    [ ( False, "75x75" )
+                    , ( False, "100x100" )
+                    , ( False, "200x200" )
+                    , ( False, "400x200" )
+                    , ( False, "400x400" )
+                    , ( False, "600x400" )
+                    , ( False, "600x500" )
+                    , ( False, "700x300" )
+                    , ( False, "995x500" )
+                    , ( False, "1180.6x611.4" )
+                    , ( False, "1230x888" )
+                    , ( False, "1512x1053" )
+                    ]
+              }
+            ]
+    , makes =
+        [ ( False, "Ad notam" )
+        , ( False, "Panasonic" )
+        , ( False, "Samsung" )
+        ]
     , products =
         [ { name = "QM75N UHD"
           , product_code = "LH75QMREBGCXEN"
@@ -92,6 +135,261 @@ initialModel =
                 ]
           , unit = "st"
           , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 1
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 1
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 1
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Bargain
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 1
           , list_price = 31935
           , discount = 0.34
           , chemical_tax = 164
@@ -129,6 +427,23 @@ initialModel =
           , list_price = 31935
           , discount = 0.34
           , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
           , status = Campaign
           }
         , { name = "QM75N UHD"
@@ -146,7 +461,75 @@ initialModel =
           , list_price = 31935
           , discount = 0.34
           , chemical_tax = 164
-          , status = Bargain
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 10
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
+          }
+        , { name = "QM75N UHD"
+          , product_code = "LH75QMREBGCXEN"
+          , manufacturer = "Samsung"
+          , manufacturer_product_code = "LH75QMREBGCXEN"
+          , attributes =
+                [ "75\""
+                , "E-LED"
+                , "3840*2160 (4K UHD)"
+                , "500 nits"
+                ]
+          , unit = "st"
+          , in_stock = 1
+          , list_price = 31935
+          , discount = 0.34
+          , chemical_tax = 164
+          , status = Regular
           }
         ]
     }
@@ -164,6 +547,8 @@ type Msg
     | EnteredMessage String
     | EnteredRequestedDeliveryDate String
     | ChangedProductView ProductView
+    | ClickedMake String
+    | ClickedFilter Int String
 
 
 update : Msg -> Model -> Model
@@ -193,6 +578,54 @@ update msg model =
 
         ChangedProductView newView ->
             { model | view = newView }
+
+        ClickedMake make ->
+            { model
+                | makes =
+                    List.map
+                        (\( b, m ) ->
+                            case m == make of
+                                True ->
+                                    ( not b, m )
+
+                                False ->
+                                    ( b, m )
+                        )
+                        model.makes
+            }
+
+        ClickedFilter index option ->
+            let
+                maybeNewFilter =
+                    Array.get index model.filters
+                        |> Maybe.map (updateFilter option)
+
+                newFilters =
+                    case maybeNewFilter of
+                        Just filter ->
+                            Array.set index filter model.filters
+
+                        Nothing ->
+                            model.filters
+            in
+            { model | filters = newFilters }
+
+
+updateFilter : String -> Filter -> Filter
+updateFilter option filter =
+    { filter
+        | options =
+            List.map
+                (\( b, o ) ->
+                    case o == option of
+                        True ->
+                            ( not b, o )
+
+                        False ->
+                            ( b, o )
+                )
+                filter.options
+    }
 
 
 
@@ -280,7 +713,11 @@ viewProducts model =
                     viewProductsTable
     in
     Columns.columns
-        [ Columns.column [ ( Columns.Desktop, Columns.OneFifth ) ] [ viewCategoriesAndFilters ]
+        [ Columns.column [ ( Columns.Desktop, Columns.OneFifth ) ]
+            [ viewCategories
+            , viewMakes model.makes
+            , viewFilters model.filters
+            ]
         , Columns.column []
             [ --      Breadcrumb.breadcrumb
               --     [ Breadcrumb.link "#av-teknik" [ text "AV-teknik" ]
@@ -299,8 +736,8 @@ viewProducts model =
         ]
 
 
-viewCategoriesAndFilters : Html Msg
-viewCategoriesAndFilters =
+viewCategories : Html Msg
+viewCategories =
     styled div
         [ Utils.block
         , Css.backgroundColor Colors.white
@@ -313,7 +750,7 @@ viewCategoriesAndFilters =
             , Css.lineHeight (rem 1.875)
             , descendants
                 [ Css.Global.selector "ul li"
-                    [ Css.marginLeft (rem 1.25)
+                    [ Css.marginLeft (rem 1.5)
                     ]
                 ]
             ]
@@ -355,13 +792,76 @@ viewCategoriesAndFilters =
             , Html.li [] [ text "Övrigt (45)" ]
             , Html.li [] [ text "Crestron Styrsystem (45)" ]
             ]
-        , Title.title4 "Fabrikat"
-        , Title.title4 "Filter"
         ]
 
 
-productItemStyles : List Css.Style
-productItemStyles =
+viewMakes : List ( Bool, String ) -> Html Msg
+viewMakes makes =
+    styled div
+        [ Utils.block
+        , Css.backgroundColor Colors.white
+        , Css.padding (rem 0.75)
+        ]
+        []
+        [ Title.title4 "Fabrikat"
+        , styled ul
+            [ Utils.block
+            , Css.lineHeight (rem 1.875)
+            ]
+            []
+            (List.map viewMakeItem makes)
+        ]
+
+
+viewMakeItem : ( Bool, String ) -> Html Msg
+viewMakeItem ( isChecked, make ) =
+    li []
+        [ Form.checkbox make isChecked (ClickedMake make)
+        ]
+
+
+viewFilters : Array Filter -> Html Msg
+viewFilters filters =
+    styled div
+        [ Utils.block
+        , Css.backgroundColor Colors.white
+        , Css.padding (rem 0.75)
+        ]
+        []
+        [ Title.title4 "Filter"
+        , styled ul
+            [ Utils.block
+            , Css.lineHeight (rem 1.875)
+            ]
+            []
+            (Array.toList (Array.indexedMap viewFilter filters))
+        ]
+
+
+viewFilter : Int -> Filter -> Html Msg
+viewFilter index filter =
+    styled div
+        [ Utils.block ]
+        []
+        [ Html.p [] [ Html.strong [] [ text filter.label ] ]
+        , styled ul
+            [ Utils.block
+            , Css.lineHeight (rem 1.875)
+            ]
+            []
+            (List.map (viewFilterOption index) filter.options)
+        ]
+
+
+viewFilterOption : Int -> ( Bool, String ) -> Html Msg
+viewFilterOption index ( isChecked, option ) =
+    li []
+        [ Form.checkbox option isChecked (ClickedFilter index option)
+        ]
+
+
+productItemStylesLegacy : List Css.Style
+productItemStylesLegacy =
     [ Utils.block
     , Css.position relative
     , Css.padding4 (rem 0.375) (rem 0.75) (rem 0.75) (rem 0.75)
@@ -377,13 +877,23 @@ productItemStyles =
     ]
 
 
+productItemStyles : List Css.Style
+productItemStyles =
+    [ Utils.block
+    , Css.position relative
+    , Css.padding4 (rem 0.375) (rem 0.75) (rem 0.75) (rem 0.75)
+    , Css.backgroundColor Colors.white
+    , Css.cursor Css.pointer
+    ]
+
+
 viewProductsList : List Product -> Html Msg
 viewProductsList products =
     div [] (List.map viewProductsListItem products)
 
 
-viewProductsListItem : Product -> Html Msg
-viewProductsListItem product =
+viewProductsListItemLegacy : Product -> Html Msg
+viewProductsListItemLegacy product =
     styled div
         (productItemStyles
             ++ [ Css.displayFlex
@@ -401,7 +911,7 @@ viewProductsListItem product =
                 [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                 ]
             ]
-        , viewProductsGalleryItemPrice product.status product.list_price product.discount product.chemical_tax
+        , viewProductsGalleryItemPriceLegacy product.status product.list_price product.discount product.chemical_tax
         , div []
             [ Html.p []
                 [ Html.strong [] [ text <| product.manufacturer ++ " " ++ product.name ]
@@ -439,6 +949,66 @@ viewProductsListItem product =
         ]
 
 
+viewProductsListItem : Product -> Html Msg
+viewProductsListItem product =
+    styled div
+        (productItemStyles
+            ++ [ Css.displayFlex
+               , Css.justifyContent Css.spaceBetween
+               ]
+        )
+        []
+        [ styled div
+            [ Css.width Css.auto
+            , Css.minHeight (rem 7.5)
+            , Css.marginRight (rem 1.5)
+            ]
+            []
+            [ Image.image ( 186, 124 )
+                [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                ]
+            ]
+        , div []
+            [ Html.p []
+                [ Html.strong [] [ text <| product.manufacturer ++ " " ++ product.name ]
+                ]
+            , styled span
+                [ Css.color Colors.primary ]
+                []
+                [ text product.product_code
+                ]
+            ]
+        , div []
+            [ Content.content
+                []
+                [ styled ul [ Css.color Colors.dark ] [] (List.map (\a -> li [] [ text a ]) product.attributes) ]
+            ]
+        , styled div
+            [ Css.alignSelf Css.center ]
+            []
+            [ a []
+                [ text "Produktblad"
+                ]
+            ]
+        , styled div
+            [ Css.alignSelf Css.center, Css.marginLeft (rem 1.5) ]
+            []
+            [ viewInStock product.in_stock product.unit
+            ]
+        , styled div
+            [ Css.displayFlex
+            , Css.flexDirection Css.column
+            , Css.justifyContent Css.spaceAround
+            , Css.marginLeft (rem 1.5)
+            ]
+            []
+            [ viewProductsGalleryItemPrice product.status product.list_price product.discount product.chemical_tax
+            , Buttons.button [ Buttons.CallToAction ] (Just NoOp) [ text "Lägg i varukorg" ]
+            ]
+        , tag product.status
+        ]
+
+
 viewProductsTable : List Product -> Html Msg
 viewProductsTable products =
     styled div
@@ -472,37 +1042,41 @@ viewProductsTableRow product =
         , Table.cell [] (text product.product_code)
         , Table.cell [] (text product.manufacturer_product_code)
         , Table.rightCell []
-            (text <|
-                String.fromInt product.in_stock
-                    ++ " "
-                    ++ product.unit
+            (Html.p [ Attributes.title "15st fler finns preliminärt för leverans efter 2019-07-01" ]
+                [ text <|
+                    String.fromInt product.in_stock
+                        ++ " "
+                        ++ product.unit
+                , Html.br [] []
+                , styled span [ Css.fontSize (rem 0.75), Css.color Colors.dark ] [] [ text "2019-07-01" ]
+                ]
             )
-        , Table.rightCell [] (viewProductsTableRowPrice product.status product.list_price product.discount product.chemical_tax)
-        , Table.rightCell [] (Buttons.iconButton Icon.cart [ Buttons.CallToAction ] (Just NoOp) "Lägg i varukorg")
+        , Table.rightCell [] (viewProductsGalleryItemPrice product.status product.list_price product.discount product.chemical_tax)
+        , Table.rightCell [] (Buttons.button [ Buttons.CallToAction ] (Just NoOp) [ text "Lägg i varukorg" ])
         ]
 
 
 viewProductsGallery : List Product -> Html Msg
 viewProductsGallery products =
-    Columns.multilineColumns
+    Columns.gaplessMultilineColumns
         (List.map
             (\p ->
-                Columns.column [ ( Columns.FullHD, Columns.OneQuarter ), ( Columns.Extended, Columns.OneThird ), ( Columns.Desktop, Columns.Half ), ( Columns.Mobile, Columns.Full ) ]
+                Columns.column [ ( Columns.FullHD, Columns.OneFifth ), ( Columns.Extended, Columns.OneQuarter ), ( Columns.Desktop, Columns.OneThird ), ( Columns.Mobile, Columns.Full ) ]
                     [ viewProductsGalleryItem p ]
             )
             products
         )
 
 
-viewProductsGalleryItem : Product -> Html Msg
-viewProductsGalleryItem product =
+viewProductsGalleryItemLegacy : Product -> Html Msg
+viewProductsGalleryItemLegacy product =
     styled div
         productItemStyles
         []
         [ Image.image ( 327, 218 )
             [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
             ]
-        , viewProductsGalleryItemPrice product.status product.list_price product.discount product.chemical_tax
+        , viewProductsGalleryItemPriceLegacy product.status product.list_price product.discount product.chemical_tax
         , Html.strong
             []
             [ text <| product.manufacturer ++ " " ++ product.name ]
@@ -539,8 +1113,181 @@ viewProductsGalleryItem product =
                     ]
                 , span [] [ text " i lager" ]
                 ]
-            , Buttons.iconButton Icon.cart [ Buttons.CallToAction ] (Just NoOp) "Lägg i varukorg"
+            , Buttons.button [ Buttons.CallToAction ] (Just NoOp) [ text "Lägg i varukorg" ]
             ]
+        ]
+
+
+viewProductsGalleryItem : Product -> Html Msg
+viewProductsGalleryItem product =
+    styled div
+        [ Css.position relative
+        , Css.height (px 499)
+        , Css.width (Css.pct 100)
+        ]
+        []
+        [ styled div
+            [ Css.border3 (Css.px 1) Css.solid Css.transparent
+            , Css.property "padding" "calc(0.75rem - 1px)"
+            , Css.width (Css.pct 100)
+            , Css.position absolute
+            , Css.Media.withMediaQuery [ "(hover: hover)" ]
+                [ Css.pseudoClass "not(:hover)"
+                    [ descendants
+                        [ Css.Global.selector ".showOnHover"
+                            [ Css.display Css.none
+                            ]
+                        ]
+                    ]
+                , hover
+                    [ Css.zIndex (Css.int 2)
+                    , Css.borderColor Colors.border
+                    , Css.backgroundColor Colors.lighter
+                    ]
+                ]
+            , Css.Media.withMediaQuery [ "(hover: none)" ]
+                [ descendants
+                    [ Css.Global.selector ".showOnHover"
+                        [ Css.display Css.none
+                        ]
+                    ]
+                ]
+            ]
+            []
+            [ styled div
+                [ Css.backgroundColor Colors.white
+                , Css.padding (rem 0.75)
+                ]
+                []
+                [ styled div
+                    [ Css.maxHeight (px 150)
+                    , Css.displayFlex
+                    , Css.justifyContent Css.center
+                    ]
+                    []
+                    [ Image.image ( 225, 150 )
+                        [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                        ]
+                    ]
+                , styled div
+                    [ Utils.block ]
+                    [ Attributes.class "showOnHover" ]
+                    [ styled ul
+                        [ Css.displayFlex
+                        , Css.maxHeight (px 50)
+                        ]
+                        []
+                        [ li []
+                            [ Image.image ( 75, 50 )
+                                [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img2.jpg" 1
+                                ]
+                            ]
+                        , li []
+                            [ Image.image ( 75, 50 )
+                                [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img3.jpg" 1
+                                ]
+                            ]
+                        ]
+                    ]
+                , styled div [ Utils.block, Css.displayFlex, Css.justifyContent Css.spaceBetween ] [ Attributes.class "showOnHover" ] [ a [ href "#" ] [ text "Produktblad" ], a [ href "#" ] [ text "Produktvideo" ] ]
+                , Html.p []
+                    [ Html.strong [] [ text <| product.manufacturer ++ " " ++ product.name ]
+                    , Html.br [] []
+                    , styled span [ Css.color Colors.primary ] [] [ text product.product_code ]
+                    ]
+                , styled div
+                    [ Css.maxHeight (rem 7.75)
+                    ]
+                    []
+                    [ Content.content
+                        []
+                        [ styled ul [ Css.color Colors.dark ] [] (List.map (\a -> li [] [ text a ]) product.attributes) ]
+                    ]
+                , styled div
+                    [ Css.displayFlex
+                    , Css.justifyContent Css.spaceBetween
+                    , Css.alignItems Css.flexEnd
+                    ]
+                    []
+                    [ styled div
+                        [ Css.color Colors.darker
+                        ]
+                        []
+                        [ viewInStock product.in_stock product.unit
+                        ]
+                    , div [] [ viewProductsGalleryItemPrice product.status product.list_price product.discount product.chemical_tax ]
+                    ]
+                , styled div
+                    [ Css.margin4 (rem 0.75) (rem -0.75) (rem -0.75) (rem -0.75)
+                    ]
+                    []
+                    [ Buttons.button [ Buttons.CallToAction, Buttons.Fullwidth ] (Just NoOp) [ text "Lägg i varukorg" ] ]
+                , tag product.status
+                ]
+            ]
+        ]
+
+
+viewInStock : Int -> String -> Html Msg
+viewInStock inStock unit =
+    Html.p [ Attributes.title "15st fler finns preliminärt för leverans efter 2019-07-01" ]
+        [ Html.strong []
+            [ text <|
+                String.fromInt inStock
+                    ++ " "
+                    ++ unit
+            ]
+        , text " i lager"
+        , Html.br [] []
+        , styled span [ Css.fontSize (rem 0.75), Css.color Colors.dark ] [] [ text "2019-07-01" ]
+        ]
+
+
+tag : Status -> Html Msg
+tag status =
+    case status of
+        Regular ->
+            text ""
+
+        New ->
+            tagHelper Icon.new Colors.success
+
+        Campaign ->
+            tagHelper Icon.campaign Colors.black
+
+        Bargain ->
+            tagHelper Icon.bargain Colors.danger
+
+
+tagHelper : (Control.Size -> Html Msg) -> Css.Color -> Html Msg
+tagHelper icon color =
+    styled div
+        [ Css.position absolute
+        , Css.top (calc (rem 0.75) minus (px 1))
+        , Css.left (calc (rem 0.75) minus (px 1))
+        , Css.width (px 58)
+        , Css.height (px 58)
+        ]
+        []
+        [ styled span
+            [ Css.position absolute
+            , Css.top (px 1)
+            , Css.left (px 1)
+            , Css.color Colors.white
+            , Css.zIndex (Css.int 1)
+            ]
+            []
+            [ icon Control.Medium ]
+        , styled div
+            [ Css.borderColor4 color Css.transparent Css.transparent color
+            , Css.borderStyle Css.solid
+            , Css.borderWidth (px 29)
+            , Css.position absolute
+            , Css.top zero
+            , Css.left zero
+            ]
+            []
+            []
         ]
 
 
@@ -580,6 +1327,71 @@ viewProductsTableRowPrice status listPrice discount chemicalTax =
 
 viewProductsGalleryItemPrice : Status -> Int -> Float -> Int -> Html Msg
 viewProductsGalleryItemPrice status listPrice discount chemicalTax =
+    let
+        hasChemicalTax =
+            chemicalTax > 0
+
+        attribs =
+            if hasChemicalTax then
+                [ Attributes.title ("Kemikalieskatt tillkommer med " ++ String.fromInt chemicalTax ++ "kr") ]
+
+            else
+                []
+
+        chemicalTaxMarker =
+            if hasChemicalTax then
+                "*"
+
+            else
+                ""
+
+        ( heading, color ) =
+            case status of
+                Regular ->
+                    ( " ", Colors.text )
+
+                New ->
+                    ( "Nyhet"
+                    , Colors.primary
+                    )
+
+                Campaign ->
+                    ( "Kampanjpris"
+                    , Colors.black
+                    )
+
+                Bargain ->
+                    ( "Fyndpris"
+                    , Colors.danger
+                    )
+    in
+    styled Html.div
+        [ Css.marginBottom (rem 0.25)
+        , Css.textAlign Css.right
+        ]
+        attribs
+        [ styled Html.p
+            [ Css.fontSize (rem 0.875), Css.color color, Css.fontWeight Css.bold ]
+            []
+            [ text heading
+            ]
+        , Html.p []
+            [ Html.strong
+                []
+                [ text <| String.fromInt (round <| toFloat listPrice * (1 - discount)) ++ " kr" ++ chemicalTaxMarker ]
+            ]
+        , styled Html.span
+            [ Css.fontSize (rem 0.875) ]
+            []
+            [ text <| "Listpris: " ++ String.fromInt listPrice ++ " kr"
+            , Html.br [] []
+            , text <| "Rabatt: " ++ String.fromFloat (100 * -discount) ++ "%"
+            ]
+        ]
+
+
+viewProductsGalleryItemPriceLegacy : Status -> Int -> Float -> Int -> Html Msg
+viewProductsGalleryItemPriceLegacy status listPrice discount chemicalTax =
     let
         hasChemicalTax =
             chemicalTax > 0
