@@ -1,4 +1,4 @@
-module SE.Framework.Section exposing (section)
+module SE.UI.Section exposing (section)
 
 {-| Creates a styled section in line with Bulmas section.
 

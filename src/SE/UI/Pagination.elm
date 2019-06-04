@@ -1,4 +1,4 @@
-module SE.Framework.Pagination exposing
+module SE.UI.Pagination exposing
     ( pagination, centeredPagination, rightPagination
     , PaginationRecord
     )
@@ -20,9 +20,9 @@ import Css.Global exposing (adjacentSiblings, children, typeSelector)
 import Html.Styled exposing (Attribute, Html, a, button, li, nav, span, styled, text)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events exposing (onClick)
-import SE.Framework.Colors as Colors
-import SE.Framework.Control exposing (controlHeight, controlStyle)
-import SE.Framework.Utils exposing (tablet, unselectable)
+import SE.UI.Colors as Colors
+import SE.UI.Control as Control exposing (controlHeight, controlStyle)
+import SE.UI.Utils exposing (tablet, unselectable)
 
 
 {-| The record holds all the data
@@ -310,7 +310,7 @@ listItem message isCurrent page =
 itemAndEllipsisStyles : Style
 itemAndEllipsisStyles =
     Css.batch
-        [ controlStyle
+        [ controlStyle Control.Regular
         , unselectable
         , Css.backgroundColor Colors.white
         , Css.fontSize (em 1)

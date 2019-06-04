@@ -1,4 +1,4 @@
-module SE.Framework.Content exposing (content)
+module SE.UI.Content exposing (content)
 
 {-| Bulmas content element
 see <https://bulma.io/documentation/elements/content/>
@@ -14,8 +14,8 @@ import Css exposing (Style, auto, bold, center, circle, decimal, disc, em, inlin
 import Css.Global exposing (blockquote, dd, descendants, dl, each, h1, h2, h3, h4, h5, h6, img, ol, p, pre, selector, table, td, tfoot, th, thead, typeSelector, ul)
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (href)
-import SE.Framework.Colors as Colors exposing (black, lightest)
-import SE.Framework.Utils exposing (block)
+import SE.UI.Colors as Colors exposing (black, lightest)
+import SE.UI.Utils exposing (block)
 
 
 headingColor : Css.Color

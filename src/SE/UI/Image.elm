@@ -1,4 +1,4 @@
-module SE.Framework.Image exposing
+module SE.UI.Image exposing
     ( image, noImage
     , source
     )

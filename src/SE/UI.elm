@@ -1,4 +1,4 @@
-module SE.Framework exposing (main)
+module SE.UI exposing (main)
 
 import Array exposing (Array)
 import Browser
@@ -9,26 +9,25 @@ import Css.Transitions
 import Html.Styled as Html exposing (Html, a, article, aside, div, li, main_, span, styled, text, toUnstyled, ul)
 import Html.Styled.Attributes as Attributes exposing (align, colspan, href, id)
 import Html.Styled.Events exposing (onClick)
-import SE.Framework.Breadcrumb as Breadcrumb
-import SE.Framework.Buttons as Buttons
-import SE.Framework.Colors as Colors
-import SE.Framework.Columns as Columns
-import SE.Framework.Container as Container
-import SE.Framework.Content as Content
-import SE.Framework.Control as Control
-import SE.Framework.Form as Form
-import SE.Framework.Icon as Icon
-import SE.Framework.Image as Image
-import SE.Framework.Level as Level
-import SE.Framework.Logo as Logo
-import SE.Framework.Logos.Crestron as Crestron
-import SE.Framework.Logos.Dante as Dante
-import SE.Framework.Section exposing (section)
-import SE.Framework.Table as Table
-import SE.Framework.Tag as Tag
-import SE.Framework.Title as Title
-import SE.Framework.Utils as Utils exposing (radius, smallRadius)
-import SE.Framework.Global as Global
+import SE.UI.Breadcrumb as Breadcrumb
+import SE.UI.Buttons as Buttons
+import SE.UI.Colors as Colors
+import SE.UI.Columns as Columns
+import SE.UI.Container as Container
+import SE.UI.Content as Content
+import SE.UI.Control as Control
+import SE.UI.Form as Form
+import SE.UI.Icon as Icon
+import SE.UI.Image as Image
+import SE.UI.Level as Level
+import SE.UI.Logo as Logo
+import SE.UI.Section exposing (section)
+import SE.UI.Table as Table
+import SE.UI.Tag as Tag
+import SE.UI.Title as Title
+import SE.UI.Utils as Utils exposing (radius, smallRadius)
+import SE.UI.Global as Global
+
 
 
 -- MODEL

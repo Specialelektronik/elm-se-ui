@@ -1,4 +1,4 @@
-module SE.Framework.Level exposing
+module SE.UI.Level exposing
     ( level, mobileLevel, centeredLevel
     , item
     )
@@ -24,8 +24,8 @@ import Css exposing (Style, auto, bold, center, currentColor, em, flexEnd, flexS
 import Css.Global exposing (adjacentSiblings, descendants, each, selector, typeSelector)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes exposing (class)
-import SE.Framework.Colors exposing (darker, primary, white)
-import SE.Framework.Utils exposing (block, mobile, overflowTouch, radius, tablet)
+import SE.UI.Colors exposing (darker, primary, white)
+import SE.UI.Utils exposing (block, mobile, overflowTouch, radius, tablet)
 
 
 type Item msg

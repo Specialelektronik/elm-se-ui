@@ -1,4 +1,4 @@
-module SE.Framework.Icon exposing (bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, trash, truck, tv, user, wifi)
+module SE.UI.Icon exposing (bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, trash, truck, tv, user, wifi)
 
 {-| Creates a Bulma Icon element set.
 
@@ -17,7 +17,7 @@ import Css exposing (Style, center, currentColor, inlineFlex, rem)
 import Css.Global exposing (descendants, typeSelector)
 import Html.Styled exposing (Html, styled)
 import Html.Styled.Attributes exposing (class)
-import SE.Framework.Control as Control
+import SE.UI.Control as Control
 import Svg.Styled as Svg exposing (Attribute, Svg)
 import Svg.Styled.Attributes as Attributes exposing (d, height, preserveAspectRatio, width)
 

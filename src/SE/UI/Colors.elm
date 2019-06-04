@@ -1,4 +1,4 @@
-module SE.Framework.Colors exposing
+module SE.UI.Colors exposing
     ( white, lightest, lighter, light, base, dark, darker, darkest, black
     , primary, primaryHover, primaryActive, link, linkHover, linkActive, info, infoHover, infoActive, success, successHover, successActive, warning, warningHover, warningActive, callToAction, callToActionHover, callToActionActive, danger, dangerHover, dangerActive
     , border, background, backgroundHover, backgroundActive, text

@@ -1,4 +1,4 @@
-module SE.Framework.Notification exposing (notification, primary, link, info, success, warning, danger)
+module SE.UI.Notification exposing (notification, primary, link, info, success, warning, danger)
 
 {-| Bulmas notification element
 see <https://bulma.io/documentation/elements/notification/>
@@ -16,9 +16,9 @@ import Css exposing (Style, absolute, block, currentColor, int, minus, none, pse
 import Css.Global exposing (descendants, each, selector, typeSelector)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Events exposing (onClick)
-import SE.Framework.Colors as Colors exposing (background, white)
-import SE.Framework.Delete as Delete
-import SE.Framework.Utils exposing (block, desktop, radius, tablet)
+import SE.UI.Colors as Colors exposing (background, white)
+import SE.UI.Delete as Delete
+import SE.UI.Utils exposing (block, desktop, radius, tablet)
 
 
 padding : Style

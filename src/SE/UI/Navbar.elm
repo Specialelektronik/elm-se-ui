@@ -1,4 +1,4 @@
-module SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
+module SE.UI.Navbar exposing (brand, led, link, navbar, noBrand)
 
 {-| DEPRECATED, not part of the framework.
 -}
@@ -7,8 +7,8 @@ import Css exposing (Style, block, center, displayFlex, flex, hex, int, ms, none
 import Css.Animations exposing (Keyframes, keyframes)
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (href)
-import SE.Framework.Colors exposing (black, lightest, linkHover, primary, white)
-import SE.Framework.Utils exposing (desktop)
+import SE.UI.Colors exposing (black, lightest, linkHover, primary, white)
+import SE.UI.Utils exposing (desktop)
 
 
 type alias Url =

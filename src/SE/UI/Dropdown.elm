@@ -1,4 +1,4 @@
-module SE.Framework.Dropdown exposing
+module SE.UI.Dropdown exposing
     ( dropdown
     , button
     , link, content, hr
@@ -39,11 +39,11 @@ import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (class, placeholder)
 import Html.Styled.Events exposing (onInput)
-import SE.Framework.Buttons as Buttons exposing (button)
-import SE.Framework.Colors as Colors exposing (black, danger, darker, info, light, lighter, link, primary, success, warning, white)
-import SE.Framework.Control exposing (controlStyle)
-import SE.Framework.OuterClick exposing (withId)
-import SE.Framework.Utils as Utils exposing (loader, radius)
+import SE.UI.Buttons as Buttons exposing (button)
+import SE.UI.Colors as Colors exposing (black, danger, darker, info, light, lighter, link, primary, success, warning, white)
+import SE.UI.Control exposing (controlStyle)
+import SE.UI.OuterClick exposing (withId)
+import SE.UI.Utils as Utils exposing (loader, radius)
 
 
 type alias Url =

@@ -1,4 +1,4 @@
-module SE.Framework.Tag exposing
+module SE.UI.Tag exposing
     ( tag, deleteTag
     , TagModifier(..)
     , tags, TagsModifier(..)
@@ -30,8 +30,8 @@ import Css.Transitions
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes
 import Html.Styled.Events exposing (onClick)
-import SE.Framework.Colors as Colors
-import SE.Framework.Utils exposing (radius)
+import SE.UI.Colors as Colors
+import SE.UI.Utils exposing (radius)
 
 
 {-| Supported modifiers are colors (all colors are supported) and sizes

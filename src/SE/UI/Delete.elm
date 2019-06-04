@@ -1,4 +1,4 @@
-module SE.Framework.Delete exposing (delete)
+module SE.UI.Delete exposing (delete)
 
 {-| Bulmas delete tag
 see <https://bulma.io/documentation/elements/delete/>
@@ -15,8 +15,8 @@ import Css.Global exposing (descendants, each, selector, typeSelector)
 import Css.Transitions
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Events exposing (onClick)
-import SE.Framework.Colors exposing (background, white)
-import SE.Framework.Utils exposing (block, desktop, radius, tablet, unselectable)
+import SE.UI.Colors exposing (background, white)
+import SE.UI.Utils exposing (block, desktop, radius, tablet, unselectable)
 
 
 {-| A simple circle with a cross, no support for sizes.

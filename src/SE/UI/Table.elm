@@ -1,4 +1,4 @@
-module SE.Framework.Table exposing
+module SE.UI.Table exposing
     ( table, Modifier(..)
     , head, body, foot, row, cell, rightCell
     )
@@ -28,8 +28,8 @@ The table element has several helper functions to make it easy to create the tab
 import Css exposing (Style, auto, bold, currentColor, em, hidden, important, int, left, num, pct, px, rem, solid, top, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
 import Html.Styled exposing (Attribute, Html, styled, text)
-import SE.Framework.Colors as Colors
-import SE.Framework.Utils exposing (block, overflowTouch)
+import SE.UI.Colors as Colors
+import SE.UI.Utils exposing (block, overflowTouch)
 
 
 type Head msg

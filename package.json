@@ -1,7 +1,7 @@
 {
-  "name": "framework",
+  "name": "special-elektronik-elm-ui",
   "version": "1.0.0",
-  "description": "An Elm style framework with lots of inspiration from Bulma",
+  "description": "Elm UI library for beautiful, coherent, SE flavored UI.",
   "repository": "bitbucket:carlfredrikherose/se-elm-style",
   "main": "index.js",
   "directories": {

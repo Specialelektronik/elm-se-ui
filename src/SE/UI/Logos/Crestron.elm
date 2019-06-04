@@ -1,16 +1,28 @@
-module SE.Framework.Logos.Crestron exposing
-    ( black
-    , blackStack
-    , blackSwirl
-    , blue
-    , blueStack
-    , blueSwirl
-    , white
-    , whiteStack
-    , whiteSwirl
+module SE.UI.Logos.Crestron exposing
+    ( blue, black, white
+    , blueStack, blackStack, whiteStack
+    , blueSwirl, blackSwirl, whiteSwirl
     )
 
 {-| Crestron logos
+
+All Crestron logos are trademarks of Crestron Electronics, Inc. (<https://www.crestron.com/Legal/Trademarks>)
+
+
+# Regular
+
+@docs blue, black, white
+
+
+# Stack
+
+@docs blueStack, blackStack, whiteStack
+
+
+# Swirl
+
+@docs blueSwirl, blackSwirl, whiteSwirl
+
 -}
 
 import Html.Styled exposing (Html)
@@ -24,46 +36,64 @@ type Color
     | White
 
 
+{-| The regular logo in 'Crestron blue'
+-}
 blue : Html msg
 blue =
     logo Blue
 
 
+{-| The regular logo in black
+-}
 black : Html msg
 black =
     logo Black
 
 
+{-| The regular logo in white
+-}
 white : Html msg
 white =
     logo White
 
 
+{-| The stacked logo in 'Crestron blue'
+-}
 blueStack : Html msg
 blueStack =
     stack Blue
 
 
+{-| The stacked logo in black
+-}
 blackStack : Html msg
 blackStack =
     stack Black
 
 
+{-| The stacked logo in white
+-}
 whiteStack : Html msg
 whiteStack =
     stack White
 
 
+{-| The Crestron "swirl" in 'Crestron blue'
+-}
 blueSwirl : Html msg
 blueSwirl =
     swirl Blue
 
 
+{-| The Crestron "swirl" in black
+-}
 blackSwirl : Html msg
 blackSwirl =
     swirl Black
 
 
+{-| The Crestron "swirl" in white
+-}
 whiteSwirl : Html msg
 whiteSwirl =
     swirl White

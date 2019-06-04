@@ -1,4 +1,4 @@
-module SE.Framework.Logo exposing (onWhite, onBlack)
+module SE.UI.Logo exposing (onWhite, onBlack)
 
 {-| Special-Elektronik logo as Svg
 

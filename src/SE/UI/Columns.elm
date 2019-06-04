@@ -1,4 +1,4 @@
-module SE.Framework.Columns exposing
+module SE.UI.Columns exposing
     ( columns, multilineColumns, gaplessColumns, smallColumns, gaplessMultilineColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
     , defaultColumn, column
     , Sizes, Device(..), Width(..)
@@ -40,7 +40,7 @@ The `column` function takes a `Sizes` parameter, a List (Device, Width)
 import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap, zero)
 import Css.Global exposing (children, typeSelector)
 import Html.Styled exposing (Html, styled, text)
-import SE.Framework.Utils exposing (desktop, extended, fullhd, mobile, tablet, widescreen)
+import SE.UI.Utils exposing (desktop, extended, fullhd, mobile, tablet, widescreen)
 
 
 columnGap : Gap -> Css.Rem

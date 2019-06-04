@@ -1,4 +1,4 @@
-module SE.Framework.Title exposing (title1, title2, title3, title4, title5, title6)
+module SE.UI.Title exposing (title1, title2, title3, title4, title5, title6)
 
 {-| Bulma Title elements
 see <https://bulma.io/documentation/elements/title/>
@@ -12,8 +12,8 @@ Only the title element is supported, not the subtitle
 import Css exposing (Style, bold, int, num, rem, uppercase)
 import Css.Global exposing (descendants)
 import Html.Styled exposing (Html, styled, text)
-import SE.Framework.Colors exposing (darkest)
-import SE.Framework.Utils exposing (block)
+import SE.UI.Colors exposing (darkest)
+import SE.UI.Utils exposing (block)
 
 
 internalTitle : (List (Html.Styled.Attribute msg) -> List (Html.Styled.Html msg) -> Html.Styled.Html msg) -> List Style -> String -> Html msg

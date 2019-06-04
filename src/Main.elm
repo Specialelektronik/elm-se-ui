@@ -5,27 +5,27 @@ import Css
 import Html.Styled exposing (Attribute, Html, a, div, hr, img, nav, p, span, strong, styled, text, toUnstyled)
 import Html.Styled.Attributes exposing (css, height, href, src, width)
 import Html.Styled.Events exposing (onClick)
-import SE.Framework.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
-import SE.Framework.Buttons as Buttons exposing (button, buttons)
-import SE.Framework.Colors as Colors
-import SE.Framework.Columns as Columns exposing (column, columns, defaultColumn, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns)
-import SE.Framework.Container as Container exposing (container)
-import SE.Framework.Content exposing (content)
-import SE.Framework.Dropdown as Dropdown exposing (dropdown)
-import SE.Framework.Form as Form exposing (InputRecord, checkbox, control, expandedControl, field, input, radio, select, textarea)
-import SE.Framework.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
-import SE.Framework.Image as Image exposing (image, source)
-import SE.Framework.Level as Level exposing (centeredLevel, item, level, mobileLevel)
-import SE.Framework.Modal exposing (modal)
-import SE.Framework.Navbar exposing (brand, led, link, navbar, noBrand)
-import SE.Framework.Notification as Notification
-import SE.Framework.OuterClick as OuterClick
-import SE.Framework.Pagination as Pagination exposing (centeredPagination, pagination, rightPagination)
-import SE.Framework.Section exposing (section)
-import SE.Framework.Table as Table exposing (body, cell, foot, head, row, table)
-import SE.Framework.Tabs as Tabs exposing (tabs)
-import SE.Framework.Tag as Tag exposing (deleteTag, tag, tags)
-import SE.Framework.Title as Title
+import SE.UI.Breadcrumb as Breadcrumb exposing (breadcrumb, link)
+import SE.UI.Buttons as Buttons exposing (button, buttons)
+import SE.UI.Colors as Colors
+import SE.UI.Columns as Columns exposing (column, columns, defaultColumn, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns)
+import SE.UI.Container as Container exposing (container)
+import SE.UI.Content exposing (content)
+import SE.UI.Dropdown as Dropdown exposing (dropdown)
+import SE.UI.Form as Form exposing (InputRecord, checkbox, control, expandedControl, field, input, radio, select, textarea)
+import SE.UI.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
+import SE.UI.Image as Image exposing (image, source)
+import SE.UI.Level as Level exposing (centeredLevel, item, level, mobileLevel)
+import SE.UI.Modal exposing (modal)
+import SE.UI.Navbar exposing (brand, led, link, navbar, noBrand)
+import SE.UI.Notification as Notification
+import SE.UI.OuterClick as OuterClick
+import SE.UI.Pagination as Pagination exposing (centeredPagination, pagination, rightPagination)
+import SE.UI.Section exposing (section)
+import SE.UI.Table as Table exposing (body, cell, foot, head, row, table)
+import SE.UI.Tabs as Tabs exposing (tabs)
+import SE.UI.Tag as Tag exposing (deleteTag, tag, tags)
+import SE.UI.Title as Title
 
 
 view : Model -> Html Msg

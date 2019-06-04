@@ -1,4 +1,4 @@
-module SE.Framework.OuterClick exposing (withId, succeedIfClickIsOutsideOfId)
+module SE.UI.OuterClick exposing (withId, succeedIfClickIsOutsideOfId)
 
 {-| More or less copied from <https://github.com/xarvh/elm-onclickoutside>
 
@@ -8,7 +8,7 @@ How to use:
 
     import Html exposing (..)
     import Html.Attributes exposing (class)
-    import SE.Framework.OuterClick
+    import SE.UI.OuterClick
 
     type Msg
     = UserClickedOutsideOfFruitDropdown
@@ -16,7 +16,7 @@ How to use:
     dropdownView =
     let
     onClickOutsideAttributes =
-    SE.Framework.OuterClick.withId "fruit-dropdown" UserClickedOutsideOfFruitDropdown
+    SE.UI.OuterClick.withId "fruit-dropdown" UserClickedOutsideOfFruitDropdown
 
             otherAttributes =
                 [ class "generic-dropdown" ]

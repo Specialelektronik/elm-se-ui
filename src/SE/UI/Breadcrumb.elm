@@ -1,4 +1,4 @@
-module SE.Framework.Breadcrumb exposing
+module SE.UI.Breadcrumb exposing
     ( breadcrumb
     , link, activeLink
     )
@@ -23,8 +23,8 @@ import Css.Global exposing (adjacentSiblings, descendants, each, selector, typeS
 import Css.Transitions
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes
-import SE.Framework.Colors as Colors exposing (background, white)
-import SE.Framework.Utils exposing (block, desktop, radius, tablet, unselectable)
+import SE.UI.Colors as Colors exposing (background, white)
+import SE.UI.Utils exposing (block, desktop, radius, tablet, unselectable)
 
 
 type Link msg

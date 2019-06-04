@@ -1,4 +1,4 @@
-module SE.Framework.Utils exposing
+module SE.UI.Utils exposing
     ( mobile, tabletWidth, tablet, desktopWidth, desktop, widescreenWidth, widescreen, extendedWidth, extended, fullhdWidth, fullhd
     , loader
     , onChange
@@ -43,7 +43,7 @@ import Css.Media as Media exposing (all, maxWidth, minWidth, only, print, screen
 import Html.Styled exposing (Attribute)
 import Html.Styled.Events exposing (on)
 import Json.Decode as Json
-import SE.Framework.Colors exposing (light)
+import SE.UI.Colors exposing (light)
 
 
 {-| Column gap in pixels

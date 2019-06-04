@@ -1,4 +1,4 @@
-module SE.Framework.Control exposing (controlHeight, controlStyle, Size(..))
+module SE.UI.Control exposing (controlHeight, controlStyle, Size(..))
 
 {-| Helper functions for form elements and buttons.
 
@@ -7,7 +7,7 @@ module SE.Framework.Control exposing (controlHeight, controlStyle, Size(..))
 -}
 
 import Css exposing (Style, active, alignItems, border3, borderRadius, boxShadow, boxShadow5, center, cursor, disabled, display, em, flexStart, focus, fontSize, height, inlineFlex, justifyContent, lineHeight, none, notAllowed, num, paddingBottom, paddingLeft, paddingRight, paddingTop, position, property, px, relative, rem, rgba, solid, top, transparent, verticalAlign, zero)
-import SE.Framework.Utils exposing (radius, smallRadius)
+import SE.UI.Utils exposing (radius, smallRadius)
 
 
 {-| Form input controls and buttons use this type as an argument to their Size Modifier

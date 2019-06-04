@@ -1,4 +1,4 @@
-module SE.Framework.Form exposing
+module SE.UI.Form exposing
     ( label, input, textarea, select, checkbox, radio, number, date, email, password, tel
     , InputModifier(..), InputRecord, NumberRecord, TextareaRecord, SelectRecord, Option, PasswordRecord, PasswordAutocomplete
     , field, FieldModifier(..), control, expandedControl
@@ -38,9 +38,9 @@ import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onInput)
-import SE.Framework.Colors as Colors exposing (base, black, danger, darker, info, light, link, primary, success, warning, white)
-import SE.Framework.Control as Control exposing (controlStyle)
-import SE.Framework.Utils as Utils exposing (loader, radius)
+import SE.UI.Colors as Colors exposing (base, black, danger, darker, info, light, link, primary, success, warning, white)
+import SE.UI.Control as Control exposing (controlStyle)
+import SE.UI.Utils as Utils exposing (loader, radius)
 import Svg.Styled as Svg exposing (Attribute, Svg)
 import Svg.Styled.Attributes exposing (d, fill, height, stroke, strokeLinecap, strokeLinejoin, strokeWidth, viewBox, width)
 

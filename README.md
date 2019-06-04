@@ -1,6 +1,10 @@
-# Special-Elektronik Elm UI Framework
+# Special-Elektronik Elm UI
 
-This private Elm library is used to style elm code into a beautiful, coherent UI. We draw inspiration from [Bulma](https://bulma.io/), [Tailwind CSS](https://tailwindcss.com/), [NSB Pattern Library](https://youtu.be/yE9PKFI19RM?t=543)
+Private Elm UI library for beautiful, coherent, SE flavored UI.
+
+While this library is MIT, there aren't many other use cases for this library besides Special-Elektroniks applications, thus the "private" flag.
+
+We draw inspiration from [Bulma](https://bulma.io/), [Tailwind CSS](https://tailwindcss.com/), [NSB Pattern Library](https://youtu.be/yE9PKFI19RM?t=543) and [NoRedInk/noredink-ui](https://github.com/NoRedInk/noredink-ui).
 
 # Intent
 
@@ -17,7 +21,9 @@ A good example is the [Dropdown](/SE-Framework-Dropdown) and [Table](/SE-Framewo
 
 # How to use it
 
-TBA
+`node_modules/.bin/parcel docs/index.html --no-cache` (parcel has some problems with reloading if we use the cache)
+
+More information to come
 
 # Installation and help
 
@@ -27,7 +33,12 @@ Use https://github.com/Skinney/elm-git-install to utilize in application
 
 https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-scripts-in-windows
 
+## Other resources
+
+ - https://github.com/dillonkearns/idiomatic-elm-package-guide
+
 # TODO
+ - [ ] Consider using [NoRedInks Versioning policy](https://package.elm-lang.org/packages/NoRedInk/noredink-ui/latest/)
  - [ ] Form File button
  - [ ] Documentation (type that takes a label, description, code examples)
  - [ ] Refactor Image, add alt text and improve dimensions (figure tag, width and height optional and is should be responsive)

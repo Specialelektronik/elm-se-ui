@@ -1,11 +1,28 @@
-module SE.Framework.Global exposing (global)
+module SE.UI.Global exposing (global)
+
+{-| Global reset and base styles, based on Bulmas minireset.sass and generic.sass
+
+
+# Definition
+
+@docs global
+
+-}
 
 import Css exposing (Style)
 import Css.Global
 import Html.Styled as Html exposing (Html)
-import SE.Framework.Colors as Colors
+import SE.UI.Colors as Colors
 
 
+{-| Add this constant as a plain html element, preferably as high in the hierarchy as possible
+
+    div [] [
+        global
+        , h1 [] [ text "Hello World!"]
+    ]
+
+-}
 global : Html msg
 global =
     Css.Global.global

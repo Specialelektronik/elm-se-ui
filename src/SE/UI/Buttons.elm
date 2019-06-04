@@ -1,4 +1,4 @@
-module SE.Framework.Buttons exposing
+module SE.UI.Buttons exposing
     ( buttons, ButtonsModifier(..)
     , button, staticButton, Modifier(..)
     )
@@ -25,10 +25,10 @@ import Css.Transitions
 import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onClick)
-import SE.Framework.Colors as Colors
-import SE.Framework.Control as Control exposing (controlStyle)
-import SE.Framework.Icon as Icon
-import SE.Framework.Utils exposing (centerEm, loader, smallRadius)
+import SE.UI.Colors as Colors
+import SE.UI.Control as Control exposing (controlStyle)
+import SE.UI.Icon as Icon
+import SE.UI.Utils exposing (centerEm, loader, smallRadius)
 
 
 {-| Modify the button, support all modifiers in Bulma except the Disabled. To disable a button, use `Nothing` as the Maybe msg.
