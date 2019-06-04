@@ -1,7 +1,7 @@
 module SE.Framework.Columns exposing
     ( columns, multilineColumns, gaplessColumns, smallColumns, gaplessMultilineColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
     , defaultColumn, column
-    , Device(..), Width(..)
+    , Sizes, Device(..), Width(..)
     )
 
 {-| Bulmas Columns
@@ -26,7 +26,7 @@ There are 2 different column functions. `defaultColumn` is the standard, no opti
 
 The `column` function takes a `Sizes` parameter, a List (Device, Width)
 
-@docs Device, Width
+@docs Sizes, Device, Width
 
 
 # Unsupported features
@@ -69,6 +69,30 @@ negativeColumnGap gap =
     rem (columnGapHelper gap * -1)
 
 
+{-| Combine different `Width` options with a `Device` like this:
+
+    [ ( All, OneThird )
+    , ( Mobile, Half )
+    ]
+        == ".is-one-third .is-half-mobile"
+
+-}
+type alias Sizes =
+    List ( Device, Width )
+
+
+{-| The devices we support. `All` sets the width without a mediaquery.
+-}
+type Device
+    = All
+    | Mobile
+    | Tablet
+    | Desktop
+    | Widescreen
+    | Extended
+    | FullHD
+
+
 {-| A lot of the width modifiers for `column` is supported.
 -}
 type Width
@@ -86,28 +110,6 @@ type Width
     | FourFifths
     | FiveSixths
     | Full
-
-
-{-| `Device` in combination with `Width` lets you specify the width for a specific device:
-
-    [ ( All, OneThird )
-    , ( Mobile, Half )
-    ]
-        == ".is-one-third .is-half-mobile"
-
--}
-type Device
-    = All
-    | Mobile
-    | Tablet
-    | Desktop
-    | Widescreen
-    | Extended
-    | FullHD
-
-
-type alias Sizes =
-    List ( Device, Width )
 
 
 type Gap

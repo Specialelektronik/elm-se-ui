@@ -3,7 +3,8 @@ module SE.Framework.Delete exposing (delete)
 {-| Bulmas delete tag
 see <https://bulma.io/documentation/elements/delete/>
 
-#Definition
+
+# Definition
 
 @docs delete
 
