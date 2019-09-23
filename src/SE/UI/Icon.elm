@@ -1,4 +1,4 @@
-module SE.UI.Icon exposing (bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, trash, truck, tv, user, wifi)
+module SE.UI.Icon exposing (angleDown, bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi)
 
 {-| Creates a Bulma Icon element set.
 
@@ -9,7 +9,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, table, th, thLarge, thList, trash, truck, tv, user, wifi
+@docs angleDown, bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi
 
 -}
 
@@ -113,6 +113,13 @@ containerStyles size =
 -- ICON PATHS
 
 
+{-| <https://fontawesome.com/icons/angle-down?style=solid>
+-}
+angleDown : Control.Size -> Html msg
+angleDown size =
+    internalIcon size (viewBox 320 512) [ Svg.path [ d "M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z" ] [] ]
+
+
 {-| <https://fontawesome.com/icons/piggy-bank?style=solid>
 -}
 bargain : Control.Size -> Html msg
@@ -183,6 +190,13 @@ facebook size =
     internalIcon size (viewBox 448 512) [ Svg.path [ d "M400 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 48h137.25V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.27c-30.81 0-40.42 19.12-40.42 38.73V256h68.78l-11 71.69h-57.78V480H400a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48z" ] [] ]
 
 
+{-| <https://fontawesome.com/icons/file-alt?style=solid>
+-}
+file : Control.Size -> Html msg
+file size =
+    internalIcon size (viewBox 384 512) [ Svg.path [ d "M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm64 236c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zm0-64c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12v8zm0-72v8c0 6.6-5.4 12-12 12H108c-6.6 0-12-5.4-12-12v-8c0-6.6 5.4-12 12-12h168c6.6 0 12 5.4 12 12zm96-114.1v6.1H256V0h6.1c6.4 0 12.5 2.5 17 7l97.9 98c4.5 4.5 7 10.6 7 16.9z" ] [] ]
+
+
 {-| <https://fontawesome.com/icons/history?style=solid>
 -}
 history : Control.Size -> Html msg
@@ -251,6 +265,13 @@ phone size =
 satelliteDish : Control.Size -> Html msg
 satelliteDish size =
     internalIcon size (viewBox 512 512) [ Svg.path [ d "M188.8 345.9l27.4-27.4c2.6.7 5 1.6 7.8 1.6 17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32c0 2.8.9 5.2 1.6 7.8l-27.4 27.4L49.4 206.5c-7.3-7.3-20.1-6.1-25 3-41.8 77.8-29.9 176.7 35.7 242.3 65.6 65.6 164.6 77.5 242.3 35.7 9.2-4.9 10.4-17.7 3-25L188.8 345.9zM209 0c-9.2-.5-17 6.8-17 16v31.6c0 8.5 6.6 15.5 15 15.9 129.4 7 233.4 112 240.9 241.5.5 8.4 7.5 15 15.9 15h32.1c9.2 0 16.5-7.8 16-17C503.4 139.8 372.2 8.6 209 0zm.3 96c-9.3-.7-17.3 6.7-17.3 16.1v32.1c0 8.4 6.5 15.3 14.8 15.9 76.8 6.3 138 68.2 144.9 145.2.8 8.3 7.6 14.7 15.9 14.7h32.2c9.3 0 16.8-8 16.1-17.3-8.4-110.1-96.5-198.2-206.6-206.7z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/search?style=solid>
+-}
+search : Control.Size -> Html msg
+search size =
+    internalIcon size (viewBox 512 512) [ Svg.path [ d "M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z" ] [] ]
 
 
 {-| Custom icon to mediate a tight product view table
