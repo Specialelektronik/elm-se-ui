@@ -11,9 +11,11 @@ import SE.UI.Colors as Colors
 import SE.UI.Columns as Columns exposing (column, columns, defaultColumn, multilineColumns, smallColumns, smallMultilineColumns, wideColumns, wideMultilineColumns)
 import SE.UI.Container as Container exposing (container)
 import SE.UI.Content exposing (content)
+import SE.UI.Control as Control
 import SE.UI.Dropdown as Dropdown exposing (dropdown)
 import SE.UI.Form as Form exposing (InputRecord, checkbox, control, expandedControl, field, input, radio, select, textarea)
-import SE.UI.Icon as Icon exposing (icon, largeIcon, mediumIcon, smallIcon)
+import SE.UI.Global as Global
+import SE.UI.Icon as Icon
 import SE.UI.Image as Image exposing (image, source)
 import SE.UI.Level as Level exposing (centeredLevel, item, level, mobileLevel)
 import SE.UI.Modal exposing (modal)
@@ -40,7 +42,8 @@ view model =
             }
     in
     div []
-        [ navbar
+        [ Global.global
+        , navbar
             (brand "/"
                 [ img [ src "/images/se-logo-white-bg.svg", width 123, height 38 ] []
                 ]
@@ -76,9 +79,9 @@ view model =
                     , ( [ Buttons.Darkest ], "Darkest" )
                     , ( [ Buttons.Black ], "Black" )
                     , ( [ Buttons.Text ], "Text" )
-                    , ( [ Buttons.Small ], "Small button" )
-                    , ( [ Buttons.Medium ], "Medium button" )
-                    , ( [ Buttons.Large ], "Large button" )
+                    , ( [ Buttons.Size Control.Small ], "Small button" )
+                    , ( [ Buttons.Size Control.Medium ], "Medium button" )
+                    , ( [ Buttons.Size Control.Large ], "Large button" )
                     ]
                 )
             ]
@@ -88,7 +91,7 @@ view model =
                 , buttons []
                     [ button [ Buttons.Success ]
                         Nothing
-                        [ icon "save"
+                        [ Icon.box Control.Regular
                         , span [] [ text "Save changes" ]
                         ]
                     , button [ Buttons.Info ] (Just DoSomething) [ text "Save and continue" ]
@@ -108,13 +111,13 @@ view model =
                     [ button [ Buttons.Fullwidth, Buttons.Primary ] (Just DoSomething) [ text "Fullwidth button" ]
                     ]
                 , field []
-                    [ button [ Buttons.Static ] (Just DoSomething) [ text "Static button" ]
+                    [ Buttons.staticButton [] "Static button"
                     ]
                 ]
             ]
         , section []
             [ container [ Container.Fluid ]
-                ([ Title.title "Form"
+                ([ Title.title3 "Form"
                  , field []
                     [ Form.label "Input"
                     , control False
@@ -146,7 +149,7 @@ view model =
             ]
         , section []
             [ container [ Container.Fluid ]
-                [ Title.title "Field modifiers"
+                [ Title.title3 "Field modifiers"
                 , Title.title5 "Attached"
                 , field [ Form.Attached ]
                     [ control False
@@ -255,39 +258,39 @@ view model =
             [ container [ Container.Fluid ]
                 [ table [ Table.Bordered, Table.Fullwidth, Table.Hoverable, Table.Striped, Table.Mobilefriendly, Table.Narrow ]
                     (head
-                        [ cell (text "Tabellrubrik 1")
-                        , cell (text "Tabellrubrik 2")
-                        , cell (text "Tabellrubrik 3")
-                        , cell (text "Tabellrubrik 4")
-                        , cell (text "Tabellrubrik 5")
-                        , cell (text "Tabellrubrik 6")
+                        [ cell [] (text "Tabellrubrik 1")
+                        , cell [] (text "Tabellrubrik 2")
+                        , cell [] (text "Tabellrubrik 3")
+                        , cell [] (text "Tabellrubrik 4")
+                        , cell [] (text "Tabellrubrik 5")
+                        , cell [] (text "Tabellrubrik 6")
                         ]
                     )
                     (foot [])
                     (body
                         [ row
-                            [ cell (text "Tabellcell 1")
-                            , cell (text "Tabellcell 2")
-                            , cell (text "Tabellcell 3")
-                            , cell (text "Tabellcell 4")
-                            , cell (text "Tabellcell 5")
-                            , cell (text "Tabellcell 6")
+                            [ cell [] (text "Tabellcell 1")
+                            , cell [] (text "Tabellcell 2")
+                            , cell [] (text "Tabellcell 3")
+                            , cell [] (text "Tabellcell 4")
+                            , cell [] (text "Tabellcell 5")
+                            , cell [] (text "Tabellcell 6")
                             ]
                         , row
-                            [ cell (text "Tabellcell 1 rad 2")
-                            , cell (text "Tabellcell 2 rad 2")
-                            , cell (text "Tabellcell 3 rad 2")
-                            , cell (text "Tabellcell 4 rad 2")
-                            , cell (text "Tabellcell 5 rad 2")
-                            , cell (text "Tabellcell 6 rad 2")
+                            [ cell [] (text "Tabellcell 1 rad 2")
+                            , cell [] (text "Tabellcell 2 rad 2")
+                            , cell [] (text "Tabellcell 3 rad 2")
+                            , cell [] (text "Tabellcell 4 rad 2")
+                            , cell [] (text "Tabellcell 5 rad 2")
+                            , cell [] (text "Tabellcell 6 rad 2")
                             ]
                         , row
-                            [ cell (text "Tabellcell 1 rad 3")
-                            , cell (text "Tabellcell 2 rad 3")
-                            , cell (text "Tabellcell 3 rad 3")
-                            , cell (text "Tabellcell 4 rad 3")
-                            , cell (text "Tabellcell 5 rad 3")
-                            , cell (text "Tabellcell 6 rad 3")
+                            [ cell [] (text "Tabellcell 1 rad 3")
+                            , cell [] (text "Tabellcell 2 rad 3")
+                            , cell [] (text "Tabellcell 3 rad 3")
+                            , cell [] (text "Tabellcell 4 rad 3")
+                            , cell [] (text "Tabellcell 5 rad 3")
+                            , cell [] (text "Tabellcell 6 rad 3")
                             ]
                         ]
                     )
@@ -297,19 +300,19 @@ view model =
             [ container [ Container.Fluid ]
                 [ Title.title3 "Ikoner"
                 , p []
-                    [ icon "home"
+                    [ Icon.home Control.Regular
                     , text "Regular"
                     ]
                 , p []
-                    [ smallIcon "home"
+                    [ Icon.home Control.Small
                     , text "Small"
                     ]
                 , p []
-                    [ mediumIcon "home"
+                    [ Icon.home Control.Medium
                     , text "Medium"
                     ]
                 , p []
-                    [ largeIcon "home"
+                    [ Icon.home Control.Large
                     , text "Large"
                     ]
                 ]
@@ -371,7 +374,7 @@ view model =
                 [ Title.title3 "Breadcrumbs"
                 , breadcrumb
                     [ Breadcrumb.link "/"
-                        [ icon "home"
+                        [ Icon.home Control.Regular
                         , span [] [ text "Bulma" ]
                         ]
                     , Breadcrumb.link "/"
@@ -392,7 +395,7 @@ view model =
                 , tabs [ Tabs.Medium ]
                     [ Tabs.link False
                         "/"
-                        [ mediumIcon "home"
+                        [ Icon.home Control.Medium
                         , span [] [ text "Bulma" ]
                         ]
                     , Tabs.link False
@@ -413,7 +416,7 @@ view model =
         , section []
             [ container [ Container.Fluid ]
                 [ Title.title3 "Modal"
-                , button [ Buttons.Large, Buttons.Primary ]
+                , button [ Buttons.Size Control.Large, Buttons.Primary ]
                     (Just ToggleModal)
                     [ text "Show Modal"
                     ]
@@ -536,7 +539,7 @@ view model =
                         [ Buttons.Primary ]
                         (Just ToggleDropdown)
                         [ span [] [ text "Dropdown button " ]
-                        , smallIcon "angle-down"
+                        , Icon.angleDown Control.Small
                         ]
                     )
                     [ Dropdown.link "/hello" [ text "Hello" ]
