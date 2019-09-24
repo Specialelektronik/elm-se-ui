@@ -9,6 +9,7 @@ import Css.Transitions
 import Html.Styled as Html exposing (Html, a, article, aside, div, li, main_, span, styled, text, toUnstyled, ul)
 import Html.Styled.Attributes as Attributes exposing (align, colspan, href, id)
 import Html.Styled.Events exposing (onClick)
+import Html.Styled.Lazy as Lazy
 import SE.UI.Breadcrumb as Breadcrumb
 import SE.UI.Buttons as Buttons
 import SE.UI.Colors as Colors
@@ -17,6 +18,7 @@ import SE.UI.Container as Container
 import SE.UI.Content as Content
 import SE.UI.Control as Control
 import SE.UI.Form as Form
+import SE.UI.Global as Global
 import SE.UI.Icon as Icon
 import SE.UI.Image as Image
 import SE.UI.Level as Level
@@ -26,7 +28,6 @@ import SE.UI.Table as Table
 import SE.UI.Tag as Tag
 import SE.UI.Title as Title
 import SE.UI.Utils as Utils exposing (radius, smallRadius)
-import SE.UI.Global as Global
 
 
 
@@ -674,7 +675,7 @@ view model =
                 [ id "Checkout" ]
                 [ section []
                     [ Container.container []
-                        [ viewCheckout model ]
+                        [ Lazy.lazy viewCheckout model ]
                     ]
                 ]
             , article [ id "ProductList" ]
@@ -705,8 +706,8 @@ viewProducts model =
     Columns.columns
         [ Columns.column [ ( Columns.Desktop, Columns.OneFifth ) ]
             [ viewCategories
-            , viewMakes model.makes
-            , viewFilters model.filters
+            , Lazy.lazy viewMakes model.makes
+            , Lazy.lazy viewFilters model.filters
             ]
         , Columns.column []
             [ --      Breadcrumb.breadcrumb
@@ -721,7 +722,7 @@ viewProducts model =
                 , Level.item [ levelItem List model.view Icon.thList ]
                 , Level.item [ levelItem Table model.view Icon.table ]
                 ]
-            , viewFn model.products
+            , Lazy.lazy viewFn model.products
             ]
         ]
 
