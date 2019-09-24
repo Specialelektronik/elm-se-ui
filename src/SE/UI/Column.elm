@@ -1,4 +1,27 @@
-module SE.UI.Column exposing (Column, Device(..), Width(..), column, isMobileColumns, toHtml, withAttributes, withSizes, withStyles)
+module SE.UI.Column exposing
+    ( Column, column, toHtml, isMobileColumns
+    , withAttributes, withSizes, withStyles
+    , Device(..), Width(..)
+    )
+
+{-|
+
+
+# Column
+
+@docs Column, column, toHtml, isMobileColumns
+
+
+# Options
+
+@docs withAttributes, withSizes, withStyles
+
+
+## Sizes
+
+@docs Device, Width
+
+-}
 
 import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap, zero)
 import Css.Global exposing (children, typeSelector)
@@ -7,6 +30,8 @@ import Html.Styled.Attributes as Attributes
 import SE.UI.Utils exposing (desktop, extended, fullhd, mobile, tablet, widescreen)
 
 
+{-| Create a column using the function `column`
+-}
 type Column msg
     = Column (Options msg) (List (Html msg))
 
@@ -69,17 +94,13 @@ defaultOptions =
     }
 
 
-{-| `.column` with Sizes options
+{-| div.column without any frills
 
     columns
-        [ defaultColumn [ text "Default column" ]
-        , column
-            [ ( All, Half )
-            , ( Mobile, OneThird )
-            ]
-            [ text "Half width column that shrinks to one third on a mobile device" ]
+        [ column [ text "Default column" ]
         ]
-        == "<div class='columns is-mobile'>\n            <div class='column'>Default column</div>\n            <div class='column is-half is-one-third-mobile'>Half width column that shrinks to one third on a mobile device</div>\n        </div>"
+        |> Columns.toHtml
+        == "<div class='columns'>\n            <div class='column'>Default column</div>\n        </div>"
 
 -}
 column : List (Html msg) -> Column msg
@@ -87,21 +108,57 @@ column cols =
     Column defaultOptions cols
 
 
+{-| Customize widths by devices
+
+    columns
+        [ column [ text "Default column" ]
+        , column [ text "Half width column that shrinks to one third on a mobile device" ]
+            |> withSizes
+                [ ( All, Half )
+                , ( Mobile, OneThird )
+                ]
+        ]
+        |> Columns.toHtml
+        == "<div class='columns is-mobile'>\n            <div class='column'>Default column</div>\n            <div class='column is-half is-one-third-mobile'>Half width column that shrinks to one third on a mobile device</div>\n        </div>"
+
+-}
 withSizes : Sizes -> Column msg -> Column msg
 withSizes sizes (Column options kids) =
     Column { options | sizes = sizes } kids
 
 
+{-| div.column with custom styles
+
+    columns
+        [ column [ text "Default column" ]
+            |> withStyles [ Css.Color Colors.White ]
+        ]
+        |> Columns.toHtml
+        == "<style>.d45{color: #fff;}</style><div class='columns'>\n            <div class='column d45'>Default column</div>\n        </div>"
+
+-}
 withStyles : List Style -> Column msg -> Column msg
 withStyles styles (Column options kids) =
     Column { options | styles = styles } kids
 
 
+{-| div.column with custom attributes
+
+    columns
+        [ column [ text "Default column" ]
+            |> withAttributes [ Html.Styled.Attributes.id "product" ]
+        ]
+        |> Columns.toHtml
+        == "<div class='columns'>\n            <div class='column' id='product'>Default column</div>\n        </div>"
+
+-}
 withAttributes : List (Attribute msg) -> Column msg -> Column msg
 withAttributes attributes (Column options kids) =
     Column { options | attributes = attributes } kids
 
 
+{-| Used internally by Columns.toHtml
+-}
 toHtml : Column msg -> Html msg
 toHtml (Column { sizes, styles, attributes } kids) =
     styled Html.div
@@ -110,6 +167,8 @@ toHtml (Column { sizes, styles, attributes } kids) =
         kids
 
 
+{-| Used internally by Columns.toHtml
+-}
 isMobileColumns : List (Column msg) -> Bool
 isMobileColumns cols =
     List.map isMobileColumn cols
