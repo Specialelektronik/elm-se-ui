@@ -1,115 +1,25 @@
-module SE.UI.Columns exposing
-    ( columns, multilineColumns, gaplessColumns, smallColumns, gaplessMultilineColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
-    , defaultColumn, column
-    , Sizes, Device(..), Width(..)
-    )
-
-{-| Bulmas Columns
-see <https://bulma.io/documentation/columns/>
-
-
-# Basics
-
-Too a large extend, these functions works very similar a Bulmas own version. Each container modifier is its own function. The `.is-mobile` modifier isn't needed since the `Sizes` type contains a mobile option. Instead of variable gap, we have 3 different gap widths, small (0.5 rem), normal (0.75 rem) and wide (1 rem).
-
-@docs columns, multilineColumns, gaplessColumns, smallColumns, gaplessMultilineColumns, smallMultilineColumns, wideColumns, wideMultilineColumns
-
-
-# Column
-
-There are 2 different column functions. `defaultColumn` is the standard, no options alternative, if you just want the plain .column class.
-
-@docs defaultColumn, column
-
-
-# Sizes
-
-The `column` function takes a `Sizes` parameter, a List (Device, Width)
-
-@docs Sizes, Device, Width
-
-
-# Unsupported features
-
-  - .is-vcentered
-  - .is-centered
-  - .is-variable and .is-2-mobile etc.
-
--}
+module SE.UI.Columns exposing (Gap(..), columns, keyedColumns, toHtml, withAttributes, withGap, withMultiline, withStyles)
 
 import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap, zero)
 import Css.Global exposing (children, typeSelector)
-import Html.Styled exposing (Html, styled, text)
+import Html.Styled as Html exposing (Attribute, Html, styled, text)
+import Html.Styled.Attributes as Attributes
+import Html.Styled.Keyed as Keyed
+import SE.UI.Column as Column exposing (Column, isMobileColumns, toHtml)
 import SE.UI.Utils exposing (desktop, extended, fullhd, mobile, tablet, widescreen)
 
 
-columnGap : Gap -> Css.Rem
-columnGap gap =
-    rem (columnGapHelper gap)
+type Columns msg
+    = NotKeyed (Options msg) (List (Column msg))
+    | Keyed (Options msg) (List ( String, Column msg ))
 
 
-columnGapHelper : Gap -> Float
-columnGapHelper gap =
-    case gap of
-        Gapless ->
-            0
-
-        Small ->
-            0.5
-
-        Normal ->
-            0.75
-
-        Large ->
-            1
-
-
-negativeColumnGap : Gap -> Css.Rem
-negativeColumnGap gap =
-    rem (columnGapHelper gap * -1)
-
-
-{-| Combine different `Width` options with a `Device` like this:
-
-    [ ( All, OneThird )
-    , ( Mobile, Half )
-    ]
-        == ".is-one-third .is-half-mobile"
-
--}
-type alias Sizes =
-    List ( Device, Width )
-
-
-{-| The devices we support. `All` sets the width without a mediaquery.
--}
-type Device
-    = All
-    | Mobile
-    | Tablet
-    | Desktop
-    | Widescreen
-    | Extended
-    | FullHD
-
-
-{-| A lot of the width modifiers for `column` is supported.
--}
-type Width
-    = Auto
-    | Narrow
-    | OneSixth
-    | OneFifth
-    | OneQuarter
-    | OneThird
-    | TwoFifths
-    | Half
-    | ThreeFifths
-    | TwoThirds
-    | ThreeQuarters
-    | FourFifths
-    | FiveSixths
-    | Full
+type alias Options msg =
+    { isMultiline : Bool
+    , gap : Gap
+    , styles : List Style
+    , attributes : List (Attribute msg)
+    }
 
 
 type Gap
@@ -119,104 +29,98 @@ type Gap
     | Large
 
 
-type alias IsMultiline =
-    Bool
-
-
 type alias IsMobile =
     Bool
 
 
-type Column msg
-    = Column Sizes (List (Html msg))
+defaultOptions : Options msg
+defaultOptions =
+    { isMultiline = False
+    , gap = Normal
+    , styles = []
+    , attributes = [ Attributes.class "columns" ]
+    }
 
 
 
 -- COLUMNS
 
 
-{-| Standard `div.columns`, normal gap, no multiline
--}
-columns : List (Column msg) -> Html msg
-columns =
-    internalColumns Normal False
+columns : List (Column msg) -> Columns msg
+columns cols =
+    NotKeyed defaultOptions cols
 
 
-{-| `div.columns.is-multiline`
--}
-multilineColumns : List (Column msg) -> Html msg
-multilineColumns =
-    internalColumns Normal True
+keyedColumns : List ( String, Column msg ) -> Columns msg
+keyedColumns cols =
+    Keyed defaultOptions cols
 
 
-{-| `div.columns.is-gapless`
--}
-gaplessColumns : List (Column msg) -> Html msg
-gaplessColumns =
-    internalColumns Gapless False
+withGap : Gap -> Columns msg -> Columns msg
+withGap gap cols =
+    mapOptions (\options -> { options | gap = gap }) cols
 
 
-{-| `div.columns.is-2`
--}
-smallColumns : List (Column msg) -> Html msg
-smallColumns =
-    internalColumns Small False
+withMultiline : Columns msg -> Columns msg
+withMultiline cols =
+    mapOptions (\options -> { options | isMultiline = True }) cols
 
 
-{-| `div.columns.is-multiline.is-gapless`
--}
-gaplessMultilineColumns : List (Column msg) -> Html msg
-gaplessMultilineColumns =
-    internalColumns Gapless True
+withStyles : List Style -> Columns msg -> Columns msg
+withStyles styles cols =
+    mapOptions (\options -> { options | styles = styles }) cols
 
 
-{-| `div.columns.is-multiline.is-2`
--}
-smallMultilineColumns : List (Column msg) -> Html msg
-smallMultilineColumns =
-    internalColumns Small True
+withAttributes : List (Attribute msg) -> Columns msg -> Columns msg
+withAttributes attributes cols =
+    mapOptions
+        (\options -> { options | attributes = attributes })
+        cols
 
 
-{-| `div.columns.is-4`
--}
-wideColumns : List (Column msg) -> Html msg
-wideColumns =
-    internalColumns Large False
+mapOptions : (Options msg -> Options msg) -> Columns msg -> Columns msg
+mapOptions transform cols =
+    case cols of
+        NotKeyed options kids ->
+            NotKeyed (transform options) kids
+
+        Keyed options kids ->
+            Keyed (transform options) kids
 
 
-{-| `div.columns.is-multiline.is-4`
--}
-wideMultilineColumns : List (Column msg) -> Html msg
-wideMultilineColumns =
-    internalColumns Large True
+toHtml : Columns msg -> Html msg
+toHtml cols =
+    case cols of
+        NotKeyed options kids ->
+            styled Html.div
+                (columnsStyles options (Column.isMobileColumns kids)
+                    ++ options.styles
+                )
+                options.attributes
+                (List.map Column.toHtml kids)
+
+        Keyed options kids ->
+            keyedToHtml
+                (columnsStyles options (Column.isMobileColumns (List.map Tuple.second kids))
+                    ++ options.styles
+                )
+                options.attributes
+                kids
 
 
-internalColumns : Gap -> IsMultiline -> List (Column msg) -> Html msg
-internalColumns gap isMultiline cols =
-    let
-        isMobile =
-            isMobileColumns cols
-    in
-    styled Html.Styled.div
-        (columnsStyles gap isMultiline isMobile)
-        []
-        (List.map toHtml cols)
+keyedToHtml : List Style -> List (Attribute msg) -> List ( String, Column msg ) -> Html msg
+keyedToHtml styles attributes cols =
+    Keyed.node "div"
+        (Attributes.css styles :: attributes)
+        (List.map (Tuple.mapSecond Column.toHtml) cols)
 
 
-isMobileColumns : List (Column msg) -> Bool
-isMobileColumns cols =
-    List.map isMobileColumn cols
-        |> List.foldl (||) False
+
+-- STYLES
 
 
-isMobileColumn : Column msg -> Bool
-isMobileColumn (Column sizes _) =
-    List.map Tuple.first sizes
-        |> List.member Mobile
-
-
-columnsStyles : Gap -> IsMultiline -> IsMobile -> List Style
-columnsStyles gap isMultiline isMobile =
+columnsStyles : Options msg -> IsMobile -> List Style
+columnsStyles { gap, isMultiline } isMobile =
     [ Css.marginLeft (negativeColumnGap gap)
     , Css.marginRight (negativeColumnGap gap)
     , Css.marginTop (negativeColumnGap gap)
@@ -245,153 +149,27 @@ columnsStyles gap isMultiline isMobile =
     ]
 
 
-
--- COLUMN
-
-
-{-| Standard no-frills `.column`
--}
-defaultColumn : List (Html msg) -> Column msg
-defaultColumn html =
-    Column [] html
+columnGap : Gap -> Css.Rem
+columnGap gap =
+    rem (columnGapHelper gap)
 
 
-{-| `.column` with Sizes options
-
-    columns
-        [ defaultColumn [ text "Default column" ]
-        , column
-            [ ( All, Half )
-            , ( Mobile, OneThird )
-            ]
-            [ text "Half width column that shrinks to one third on a mobile device" ]
-        ]
-        == "<div class='columns is-mobile'>\n            <div class='column'>Default column</div>\n            <div class='column is-half is-one-third-mobile'>Half width column that shrinks to one third on a mobile device</div>\n        </div>"
-
--}
-column : Sizes -> List (Html msg) -> Column msg
-column sizes html =
-    Column sizes html
+negativeColumnGap : Gap -> Css.Rem
+negativeColumnGap gap =
+    rem (columnGapHelper gap * -1)
 
 
-toHtml : Column msg -> Html msg
-toHtml (Column sizes html) =
-    styled Html.Styled.div
-        (columnStyles sizes)
-        []
-        html
+columnGapHelper : Gap -> Float
+columnGapHelper gap =
+    case gap of
+        Gapless ->
+            0
 
+        Small ->
+            0.5
 
-columnStyles : Sizes -> List Style
-columnStyles sizes =
-    [ Css.display block
-    , Css.flex3 (int 1) (int 1) (int 0)
-    , Css.batch (List.map columnSize sizes)
-    ]
+        Normal ->
+            0.75
 
-
-columnSize : ( Device, Width ) -> Style
-columnSize ( device, width ) =
-    case device of
-        All ->
-            translateWidth width
-
-        Mobile ->
-            mobile [ translateWidth width ]
-
-        Tablet ->
-            tablet [ translateWidth width ]
-
-        Desktop ->
-            desktop [ translateWidth width ]
-
-        Widescreen ->
-            widescreen [ translateWidth width ]
-
-        Extended ->
-            extended [ translateWidth width ]
-
-        FullHD ->
-            fullhd [ translateWidth width ]
-
-
-translateWidth : Width -> Style
-translateWidth width =
-    case width of
-        Auto ->
-            Css.batch []
-
-        Narrow ->
-            Css.flex none
-
-        OneSixth ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct (100 / 6))
-                ]
-
-        OneFifth ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct 20)
-                ]
-
-        OneQuarter ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct 25)
-                ]
-
-        OneThird ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct (100 / 3))
-                ]
-
-        TwoFifths ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct 40)
-                ]
-
-        Half ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct 50)
-                ]
-
-        ThreeFifths ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct 60)
-                ]
-
-        TwoThirds ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct (100 / 1.5))
-                ]
-
-        ThreeQuarters ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct 75)
-                ]
-
-        FourFifths ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct 80)
-                ]
-
-        FiveSixths ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct ((100 / 6) * 5))
-                ]
-
-        Full ->
-            Css.batch
-                [ Css.flex none
-                , Css.width (pct 100)
-                ]
+        Large ->
+            1

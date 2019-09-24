@@ -13,6 +13,7 @@ import Html.Styled.Lazy as Lazy
 import SE.UI.Breadcrumb as Breadcrumb
 import SE.UI.Buttons as Buttons
 import SE.UI.Colors as Colors
+import SE.UI.Column as Column
 import SE.UI.Columns as Columns
 import SE.UI.Container as Container
 import SE.UI.Content as Content
@@ -704,12 +705,13 @@ viewProducts model =
                     viewProductsTable
     in
     Columns.columns
-        [ Columns.column [ ( Columns.Desktop, Columns.OneFifth ) ]
+        [ Column.column
             [ viewCategories
             , Lazy.lazy viewMakes model.makes
             , Lazy.lazy viewFilters model.filters
             ]
-        , Columns.column []
+            |> Column.withSizes [ ( Column.Desktop, Column.OneFifth ) ]
+        , Column.column
             [ --      Breadcrumb.breadcrumb
               --     [ Breadcrumb.link "#av-teknik" [ text "AV-teknik" ]
               --     , Breadcrumb.link "#ljud-bild" [ text "Ljud & Bild" ]
@@ -725,6 +727,7 @@ viewProducts model =
             , Lazy.lazy viewFn model.products
             ]
         ]
+        |> Columns.toHtml
 
 
 viewCategories : Html Msg
@@ -1049,14 +1052,23 @@ viewProductsTableRow product =
 
 viewProductsGallery : List Product -> Html Msg
 viewProductsGallery products =
-    Columns.gaplessMultilineColumns
-        (List.map
-            (\p ->
-                Columns.column [ ( Columns.FullHD, Columns.OneFifth ), ( Columns.Extended, Columns.OneQuarter ), ( Columns.Desktop, Columns.OneThird ), ( Columns.Mobile, Columns.Full ) ]
-                    [ viewProductsGalleryItem p ]
+    Columns.keyedColumns
+        (List.indexedMap
+            (\i p -> 
+                (String.fromInt i, productColumn
+                    [ viewProductsGalleryItem p ])
             )
             products
         )
+        |> Columns.withGap Columns.Gapless
+        |> Columns.withMultiline
+        |> Columns.withAttributes [ Attributes.id "products"] 
+        |> Columns.toHtml
+
+
+productColumn : List (Html Msg) -> Column.Column Msg
+productColumn kids =
+    Column.column kids |> Column.withSizes [ ( Column.FullHD, Column.OneFifth ), ( Column.Extended, Column.OneQuarter ), ( Column.Desktop, Column.OneThird ), ( Column.Mobile, Column.Full ) ]
 
 
 viewProductsGalleryItemLegacy : Product -> Html Msg
@@ -1477,160 +1489,162 @@ viewCheckout : Model -> Html Msg
 viewCheckout model =
     div []
         [ Title.title1 "Varukorg"
-        , Columns.columns
-            [ Columns.column [ ( Columns.Desktop, Columns.TwoThirds ) ]
-                [ Table.table [ Table.Fullwidth, Table.Narrow ]
-                    (Table.head
-                        [ Table.cell [ colspan 2 ] (text "Produkt")
-                        , Table.rightCell [] (text "Antal och pris")
-                        , Table.rightCell [] (text "Totalpris")
-                        , Table.rightCell [] (text "")
+        , Columns.toHtml <|
+            Columns.columns
+                [ Column.column
+                    [ Table.table [ Table.Fullwidth, Table.Narrow ]
+                        (Table.head
+                            [ Table.cell [ colspan 2 ] (text "Produkt")
+                            , Table.rightCell [] (text "Antal och pris")
+                            , Table.rightCell [] (text "Totalpris")
+                            , Table.rightCell [] (text "")
+                            ]
+                        )
+                        (Table.foot
+                            []
+                        )
+                        (Table.body
+                            [ Table.row
+                                [ Table.cell [ Attributes.width 150 ]
+                                    (Image.image ( 150, 150 )
+                                        [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                                        ]
+                                    )
+                                , Table.cell []
+                                    (div []
+                                        [ Html.p [] [ Html.strong [] [ text "Samsung QM75N UHD" ] ]
+                                        , Html.p [] [ text "LH75QMREBGCXEN" ]
+                                        ]
+                                    )
+                                , Table.rightCell []
+                                    (Form.field [ Form.Attached ]
+                                        [ Form.expandedControl False
+                                            [ Form.number
+                                                { value = String.fromInt model.count
+                                                , placeholder = "Antal"
+                                                , modifiers = []
+                                                , onInput = CountSet
+                                                , range = ( 1, 100 )
+                                                , step = 1
+                                                }
+                                            ]
+                                        , Form.control False
+                                            [ Buttons.staticButton [] "st"
+                                            ]
+                                        ]
+                                    )
+                                , Table.rightCell [] (text <| String.fromInt (23951 * model.count))
+                                , Table.rightCell [] (Icon.trash Control.Regular)
+                                ]
+                            , Table.row
+                                [ Table.cell [ Attributes.width 150 ]
+                                    (Image.image ( 150, 150 )
+                                        [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                                        ]
+                                    )
+                                , Table.cell []
+                                    (div []
+                                        [ Html.p [] [ Html.strong [] [ text "Samsung QM75N UHD" ] ]
+                                        , Html.p [] [ text "LH75QMREBGCXEN" ]
+                                        ]
+                                    )
+                                , Table.rightCell []
+                                    (Form.field [ Form.Attached ]
+                                        [ Form.expandedControl False
+                                            [ Form.number
+                                                { value = String.fromInt model.count
+                                                , placeholder = "Antal"
+                                                , modifiers = []
+                                                , onInput = CountSet
+                                                , range = ( 1, 100 )
+                                                , step = 1
+                                                }
+                                            ]
+                                        , Form.control False
+                                            [ Buttons.staticButton [] "st"
+                                            ]
+                                        ]
+                                    )
+                                , Table.rightCell [] (text <| String.fromInt (23951 * model.count))
+                                , Table.rightCell [] (Icon.trash Control.Regular)
+                                ]
+                            ]
+                        )
+                    , styled Html.p
+                        [ Css.textAlign Css.right
                         ]
-                    )
-                    (Table.foot
                         []
-                    )
-                    (Table.body
-                        [ Table.row
-                            [ Table.cell [ Attributes.width 150 ]
-                                (Image.image ( 150, 150 )
-                                    [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
-                                    ]
-                                )
-                            , Table.cell []
-                                (div []
-                                    [ Html.p [] [ Html.strong [] [ text "Samsung QM75N UHD" ] ]
-                                    , Html.p [] [ text "LH75QMREBGCXEN" ]
-                                    ]
-                                )
-                            , Table.rightCell []
-                                (Form.field [ Form.Attached ]
-                                    [ Form.expandedControl False
-                                        [ Form.number
-                                            { value = String.fromInt model.count
-                                            , placeholder = "Antal"
-                                            , modifiers = []
-                                            , onInput = CountSet
-                                            , range = ( 1, 100 )
-                                            , step = 1
-                                            }
-                                        ]
-                                    , Form.control False
-                                        [ Buttons.staticButton [] "st"
-                                        ]
-                                    ]
-                                )
-                            , Table.rightCell [] (text <| String.fromInt (23951 * model.count))
-                            , Table.rightCell [] (Icon.trash Control.Regular)
-                            ]
-                        , Table.row
-                            [ Table.cell [ Attributes.width 150 ]
-                                (Image.image ( 150, 150 )
-                                    [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
-                                    ]
-                                )
-                            , Table.cell []
-                                (div []
-                                    [ Html.p [] [ Html.strong [] [ text "Samsung QM75N UHD" ] ]
-                                    , Html.p [] [ text "LH75QMREBGCXEN" ]
-                                    ]
-                                )
-                            , Table.rightCell []
-                                (Form.field [ Form.Attached ]
-                                    [ Form.expandedControl False
-                                        [ Form.number
-                                            { value = String.fromInt model.count
-                                            , placeholder = "Antal"
-                                            , modifiers = []
-                                            , onInput = CountSet
-                                            , range = ( 1, 100 )
-                                            , step = 1
-                                            }
-                                        ]
-                                    , Form.control False
-                                        [ Buttons.staticButton [] "st"
-                                        ]
-                                    ]
-                                )
-                            , Table.rightCell [] (text <| String.fromInt (23951 * model.count))
-                            , Table.rightCell [] (Icon.trash Control.Regular)
-                            ]
+                        [ Html.a [ onClick NoOp ] [ text "Töm varukorgen" ] ]
+                    ]
+                    |> Column.withSizes [ ( Column.Desktop, Column.TwoThirds ) ]
+                , Column.column
+                    [ styled div
+                        [ Css.backgroundColor Colors.black
+                        , Css.color Colors.white
+                        , Css.padding2 (em 1.25) (em 1.5)
                         ]
-                    )
-                , styled Html.p
-                    [ Css.textAlign Css.right
-                    ]
-                    []
-                    [ Html.a [ onClick NoOp ] [ text "Töm varukorgen" ] ]
-                ]
-            , Columns.defaultColumn
-                [ styled div
-                    [ Css.backgroundColor Colors.black
-                    , Css.color Colors.white
-                    , Css.padding2 (em 1.25) (em 1.5)
-                    ]
-                    []
-                    [ Title.title5 "Sammanställning"
-                    , div []
-                        [ styled div
-                            [ Css.displayFlex
-                            , Css.justifyContent Css.spaceBetween
-                            ]
-                            []
-                            [ div []
-                                [ text "Summa produkter"
+                        []
+                        [ Title.title5 "Sammanställning"
+                        , div []
+                            [ styled div
+                                [ Css.displayFlex
+                                , Css.justifyContent Css.spaceBetween
                                 ]
-                            , div
                                 []
-                                [ text (String.fromInt (23951 * model.count * 2))
-                                ]
-                            ]
-                        , styled div
-                            [ Css.displayFlex
-                            , Css.justifyContent Css.spaceBetween
-                            ]
-                            []
-                            [ div []
-                                [ text "Kemikalieskatt"
+                                [ div []
+                                    [ text "Summa produkter"
+                                    ]
+                                , div
+                                    []
+                                    [ text (String.fromInt (23951 * model.count * 2))
+                                    ]
                                 ]
                             , styled div
-                                []
-                                []
-                                [ text (String.fromInt (164 * model.count * 2))
+                                [ Css.displayFlex
+                                , Css.justifyContent Css.spaceBetween
                                 ]
-                            ]
-                        , styled div
-                            [ Css.displayFlex
-                            , Css.justifyContent Css.spaceBetween
-                            ]
-                            []
-                            [ div []
-                                [ text "Beräknad fraktkostnad*"
-                                ]
-                            , styled div
                                 []
-                                []
-                                [ text (String.fromInt (130 * model.count * 2))
-                                ]
-                            ]
-                        , styled div
-                            [ Css.displayFlex
-                            , Css.justifyContent Css.spaceBetween
-                            ]
-                            []
-                            [ div []
-                                [ Html.strong [] [ text "TOTALT" ]
+                                [ div []
+                                    [ text "Kemikalieskatt"
+                                    ]
+                                , styled div
+                                    []
+                                    []
+                                    [ text (String.fromInt (164 * model.count * 2))
+                                    ]
                                 ]
                             , styled div
+                                [ Css.displayFlex
+                                , Css.justifyContent Css.spaceBetween
+                                ]
                                 []
+                                [ div []
+                                    [ text "Beräknad fraktkostnad*"
+                                    ]
+                                , styled div
+                                    []
+                                    []
+                                    [ text (String.fromInt (130 * model.count * 2))
+                                    ]
+                                ]
+                            , styled div
+                                [ Css.displayFlex
+                                , Css.justifyContent Css.spaceBetween
+                                ]
                                 []
-                                [ Html.strong [] [ text (String.fromInt ((23951 + 164 + 130) * model.count * 2)) ]
+                                [ div []
+                                    [ Html.strong [] [ text "TOTALT" ]
+                                    ]
+                                , styled div
+                                    []
+                                    []
+                                    [ Html.strong [] [ text (String.fromInt ((23951 + 164 + 130) * model.count * 2)) ]
+                                    ]
                                 ]
                             ]
                         ]
                     ]
                 ]
-            ]
         , Title.title5 "Fakturaadress"
         , Content.content []
             [ Html.p []
@@ -1711,105 +1725,109 @@ viewProduct =
         , Css.property "box-shadow" "0 2px 3px rgba(34, 41, 47, 0.1), 0 0 0 1px rgba(34, 41, 47, 0.1)"
         ]
         []
-        [ Columns.columns
-            [ Columns.column []
-                [ Columns.columns
-                    [ Columns.column [ ( Columns.All, Columns.Narrow ) ]
-                        [ Image.image ( 100, 100 )
-                            [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
-                            ]
-                        , Image.image ( 100, 100 )
-                            [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img2.jpg" 1
-                            ]
-                        , Image.image ( 100, 100 )
-                            [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img3.jpg" 1
-                            ]
-                        , Image.image ( 100, 100 )
-                            [ Image.source "video.c0ff7e88.jpg" 1
-                            ]
-                        ]
-                    , Columns.defaultColumn
-                        [ Image.image ( 1000, 667 )
-                            [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
-                            ]
-                        ]
-                    ]
-                ]
-            , Columns.column [ ( Columns.Extended, Columns.OneThird ) ]
-                [ Title.title1 "Samsung QM75N UHD"
-                , Table.table [ Table.Fullwidth, Table.Hoverable ]
-                    (Table.head [])
-                    (Table.foot [])
-                    (Table.body
-                        [ Table.row
-                            [ Table.cell []
-                                (Tag.tags
-                                    [ Tag.Addons ]
-                                    [ Tag.tag [ Tag.Darkest ] "Lagerstatus"
-                                    , Tag.tag [ Tag.Success ] "10+"
+        [ Columns.toHtml <|
+            Columns.columns
+                [ Column.column
+                    [ Columns.toHtml <|
+                        Columns.columns
+                            [ Column.column
+                                [ Image.image ( 100, 100 )
+                                    [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                                     ]
-                                )
-                            , Table.cell [] (text "15 st fler förväntas sändningsklara 24 maj")
-                            ]
-                        , Table.row
-                            [ Table.cell [] (Html.strong [] [ text "Artikelnummer" ])
-                            , Table.cell [] (text "LH75QMREBGCXEN")
-                            ]
-                        , Table.row
-                            [ Table.cell [] (Html.strong [] [ text "Tillverkarens artikelnummer" ])
-                            , Table.cell [] (text "LH75QMREBGCXEN")
-                            ]
-                        , Table.row
-                            [ Table.cell [] (Html.strong [] [ text "E-nummer" ])
-                            , Table.cell [] (text "Endast vid E-nummer.")
-                            ]
-                        ]
-                    )
-                , Form.field []
-                    [ a [ href "https://specialelektronik.se/dokument/produktblad/LH75QMREBGCXEN.pdf" ]
-                        [ Icon.pdf Control.Regular
-                        , Html.strong
-                            []
-                            [ text "Produktblad" ]
-                        ]
-                    ]
-                , Buttons.buttons []
-                    [ Buttons.button [ Buttons.Link ] (Just NoOp) [ text "75\"" ]
-                    , Buttons.button [] (Just NoOp) [ text "55\"" ]
-                    ]
-                , viewBidPrices
-                , viewPrice 23951 31935 164
-                , Columns.columns
-                    [ Columns.defaultColumn
-                        [ Form.field [ Form.Attached ]
-                            [ Form.expandedControl False
-                                [ Form.input
-                                    { value = ""
-                                    , placeholder = "Ange antal"
-                                    , modifiers = [ Form.Size Control.Large ]
-                                    , onInput = \_ -> NoOp
-                                    }
+                                , Image.image ( 100, 100 )
+                                    [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img2.jpg" 1
+                                    ]
+                                , Image.image ( 100, 100 )
+                                    [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img3.jpg" 1
+                                    ]
+                                , Image.image ( 100, 100 )
+                                    [ Image.source "video.c0ff7e88.jpg" 1
+                                    ]
                                 ]
-                            , Form.control False
-                                [ Buttons.staticButton [ Buttons.Size Control.Large ] "st"
+                                |> Column.withSizes [ ( Column.All, Column.Narrow ) ]
+                            , Column.column
+                                [ Image.image ( 1000, 667 )
+                                    [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                                    ]
                                 ]
                             ]
+                    ]
+                , Column.column
+                    [ Title.title1 "Samsung QM75N UHD"
+                    , Table.table [ Table.Fullwidth, Table.Hoverable ]
+                        (Table.head [])
+                        (Table.foot [])
+                        (Table.body
+                            [ Table.row
+                                [ Table.cell []
+                                    (Tag.tags
+                                        [ Tag.Addons ]
+                                        [ Tag.tag [ Tag.Darkest ] "Lagerstatus"
+                                        , Tag.tag [ Tag.Success ] "10+"
+                                        ]
+                                    )
+                                , Table.cell [] (text "15 st fler förväntas sändningsklara 24 maj")
+                                ]
+                            , Table.row
+                                [ Table.cell [] (Html.strong [] [ text "Artikelnummer" ])
+                                , Table.cell [] (text "LH75QMREBGCXEN")
+                                ]
+                            , Table.row
+                                [ Table.cell [] (Html.strong [] [ text "Tillverkarens artikelnummer" ])
+                                , Table.cell [] (text "LH75QMREBGCXEN")
+                                ]
+                            , Table.row
+                                [ Table.cell [] (Html.strong [] [ text "E-nummer" ])
+                                , Table.cell [] (text "Endast vid E-nummer.")
+                                ]
+                            ]
+                        )
+                    , Form.field []
+                        [ a [ href "https://specialelektronik.se/dokument/produktblad/LH75QMREBGCXEN.pdf" ]
+                            [ Icon.pdf Control.Regular
+                            , Html.strong
+                                []
+                                [ text "Produktblad" ]
+                            ]
                         ]
-                    , Columns.defaultColumn
-                        [ Form.field
-                            []
-                            [ Buttons.button [ Buttons.CallToAction, Buttons.Fullwidth, Buttons.Size Control.Large ]
-                                (Just NoOp)
-                                [ Icon.cart Control.Medium
-                                , span [] [ text "Lägg i varukorg" ]
+                    , Buttons.buttons []
+                        [ Buttons.button [ Buttons.Link ] (Just NoOp) [ text "75\"" ]
+                        , Buttons.button [] (Just NoOp) [ text "55\"" ]
+                        ]
+                    , viewBidPrices
+                    , viewPrice 23951 31935 164
+                    , Columns.toHtml <| Columns.columns
+                        [ Column.column
+                            [ Form.field [ Form.Attached ]
+                                [ Form.expandedControl False
+                                    [ Form.input
+                                        { value = ""
+                                        , placeholder = "Ange antal"
+                                        , modifiers = [ Form.Size Control.Large ]
+                                        , onInput = \_ -> NoOp
+                                        }
+                                    ]
+                                , Form.control False
+                                    [ Buttons.staticButton [ Buttons.Size Control.Large ] "st"
+                                    ]
+                                ]
+                            ]
+                        , Column.column
+                            [ Form.field
+                                []
+                                [ Buttons.button [ Buttons.CallToAction, Buttons.Fullwidth, Buttons.Size Control.Large ]
+                                    (Just NoOp)
+                                    [ Icon.cart Control.Medium
+                                    , span [] [ text "Lägg i varukorg" ]
+                                    ]
                                 ]
                             ]
                         ]
                     ]
+                    |> Column.withSizes [ ( Column.Extended, Column.OneThird ) ]
                 ]
-            ]
         , Columns.columns
-            [ Columns.defaultColumn
+            [ Column.column
                 [ Table.table [ Table.Hoverable ]
                     (Table.head [])
                     (Table.foot [])
@@ -1832,7 +1850,7 @@ viewProduct =
                         ]
                     )
                 ]
-            , Columns.column [ ( Columns.Extended, Columns.TwoThirds ) ]
+            , Column.column
                 [ Content.content []
                     [ Html.p [] [ text "Display any content in ultra-high definition with incredibly rich color on slim, efficient signage." ]
                     , ul []
@@ -1848,7 +1866,9 @@ viewProduct =
                 , Title.title5 "Title 5"
                 , Title.title6 "Title 6"
                 ]
+                |> Column.withSizes [ ( Column.Extended, Column.TwoThirds ) ]
             ]
+            |> Columns.toHtml
         ]
 
 
