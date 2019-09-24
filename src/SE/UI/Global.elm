@@ -15,18 +15,18 @@ import Html.Styled as Html exposing (Html)
 import SE.UI.Colors as Colors
 
 
-{-| Add this constant as a plain html element, preferably as high in the hierarchy as possible
+{-| Add this constant as a plain html element, preferably as high in the hierarchy as possible. The argument lets you add custom global rules.
 
-    div [] [
-        global
-        , h1 [] [ text "Hello World!"]
-    ]
+    div []
+        [ global []
+        , h1 [] [ text "Hello World!" ]
+        ]
 
 -}
-global : Html msg
-global =
+global : List Css.Global.Snippet -> Html msg
+global custom =
     Css.Global.global
-        (reset ++ base)
+        (reset ++ base ++ custom)
 
 
 

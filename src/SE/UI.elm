@@ -656,7 +656,7 @@ view model =
             ]
         ]
         []
-        [ Global.global
+        [ Global.global []
         , viewSidebar
         , styled main_
             [ Css.flexGrow (int 1) ]
