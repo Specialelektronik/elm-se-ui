@@ -18,7 +18,7 @@ import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Events exposing (onClick)
 import SE.UI.Colors as Colors exposing (background, white)
 import SE.UI.Delete as Delete
-import SE.UI.Utils exposing (block, desktop, radius, tablet)
+import SE.UI.Utils as Utils exposing (desktop, radius, tablet)
 
 
 padding : Style
@@ -101,7 +101,7 @@ internalNotification colors maybeMsg content =
                 |> Maybe.withDefault (text "")
     in
     styled Html.Styled.div
-        [ block
+        [ Utils.block
         , Css.backgroundColor background
         , Css.borderRadius radius
         , padding
