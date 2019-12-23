@@ -20,12 +20,11 @@ This module is divided levels and items.
 
 -}
 
-import Css exposing (Style, auto, bold, center, currentColor, em, flexEnd, flexStart, hidden, important, inlineBlock, int, left, num, pct, pseudoClass, px, rem, solid, spaceBetween, top, zero)
-import Css.Global exposing (adjacentSiblings, descendants, each, selector, typeSelector)
-import Html.Styled exposing (Html, styled, text)
+import Css exposing (Style, auto, center, flexEnd, flexStart, inlineBlock, int, pseudoClass, rem, spaceBetween, top, zero)
+import Css.Global exposing (adjacentSiblings, descendants, selector, typeSelector)
+import Html.Styled exposing (Html, styled)
 import Html.Styled.Attributes exposing (class)
-import SE.UI.Colors exposing (darker, primary, white)
-import SE.UI.Utils exposing (block, mobile, overflowTouch, radius, tablet)
+import SE.UI.Utils exposing (block, mobile, radius, tablet)
 
 
 type Item msg

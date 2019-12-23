@@ -15,9 +15,9 @@ see <https://bulma.io/documentation/components/pagination/>
 
 -}
 
-import Css exposing (Style, active, block, calc, center, default, disabled, em, flexEnd, flexStart, focus, hover, int, minus, none, num, pct, pseudoClass, rem, spaceBetween, wrap, zero)
+import Css exposing (Style, active, center, default, disabled, em, flexEnd, flexStart, focus, hover, int, none, num, rem, spaceBetween, wrap)
 import Css.Global exposing (adjacentSiblings, children, typeSelector)
-import Html.Styled exposing (Attribute, Html, a, button, li, nav, span, styled, text)
+import Html.Styled exposing (Html, a, button, li, nav, span, styled, text)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events exposing (onClick)
 import SE.UI.Colors as Colors

@@ -11,8 +11,8 @@ see <https://bulma.io/documentation/layout/container/>
 -}
 
 import Css exposing (Style, auto, none, px, relative, zero)
-import Html.Styled exposing (Attribute, Html, styled, text)
-import SE.UI.Utils as Utils exposing (desktop, desktopWidth, extended, extendedWidth, fullhd, fullhdWidth, gap, widescreen, widescreenWidth)
+import Html.Styled exposing (Html, styled)
+import SE.UI.Utils exposing (desktop, desktopWidth, extended, extendedWidth, fullhd, fullhdWidth, gap, widescreen, widescreenWidth)
 
 
 {-| For now, only Fluid modifier is supported

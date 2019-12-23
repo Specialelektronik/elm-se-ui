@@ -37,9 +37,9 @@ The `column` function takes a `Sizes` parameter, a List (Device, Width)
 
 -}
 
-import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap, zero)
+import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap)
 import Css.Global exposing (children, typeSelector)
-import Html.Styled exposing (Html, styled, text)
+import Html.Styled exposing (Html, styled)
 import SE.UI.Utils exposing (desktop, extended, fullhd, mobile, tablet, widescreen)
 
 

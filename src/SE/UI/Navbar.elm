@@ -3,9 +3,9 @@ module SE.UI.Navbar exposing (brand, led, link, navbar, noBrand)
 {-| DEPRECATED, not part of the framework.
 -}
 
-import Css exposing (Style, block, center, displayFlex, flex, hex, int, ms, none, px, relative, rem, stretch, zero)
+import Css exposing (Style, center, displayFlex, hex, int, ms, none, relative, rem, stretch, zero)
 import Css.Animations exposing (Keyframes, keyframes)
-import Html.Styled exposing (Attribute, Html, styled, text)
+import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes exposing (href)
 import SE.UI.Colors exposing (black, lightest, linkHover, primary, white)
 import SE.UI.Utils exposing (desktop)

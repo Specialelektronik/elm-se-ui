@@ -19,16 +19,15 @@ see <https://bulma.io/documentation/elements/button/>
 
 -}
 
-import Css exposing (Style, absolute, active, bold, calc, center, disabled, em, flexEnd, flexStart, focus, hover, important, minus, noWrap, none, num, pct, pointer, pseudoClass, px, rem, rgba, transparent, underline, wrap, zero)
+import Css exposing (Style, absolute, active, calc, center, disabled, em, flexEnd, flexStart, focus, hover, important, minus, noWrap, none, num, pct, pointer, pseudoClass, px, rem, transparent, underline, wrap, zero)
 import Css.Global exposing (children, descendants, typeSelector)
 import Css.Transitions
-import Html.Styled exposing (Attribute, Html, styled, text)
-import Html.Styled.Attributes exposing (class)
+import Html.Styled exposing ( Html, styled, text)
+import Html.Styled.Attributes
 import Html.Styled.Events exposing (onClick)
 import SE.UI.Colors as Colors
 import SE.UI.Control as Control exposing (controlStyle)
-import SE.UI.Icon as Icon
-import SE.UI.Utils exposing (centerEm, loader, smallRadius)
+import SE.UI.Utils exposing (centerEm, loader)
 
 
 {-| Modify the button, support all modifiers in Bulma except the Disabled. To disable a button, use `Nothing` as the Maybe msg.

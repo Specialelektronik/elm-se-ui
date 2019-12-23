@@ -2,14 +2,13 @@ module SE.UI exposing (main)
 
 import Array exposing (Array)
 import Browser
-import Css exposing (absolute, block, calc, column, em, fixed, hover, int, minus, px, relative, rem, rgba, vh, zero)
+import Css exposing (absolute, block, calc, column, em, hover, int, minus, px, relative, rem, rgba, zero)
 import Css.Global exposing (descendants)
 import Css.Media
 import Css.Transitions
-import Html.Styled as Html exposing (Html, a, article, aside, div, li, main_, span, styled, text, toUnstyled, ul)
-import Html.Styled.Attributes as Attributes exposing (align, colspan, href, id)
+import Html.Styled as Html exposing (Html, a, article, div, li, main_, span, styled, text, toUnstyled, ul)
+import Html.Styled.Attributes as Attributes exposing (colspan, href, id)
 import Html.Styled.Events exposing (onClick)
-import SE.UI.Breadcrumb as Breadcrumb
 import SE.UI.Buttons as Buttons
 import SE.UI.Colors as Colors
 import SE.UI.Columns as Columns
@@ -17,16 +16,15 @@ import SE.UI.Container as Container
 import SE.UI.Content as Content
 import SE.UI.Control as Control
 import SE.UI.Form as Form
+import SE.UI.Global as Global
 import SE.UI.Icon as Icon
 import SE.UI.Image as Image
 import SE.UI.Level as Level
-import SE.UI.Logo as Logo
 import SE.UI.Section exposing (section)
 import SE.UI.Table as Table
 import SE.UI.Tag as Tag
 import SE.UI.Title as Title
 import SE.UI.Utils as Utils exposing (radius, smallRadius)
-import SE.UI.Global as Global
 
 
 

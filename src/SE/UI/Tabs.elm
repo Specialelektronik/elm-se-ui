@@ -18,13 +18,11 @@ see <https://bulma.io/documentation/components/tabs/>
 
 -}
 
-import Css exposing (Style, auto, center, default, em, flex, flexStart, hidden, hover, int, noWrap, none, px, rem, solid, spaceBetween, stretch, top, wrap, zero)
-import Css.Global exposing (adjacentSiblings, descendants, each, selector, typeSelector)
-import Css.Transitions
+import Css exposing (Style, auto, center, em, flexStart, hidden, hover, int, noWrap, px, rem, solid, spaceBetween, stretch, top, zero)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes
-import SE.UI.Colors as Colors exposing (background, white)
-import SE.UI.Utils exposing (block, desktop, overflowTouch, radius, tablet, unselectable)
+import SE.UI.Colors as Colors
+import SE.UI.Utils exposing (block, overflowTouch, unselectable)
 
 
 type Link msg

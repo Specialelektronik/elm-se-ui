@@ -21,7 +21,7 @@ import Css exposing (Style, auto, block, pct, relative)
 import Css.Global exposing (descendants, typeSelector)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes exposing (attribute, src)
-import Svg.Styled as Svg exposing (Attribute, Svg)
+import Svg.Styled as Svg
 import Svg.Styled.Attributes exposing (d, fill, viewBox)
 
 

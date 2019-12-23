@@ -10,7 +10,7 @@ module SE.UI.Section exposing (section)
 -}
 
 import Css exposing (rem)
-import Html.Styled exposing (Attribute, Html, styled, text)
+import Html.Styled exposing (Attribute, Html, styled)
 
 
 {-| Creates a styled section html tag in line with [Bulmas section](https://bulma.io/documentation/layout/section/).

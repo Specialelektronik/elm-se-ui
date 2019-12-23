@@ -18,13 +18,12 @@ see <https://bulma.io/documentation/components/breadcrumb/>
 
 -}
 
-import Css exposing (Style, center, default, em, flex, flexStart, hover, noWrap, none, rem, wrap, zero)
-import Css.Global exposing (adjacentSiblings, descendants, each, selector, typeSelector)
-import Css.Transitions
-import Html.Styled exposing (Html, styled, text)
+import Css exposing (Style, center, default, em, flexStart, hover, noWrap, none, rem, wrap, zero)
+import Css.Global exposing (adjacentSiblings, descendants, typeSelector)
+import Html.Styled exposing (Html, styled)
 import Html.Styled.Attributes
-import SE.UI.Colors as Colors exposing (background, white)
-import SE.UI.Utils exposing (block, desktop, radius, tablet, unselectable)
+import SE.UI.Colors as Colors
+import SE.UI.Utils exposing (block, unselectable)
 
 
 type Link msg
