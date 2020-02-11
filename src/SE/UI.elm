@@ -640,6 +640,18 @@ levelItem toProductView currentProductView icon =
     in
     styled span styles attribs [ icon Control.Medium ]
 
+viewPicture : Model -> Html Msg
+viewPicture model =
+    Image.picture (Image.alt "Fallback text") (160, 160) [
+        Image.source [
+            Image.srcset "//shop.dev1/storage/images/products/36f5cae459cc9b1988fe9ec6917860f245f6caf4.jpg" 1
+            , Image.srcset "//shop.dev1/storage/images/products/d068abffa1641be3919215a6003d4805e4258da4.jpg" 2
+        ], Image.source [
+            Image.srcset "//shop.dev1/storage/images/products/36f5cae459cc9b1988fe9ec6917860f245f6caf4.webp" 1
+            , Image.srcset "//shop.dev1/storage/images/products/d068abffa1641be3919215a6003d4805e4258da4.webp" 2
+        ]
+
+    ]
 
 view : Model -> Html Msg
 view model =
@@ -898,7 +910,7 @@ viewProductsListItemLegacy product =
             ]
             []
             [ Image.image ( 186, 124 )
-                [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                 ]
             ]
         , viewProductsGalleryItemPriceLegacy product.status product.list_price product.discount product.chemical_tax
@@ -955,7 +967,7 @@ viewProductsListItem product =
             ]
             []
             [ Image.image ( 186, 124 )
-                [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                 ]
             ]
         , div []
@@ -1064,7 +1076,7 @@ viewProductsGalleryItemLegacy product =
         productItemStyles
         []
         [ Image.image ( 327, 218 )
-            [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+            [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
             ]
         , viewProductsGalleryItemPriceLegacy product.status product.list_price product.discount product.chemical_tax
         , Html.strong
@@ -1156,7 +1168,7 @@ viewProductsGalleryItem product =
                     ]
                     []
                     [ Image.image ( 225, 150 )
-                        [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                        [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                         ]
                     ]
                 , styled div
@@ -1169,12 +1181,12 @@ viewProductsGalleryItem product =
                         []
                         [ li []
                             [ Image.image ( 75, 50 )
-                                [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img2.jpg" 1
+                                [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img2.jpg" 1
                                 ]
                             ]
                         , li []
                             [ Image.image ( 75, 50 )
-                                [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img3.jpg" 1
+                                [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img3.jpg" 1
                                 ]
                             ]
                         ]
@@ -1493,7 +1505,7 @@ viewCheckout model =
                         [ Table.row
                             [ Table.cell [ Attributes.width 150 ]
                                 (Image.image ( 150, 150 )
-                                    [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                                    [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                                     ]
                                 )
                             , Table.cell []
@@ -1525,7 +1537,7 @@ viewCheckout model =
                         , Table.row
                             [ Table.cell [ Attributes.width 150 ]
                                 (Image.image ( 150, 150 )
-                                    [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                                    [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                                     ]
                                 )
                             , Table.cell []
@@ -1715,21 +1727,21 @@ viewProduct =
                 [ Columns.columns
                     [ Columns.column [ ( Columns.All, Columns.Narrow ) ]
                         [ Image.image ( 100, 100 )
-                            [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                            [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                             ]
                         , Image.image ( 100, 100 )
-                            [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img2.jpg" 1
+                            [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img2.jpg" 1
                             ]
                         , Image.image ( 100, 100 )
-                            [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img3.jpg" 1
+                            [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img3.jpg" 1
                             ]
                         , Image.image ( 100, 100 )
-                            [ Image.source "video.c0ff7e88.jpg" 1
+                            [ Image.srcset "video.c0ff7e88.jpg" 1
                             ]
                         ]
                     , Columns.defaultColumn
                         [ Image.image ( 1000, 667 )
-                            [ Image.source "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                            [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                             ]
                         ]
                     ]
