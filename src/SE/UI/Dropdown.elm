@@ -33,17 +33,13 @@ The Elm Arcitecture makes it a little difficult to listen to clicks on the entir
 
 -}
 
-import Css exposing (Style, absolute, active, auto, block, bold, borderBox, calc, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, middle, minus, noRepeat, noWrap, none, num, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, scale, solid, sub, top, transparent, url, vertical, zero)
-import Css.Global exposing (adjacentSiblings, descendants, each, typeSelector, withAttribute)
-import Css.Transitions
-import Html.Styled exposing (Attribute, Html, styled, text)
-import Html.Styled.Attributes exposing (class, placeholder)
-import Html.Styled.Events exposing (onInput)
+import Css exposing (Style, absolute, block, focus, hover, inlineFlex, int, left, noWrap, none, num, pct, px, relative, rem, top, zero)
+import Html.Styled exposing (Html, styled)
+import Html.Styled.Attributes
 import SE.UI.Buttons as Buttons exposing (button)
-import SE.UI.Colors as Colors exposing (black, danger, darker, info, light, lighter, link, primary, success, warning, white)
-import SE.UI.Control exposing (controlStyle)
+import SE.UI.Colors as Colors exposing (black, darker, link, white)
 import SE.UI.OuterClick exposing (withId)
-import SE.UI.Utils as Utils exposing (loader, radius)
+import SE.UI.Utils exposing (radius)
 
 
 type alias Url =

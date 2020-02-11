@@ -10,13 +10,12 @@ see <https://bulma.io/documentation/elements/delete/>
 
 -}
 
-import Css exposing (Style, absolute, active, after, before, block, currentColor, deg, focus, hover, inlineBlock, int, minus, none, pct, pointer, pseudoClass, px, relative, rem, rgba, rotate, top, translateX, translateY, transparent, zero)
-import Css.Global exposing (descendants, each, selector, typeSelector)
+import Css exposing (Style, absolute, active, after, before, block, deg, focus, hover, inlineBlock, none, pct, pointer, px, relative, rgba, rotate, top, translateX, translateY, zero)
 import Css.Transitions
-import Html.Styled exposing (Html, styled, text)
+import Html.Styled exposing (Html, styled)
 import Html.Styled.Events exposing (onClick)
-import SE.UI.Colors exposing (background, white)
-import SE.UI.Utils exposing (block, desktop, radius, tablet, unselectable)
+import SE.UI.Colors exposing (white)
+import SE.UI.Utils exposing (block, unselectable)
 
 
 {-| A simple circle with a cross, no support for sizes.

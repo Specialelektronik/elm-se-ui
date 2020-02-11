@@ -9,10 +9,8 @@ Only the title element is supported, not the subtitle
 
 -}
 
-import Css exposing (Style, bold, int, num, rem, uppercase)
-import Css.Global exposing (descendants)
+import Css exposing (Style, int, num, rem, uppercase)
 import Html.Styled exposing (Html, styled, text)
-import SE.UI.Colors exposing (darkest)
 import SE.UI.Utils exposing (block)
 
 

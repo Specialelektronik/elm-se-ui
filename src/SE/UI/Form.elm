@@ -32,17 +32,17 @@ see <https://bulma.io/documentation/form/>
 
 -}
 
-import Css exposing (Style, absolute, active, auto, block, bold, borderBox, calc, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, middle, minus, noRepeat, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, scale, solid, sub, top, transparent, url, vertical, zero)
+import Css exposing (Style, absolute, active, auto, block, bold, borderBox, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, middle, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, scale, solid, top, vertical, zero)
 import Css.Global exposing (adjacentSiblings, descendants, each, typeSelector, withAttribute)
 import Css.Transitions
-import Html.Styled exposing (Attribute, Html, styled, text)
+import Html.Styled exposing ( Html, styled, text)
 import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onInput)
-import SE.UI.Colors as Colors exposing (base, black, danger, darker, info, light, link, primary, success, warning, white)
+import SE.UI.Colors as Colors exposing (base, danger, darker, info, link, primary, success, warning)
 import SE.UI.Control as Control exposing (controlStyle)
-import SE.UI.Utils as Utils exposing (loader, radius)
-import Svg.Styled as Svg exposing (Attribute, Svg)
-import Svg.Styled.Attributes exposing (d, fill, height, stroke, strokeLinecap, strokeLinejoin, strokeWidth, viewBox, width)
+import SE.UI.Utils as Utils exposing (loader)
+import Svg.Styled as Svg
+import Svg.Styled.Attributes exposing (d, fill, height, stroke, strokeWidth, viewBox, width)
 
 
 {-| Holds the basic data for inputs, textareas and selects

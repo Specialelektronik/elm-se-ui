@@ -11,7 +11,7 @@ see <https://bulma.io/documentation/components/modal/>
 -}
 
 import Css exposing (Style, absolute, auto, calc, center, column, fixed, hidden, int, minus, none, pct, px, relative, rgba, vh, zero)
-import Html.Styled exposing (Html, styled, text)
+import Html.Styled exposing (Html, styled)
 import Html.Styled.Events exposing (onClick)
 import SE.UI.Delete exposing (delete)
 import SE.UI.Utils exposing (tablet)

@@ -10,10 +10,9 @@ see <https://bulma.io/documentation/elements/content/>
 
 -}
 
-import Css exposing (Style, auto, bold, center, circle, decimal, disc, em, inlineBlock, italic, left, outside, pct, pseudoClass, px, rem, solid, square, top, zero)
+import Css exposing (auto, bold, center, circle, decimal, disc, em, inlineBlock, italic, left, outside, pct, pseudoClass, px, rem, solid, square, top, zero)
 import Css.Global exposing (blockquote, dd, descendants, dl, each, h1, h2, h3, h4, h5, h6, img, ol, p, pre, selector, table, td, tfoot, th, thead, typeSelector, ul)
-import Html.Styled exposing (Attribute, Html, styled, text)
-import Html.Styled.Attributes exposing (href)
+import Html.Styled exposing (Html, styled)
 import SE.UI.Colors as Colors exposing (black, lightest)
 import SE.UI.Utils exposing (block)
 

@@ -25,9 +25,9 @@ The table element has several helper functions to make it easy to create the tab
 
 -}
 
-import Css exposing (Style, auto, bold, currentColor, em, hidden, important, int, left, num, pct, px, rem, solid, top, zero)
+import Css exposing (Style, auto, em, hidden, important, left, pct, px, solid, top, zero)
 import Css.Global exposing (descendants, each, selector, typeSelector)
-import Html.Styled exposing (Attribute, Html, styled, text)
+import Html.Styled exposing (Attribute, Html, styled)
 import SE.UI.Colors as Colors
 import SE.UI.Utils exposing (block, overflowTouch)
 

@@ -6,7 +6,7 @@ module SE.UI.Control exposing (controlHeight, controlStyle, Size(..))
 
 -}
 
-import Css exposing (Style, active, alignItems, border3, borderRadius, boxShadow, boxShadow5, center, cursor, disabled, display, em, flexStart, focus, fontSize, height, inlineFlex, justifyContent, lineHeight, none, notAllowed, num, paddingBottom, paddingLeft, paddingRight, paddingTop, position, property, px, relative, rem, rgba, solid, top, transparent, verticalAlign, zero)
+import Css exposing (Style, active, alignItems, border3, borderRadius, boxShadow, center, cursor, disabled, display, em, flexStart, focus, fontSize, height, inlineFlex, justifyContent, lineHeight, none, notAllowed, paddingBottom, paddingLeft, paddingRight, paddingTop, position, property, px, relative, solid, top, transparent, verticalAlign)
 import SE.UI.Utils exposing (radius, smallRadius)
 
 

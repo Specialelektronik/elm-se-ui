@@ -19,9 +19,9 @@ module SE.UI.Image exposing
 
 import Css exposing (Style, auto, block, pct, relative)
 import Css.Global exposing (descendants, each, typeSelector)
-import Html.Styled exposing (Html, styled, text)
+import Html.Styled exposing (Attribute, Html, styled, text)
 import Html.Styled.Attributes exposing (attribute, src)
-import Svg.Styled as Svg exposing (Attribute)
+import Svg.Styled as Svg
 import Svg.Styled.Attributes exposing (d, fill, viewBox)
 
 

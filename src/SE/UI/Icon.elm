@@ -19,7 +19,7 @@ import Html.Styled exposing (Html, styled)
 import Html.Styled.Attributes exposing (class)
 import SE.UI.Control as Control
 import Svg.Styled as Svg exposing (Attribute, Svg)
-import Svg.Styled.Attributes as Attributes exposing (d, height, preserveAspectRatio, width)
+import Svg.Styled.Attributes as Attributes exposing (d, height, width)
 
 
 type alias Width =

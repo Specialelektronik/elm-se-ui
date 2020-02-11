@@ -37,10 +37,10 @@ Mostly notably is the extra breakpoint we have compared to Bulma. Bulmas "fullhd
 
 -}
 
-import Css exposing (Style, absolute, block, calc, deg, em, infinite, minus, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
+import Css exposing (Style, absolute, block, calc, deg, em, minus, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
-import Css.Media as Media exposing (all, maxWidth, minWidth, only, print, screen)
-import Html.Styled exposing (Attribute)
+import Css.Media as Media exposing (maxWidth, minWidth, only, screen)
+import Html.Styled
 import Html.Styled.Events exposing (on)
 import Json.Decode as Json
 import SE.UI.Colors exposing (light)

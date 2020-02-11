@@ -25,7 +25,7 @@ module SE.UI.Colors exposing
 
 -}
 
-import Css exposing (hsl, rgba)
+import Css
 
 
 {-| White, mostly used as background

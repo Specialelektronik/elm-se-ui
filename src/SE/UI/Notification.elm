@@ -12,13 +12,12 @@ This module exposes one function for each color. If you supply a message it will
 
 -}
 
-import Css exposing (Style, absolute, block, currentColor, int, minus, none, pseudoClass, relative, rem, transparent, zero)
+import Css exposing (Style, absolute, block, currentColor, relative, rem, transparent)
 import Css.Global exposing (descendants, each, selector, typeSelector)
 import Html.Styled exposing (Html, styled, text)
-import Html.Styled.Events exposing (onClick)
 import SE.UI.Colors as Colors exposing (background, white)
 import SE.UI.Delete as Delete
-import SE.UI.Utils as Utils exposing (desktop, radius, tablet)
+import SE.UI.Utils as Utils exposing (radius)
 
 
 padding : Style

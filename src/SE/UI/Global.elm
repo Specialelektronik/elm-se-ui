@@ -9,18 +9,18 @@ module SE.UI.Global exposing (global)
 
 -}
 
-import Css exposing (Style)
+import Css
 import Css.Global
-import Html.Styled as Html exposing (Html)
+import Html.Styled exposing (Html)
 import SE.UI.Colors as Colors
 
 
 {-| Add this constant as a plain html element, preferably as high in the hierarchy as possible
 
-    div [] [
-        global
-        , h1 [] [ text "Hello World!"]
-    ]
+    div []
+        [ global
+        , h1 [] [ text "Hello World!" ]
+        ]
 
 -}
 global : Html msg
