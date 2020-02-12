@@ -1,4 +1,4 @@
 .cache
-dist/
 elm-stuff
 node_modules
+docs/explorer.js

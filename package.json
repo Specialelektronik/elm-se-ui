@@ -12,11 +12,8 @@
   },
   "author": "Carl-Fredrik Herö <carl-fredrik.hero@specialelektronik.se>",
   "license": "MIT",
-  "dependencies": {
-    "parcel-bundler": "^1.12.4"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "elm-hot": "^1.1.4",
-    "node-elm-compiler": "^5.0.4"
+    "elm-live": "^4.0.1"
   }
 }

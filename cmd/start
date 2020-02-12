@@ -1,1 +1,1 @@
-node_modules/.bin/parcel docs/index.html
+node_modules/.bin/elm-live src/SE/Explorer.elm --dir=./docs --start-page=./docs/explorer.html -- --output=docs/explorer.js
