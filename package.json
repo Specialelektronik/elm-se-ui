@@ -7,13 +7,8 @@
   "directories": {
     "doc": "docs"
   },
-  "scripts": {
-    "start": "cmd/start"
-  },
   "author": "Carl-Fredrik Herö <carl-fredrik.hero@specialelektronik.se>",
   "license": "MIT",
   "dependencies": {},
-  "devDependencies": {
-    "elm-live": "^4.0.1"
-  }
+  "devDependencies": {}
 }
