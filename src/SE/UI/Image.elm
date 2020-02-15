@@ -1,5 +1,5 @@
 module SE.UI.Image exposing
-    ( picture, image, noImage
+    ( picture, image, noImage, Modifier(..)
     , source, srcset, alt
     )
 
@@ -8,7 +8,7 @@ module SE.UI.Image exposing
 
 # Definition
 
-@docs picture, image, noImage
+@docs picture, image, noImage, Modifier
 
 
 # Source and Srcset
@@ -28,6 +28,9 @@ import Svg.Styled.Attributes exposing (d, fill, viewBox)
 type Source
     = Source (List Srcset)
 
+type Modifier
+    = Fixed Width Height
+    | Square
 
 type alias Srcset =
     { url : String
@@ -40,11 +43,11 @@ type alias Resolution =
 
 
 type alias Width =
-    Int
+    Float
 
 
 type alias Height =
-    Int
+    Float
 
 
 type Alt
@@ -58,27 +61,21 @@ type MimeType
     | Png
 
 
-figure : ( Width, Height ) -> List (Html msg) -> Html msg
-figure ( w, h ) =
-    styled Html.Styled.figure
-        (containerStyles
-            ++ [ Css.maxWidth (Css.px (toFloat w))
-               , Css.maxHeight (Css.px (toFloat h))
-               ]
-        )
-        []
+figure : Modifier -> List (Html msg) -> Html msg
+figure mod =
+    styled Html.Styled.figure (containerStyles mod) []
 
 
 {-| Create and img tag with a list of srcsets. If the list of srcsets is empty or hasn't got a single srcset with the resolution of 1, then this function will output an empty text tag.
 
-    image ( 640, 480 )
+    image (alt "Fallback text") (Fixed 640 480)
         [ srcset "https://bulma.io/images/placeholders/640x480.png" 1
         , srcset "https://bulma.io/images/placeholders/1280x960.png" 2
-        ] == "<figure style="position: relative;display: block;"><img style="display: block;height: auto;width: 100%;" src="https://bulma.io/images/placeholders/640x480.png" width="640" height="480" srcset="https://bulma.io/images/placeholders/640x480.png 1x, https://bulma.io/images/placeholders/1280x960.png 2x"></figure>"
+        ] == '<figure style="position: relative;display: block;"><img style="display: block;height: auto;width: 100%;" src="https://bulma.io/images/placeholders/640x480.png" width="640" height="480" srcset="https://bulma.io/images/placeholders/640x480.png 1x, https://bulma.io/images/placeholders/1280x960.png 2x"></figure>'
 
 -}
-image : ( Width, Height ) -> List Srcset -> Html msg
-image ( w, h ) srcsets =
+image : Alt -> Modifier -> List Srcset -> Html msg
+image (Alt alt_) mod srcsets =
     let
         maybeFallback =
             List.filter (\a -> a.resolution == 1) srcsets
@@ -89,11 +86,10 @@ image ( w, h ) srcsets =
             text ""
 
         Just fallback ->
-            figure ( w, h )
+            figure mod
                 [ Html.Styled.img
                     [ src fallback.url
-                    , Html.Styled.Attributes.width w
-                    , Html.Styled.Attributes.height h
+                    , Html.Styled.Attributes.alt alt_
                     , attribute "srcset" (srcsetsToString srcsets)
                     ]
                     []
@@ -104,7 +100,7 @@ image ( w, h ) srcsets =
 
 Only use the picture element if you have multiple identical images in different file formats. If you only have 1 format, use the `image` function instead.
 
-    picture (alt "A fallback text if the images cannot be loaded") (640, 480)
+    picture (alt "A fallback text if the images cannot be loaded") (Fixed 640 480)
         [
             source [
                 srcset "https://bulma.io/images/placeholders/640x480.webp" 1
@@ -122,8 +118,8 @@ Only use the picture element if you have multiple identical images in different 
             </figure>"
 
 -}
-picture : Alt -> ( Width, Height ) -> List Source -> Html msg
-picture (Alt alt_) ( w, h ) sources =
+picture : Alt -> Modifier -> List Source -> Html msg
+picture (Alt alt_) mod sources =
     let
         sortedSources =
             sortSources sources
@@ -151,7 +147,7 @@ picture (Alt alt_) ( w, h ) sources =
             text ""
 
         Just _ ->
-            figure ( w, h )
+            figure mod
                 [ Html.Styled.node "picture"
                     []
                     sourceEls
@@ -330,15 +326,37 @@ extractExtension str =
 -- STYLES
 
 
-containerStyles : List Style
-containerStyles =
+containerStyles : Modifier -> List Style
+containerStyles mod =
+    let
+        (modStyle, imgModStyle) = case mod of
+            Fixed width height ->
+                ([
+                    Css.width (Css.px width)
+                    , Css.height (Css.px height)
+                ], [])
+            Square ->
+                ([
+                    Css.paddingTop (pct 100)
+                ], [
+                    Css.bottom Css.zero
+                    , Css.left Css.zero
+                    , Css.position Css.absolute
+                    , Css.right Css.zero
+                    , Css.top Css.zero
+                    , Css.property "object-fit" "contain"
+                ])
+    in
+    
     [ Css.position relative
     , Css.display block
+    , Css.batch modStyle
     , descendants
         [ each [ typeSelector "img", typeSelector "picture" ]
             [ Css.display block
             , Css.height auto
             , Css.width (pct 100)
+            , Css.batch imgModStyle
             ]
         ]
     ]
