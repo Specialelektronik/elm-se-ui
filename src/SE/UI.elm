@@ -16,6 +16,7 @@ import SE.UI.Container as Container
 import SE.UI.Content as Content
 import SE.UI.Control as Control
 import SE.UI.Form as Form
+import SE.UI.Modal as Modal
 import SE.UI.Global as Global
 import SE.UI.Icon as Icon
 import SE.UI.Image as Image
@@ -41,6 +42,7 @@ type alias Model =
     , products : List Product
     , makes : List ( Bool, String )
     , filters : Array Filter
+    , showModal : Bool
     }
 
 
@@ -86,6 +88,7 @@ initialModel =
     , message = ""
     , requestedDeliveryDate = ""
     , view = Gallery
+    , showModal = False
     , filters =
         Array.fromList
             [ { label = "Typ"
@@ -546,6 +549,7 @@ type Msg
     | ChangedProductView ProductView
     | ClickedMake String
     | ClickedFilter Int String
+    | ToggledModal
 
 
 update : Msg -> Model -> Model
@@ -606,6 +610,8 @@ update msg model =
                             model.filters
             in
             { model | filters = newFilters }
+        ToggledModal ->
+            {model | showModal = not model.showModal}
 
 
 updateFilter : String -> Filter -> Filter
@@ -695,6 +701,8 @@ view model =
                     ]
                 ]
             ]
+        , viewIf model.showModal (Modal.modal ToggledModal [ Image.image (Image.alt "Fallback text") Image.Square [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                ]]) 
         ]
 
 
@@ -1740,7 +1748,7 @@ viewProduct =
                     , Columns.defaultColumn
                         [ Image.image ( 1000, 667 )
                             [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
-                            ]
+                            ] ]
                         ]
                     ]
                 ]
@@ -1964,6 +1972,9 @@ viewSidebar : Html Msg
 viewSidebar =
     text ""
 
+viewIf : Bool -> Html Msg -> Html Msg
+viewIf predicate html =
+    if predicate then html else text ""
 
 
 -- styled aside
