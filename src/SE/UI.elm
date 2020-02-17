@@ -16,11 +16,11 @@ import SE.UI.Container as Container
 import SE.UI.Content as Content
 import SE.UI.Control as Control
 import SE.UI.Form as Form
-import SE.UI.Modal as Modal
 import SE.UI.Global as Global
 import SE.UI.Icon as Icon
 import SE.UI.Image as Image
 import SE.UI.Level as Level
+import SE.UI.Modal as Modal
 import SE.UI.Section exposing (section)
 import SE.UI.Table as Table
 import SE.UI.Tag as Tag
@@ -610,8 +610,9 @@ update msg model =
                             model.filters
             in
             { model | filters = newFilters }
+
         ToggledModal ->
-            {model | showModal = not model.showModal}
+            { model | showModal = not model.showModal }
 
 
 updateFilter : String -> Filter -> Filter
@@ -644,18 +645,21 @@ levelItem toProductView currentProductView icon =
     in
     styled span styles attribs [ icon Control.Medium ]
 
+
 viewPicture : Model -> Html Msg
 viewPicture model =
-    Image.picture (Image.alt "Fallback text") (Image.Fixed 160 160) [
-        Image.source [
-            Image.srcset "//shop.dev1/storage/images/products/36f5cae459cc9b1988fe9ec6917860f245f6caf4.jpg" 1
+    Image.picture (Image.alt "Fallback text")
+        (Image.Fixed 160 160)
+        [ Image.source
+            [ Image.srcset "//shop.dev1/storage/images/products/36f5cae459cc9b1988fe9ec6917860f245f6caf4.jpg" 1
             , Image.srcset "//shop.dev1/storage/images/products/d068abffa1641be3919215a6003d4805e4258da4.jpg" 2
-        ], Image.source [
-            Image.srcset "//shop.dev1/storage/images/products/36f5cae459cc9b1988fe9ec6917860f245f6caf4.webp" 1
+            ]
+        , Image.source
+            [ Image.srcset "//shop.dev1/storage/images/products/36f5cae459cc9b1988fe9ec6917860f245f6caf4.webp" 1
             , Image.srcset "//shop.dev1/storage/images/products/d068abffa1641be3919215a6003d4805e4258da4.webp" 2
+            ]
         ]
 
-    ]
 
 view : Model -> Html Msg
 view model =
@@ -701,8 +705,14 @@ view model =
                     ]
                 ]
             ]
-        , viewIf model.showModal (Modal.modal ToggledModal [ Image.image (Image.alt "Fallback text") Image.Square [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
-                ]]) 
+        , viewIf model.showModal
+            (Modal.modal ToggledModal
+                [ Image.image (Image.alt "Fallback text")
+                    Image.Square
+                    [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
+                    ]
+                ]
+            )
         ]
 
 
@@ -915,7 +925,8 @@ viewProductsListItemLegacy product =
             , Css.marginRight (rem 1.5)
             ]
             []
-            [ Image.image (Image.Fixed 186 124)
+            [ Image.image (Image.alt "Fallback text")
+                (Image.Fixed 186 124)
                 [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                 ]
             ]
@@ -972,7 +983,8 @@ viewProductsListItem product =
             , Css.marginRight (rem 1.5)
             ]
             []
-            [ Image.image (Image.Fixed 186 124 )
+            [ Image.image (Image.alt "Fallback text")
+                (Image.Fixed 186 124)
                 [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                 ]
             ]
@@ -1081,7 +1093,8 @@ viewProductsGalleryItemLegacy product =
     styled div
         productItemStyles
         []
-        [ Image.image (Image.Fixed 327 218 )
+        [ Image.image (Image.alt "Fallback text")
+            (Image.Fixed 327 218)
             [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
             ]
         , viewProductsGalleryItemPriceLegacy product.status product.list_price product.discount product.chemical_tax
@@ -1173,7 +1186,8 @@ viewProductsGalleryItem product =
                     , Css.justifyContent Css.center
                     ]
                     []
-                    [ Image.image (Image.Fixed 225 150 )
+                    [ Image.image (Image.alt "Fallback text")
+                        (Image.Fixed 225 150)
                         [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                         ]
                     ]
@@ -1186,12 +1200,14 @@ viewProductsGalleryItem product =
                         ]
                         []
                         [ li []
-                            [ Image.image (Image.Fixed 75 50 )
+                            [ Image.image (Image.alt "Fallback text")
+                                (Image.Fixed 75 50)
                                 [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img2.jpg" 1
                                 ]
                             ]
                         , li []
-                            [ Image.image (Image.Fixed 75 50 )
+                            [ Image.image (Image.alt "Fallback text")
+                                (Image.Fixed 75 50)
                                 [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img3.jpg" 1
                                 ]
                             ]
@@ -1510,7 +1526,8 @@ viewCheckout model =
                     (Table.body
                         [ Table.row
                             [ Table.cell [ Attributes.width 150 ]
-                                (Image.image (Image.Fixed 150 150)
+                                (Image.image (Image.alt "Fallback text")
+                                    (Image.Fixed 150 150)
                                     [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                                     ]
                                 )
@@ -1542,7 +1559,8 @@ viewCheckout model =
                             ]
                         , Table.row
                             [ Table.cell [ Attributes.width 150 ]
-                                (Image.image (Image.Fixed 150 150)
+                                (Image.image (Image.alt "Fallback text")
+                                    (Image.Fixed 150 150)
                                     [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                                     ]
                                 )
@@ -1732,138 +1750,30 @@ viewProduct =
             [ Columns.column []
                 [ Columns.columns
                     [ Columns.column [ ( Columns.All, Columns.Narrow ) ]
-                        [ Image.image (Image.Fixed 100 100 )
+                        [ Image.image (Image.alt "Fallback text")
+                            (Image.Fixed 100 100)
                             [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
                             ]
-                        , Image.image (Image.Fixed 100 100 )
+                        , Image.image (Image.alt "Fallback text")
+                            (Image.Fixed 100 100)
                             [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img2.jpg" 1
                             ]
-                        , Image.image (Image.Fixed 100 100 )
+                        , Image.image (Image.alt "Fallback text")
+                            (Image.Fixed 100 100)
                             [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN_img3.jpg" 1
                             ]
-                        , Image.image (Image.Fixed 100 100 )
+                        , Image.image (Image.alt "Fallback text")
+                            (Image.Fixed 100 100)
                             [ Image.srcset "video.c0ff7e88.jpg" 1
                             ]
                         ]
                     , Columns.defaultColumn
-                        [ Image.image (Image.Square )
+                        [ Image.image (Image.alt "Fallback text")
+                            Image.Square
                             [ Image.srcset "https://specialelektronik.se/images/produkter/LH75QMREBGCXEN.jpg" 1
-                            ] ]
-                        ]
-                    ]
-                ]
-            , Columns.column [ ( Columns.Extended, Columns.OneThird ) ]
-                [ Title.title1 "Samsung QM75N UHD"
-                , Table.table [ Table.Fullwidth, Table.Hoverable ]
-                    (Table.head [])
-                    (Table.foot [])
-                    (Table.body
-                        [ Table.row
-                            [ Table.cell []
-                                (Tag.tags
-                                    [ Tag.Addons ]
-                                    [ Tag.tag [ Tag.Darkest ] "Lagerstatus"
-                                    , Tag.tag [ Tag.Success ] "10+"
-                                    ]
-                                )
-                            , Table.cell [] (text "15 st fler förväntas sändningsklara 24 maj")
-                            ]
-                        , Table.row
-                            [ Table.cell [] (Html.strong [] [ text "Artikelnummer" ])
-                            , Table.cell [] (text "LH75QMREBGCXEN")
-                            ]
-                        , Table.row
-                            [ Table.cell [] (Html.strong [] [ text "Tillverkarens artikelnummer" ])
-                            , Table.cell [] (text "LH75QMREBGCXEN")
-                            ]
-                        , Table.row
-                            [ Table.cell [] (Html.strong [] [ text "E-nummer" ])
-                            , Table.cell [] (text "Endast vid E-nummer.")
-                            ]
-                        ]
-                    )
-                , Form.field []
-                    [ a [ href "https://specialelektronik.se/dokument/produktblad/LH75QMREBGCXEN.pdf" ]
-                        [ Icon.pdf Control.Regular
-                        , Html.strong
-                            []
-                            [ text "Produktblad" ]
-                        ]
-                    ]
-                , Buttons.buttons []
-                    [ Buttons.button [ Buttons.Link ] (Just NoOp) [ text "75\"" ]
-                    , Buttons.button [] (Just NoOp) [ text "55\"" ]
-                    ]
-                , viewBidPrices
-                , viewPrice 23951 31935 164
-                , Columns.columns
-                    [ Columns.defaultColumn
-                        [ Form.field [ Form.Attached ]
-                            [ Form.expandedControl False
-                                [ Form.input
-                                    { value = ""
-                                    , placeholder = "Ange antal"
-                                    , modifiers = [ Form.Size Control.Large ]
-                                    , onInput = \_ -> NoOp
-                                    }
-                                ]
-                            , Form.control False
-                                [ Buttons.staticButton [ Buttons.Size Control.Large ] "st"
-                                ]
-                            ]
-                        ]
-                    , Columns.defaultColumn
-                        [ Form.field
-                            []
-                            [ Buttons.button [ Buttons.CallToAction, Buttons.Fullwidth, Buttons.Size Control.Large ]
-                                (Just NoOp)
-                                [ Icon.cart Control.Medium
-                                , span [] [ text "Lägg i varukorg" ]
-                                ]
                             ]
                         ]
                     ]
-                ]
-            ]
-        , Columns.columns
-            [ Columns.defaultColumn
-                [ Table.table [ Table.Hoverable ]
-                    (Table.head [])
-                    (Table.foot [])
-                    (Table.body
-                        [ Table.row
-                            [ Table.cell [] (Html.strong [] [ text "Storlek" ])
-                            , Table.cell [] (text "75\"")
-                            ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Typ" ]), Table.cell [] (text "E-LED") ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Upplösning" ]), Table.cell [] (text "3840*2160 (4K UHD)") ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Active Display Area(mm)" ]), Table.cell [] (text "1650.24 (H) x 928.26 (V)") ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Ljusstyrka" ]), Table.cell [] (text "500 nits") ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Kontrastratio" ]), Table.cell [] (text "6000:1") ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Betraktningsvinkel (H/V)" ]), Table.cell [] (text "178/178") ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Responstid" ]), Table.cell [] (text "8ms") ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Display Colors" ]), Table.cell [] (text "16.7M(True Display) 1.07B(Ditherd 10bit)") ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Color Gamut" ]), Table.cell [] (text "92% (DCI-P3, CIE 1976)") ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Operation Hour" ]), Table.cell [] (text "24/7") ]
-                        , Table.row [ Table.cell [] (Html.strong [] [ text "Haze" ]), Table.cell [] (text "44%") ]
-                        ]
-                    )
-                ]
-            , Columns.column [ ( Columns.Extended, Columns.TwoThirds ) ]
-                [ Content.content []
-                    [ Html.p [] [ text "Display any content in ultra-high definition with incredibly rich color on slim, efficient signage." ]
-                    , ul []
-                        [ li [] [ text "Engage customers with lifelike images through ultra high-definition resolution" ]
-                        , li [] [ text "Deliver UHD-level picture quality even with lower resolution content through innovative UHD upscaling technology and unique picture-enhancing features" ]
-                        , li [] [ text "Dynamic Crystal Color allows viewers to enjoy a wider spectrum of colors, up to one billion shades" ]
-                        ]
-                    ]
-                , Title.title1 "Title 1"
-                , Title.title2 "Title 2"
-                , Title.title3 "Title 3"
-                , Title.title4 "Title 4"
-                , Title.title5 "Title 5"
-                , Title.title6 "Title 6"
                 ]
             ]
         ]
@@ -1972,9 +1882,15 @@ viewSidebar : Html Msg
 viewSidebar =
     text ""
 
+
 viewIf : Bool -> Html Msg -> Html Msg
 viewIf predicate html =
-    if predicate then html else text ""
+    if predicate then
+        html
+
+    else
+        text ""
+
 
 
 -- styled aside
