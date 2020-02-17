@@ -6,7 +6,7 @@ see <https://bulma.io/documentation/components/modal/>
 
 # Definition
 
-@docs modal
+@docs modal, fullWidthModal
 
 -}
 
@@ -29,6 +29,9 @@ modal closeMsg c =
         , delete closeStyles closeMsg
         ]
 
+
+{-| Identical to `modal` except it uses the full width of the browser window so show its content.
+-}
 fullWidthModal : msg -> List (Html msg) -> Html msg
 fullWidthModal closeMsg c =
     styled Html.Styled.div
@@ -38,6 +41,7 @@ fullWidthModal closeMsg c =
         , styled Html.Styled.div fullWidthModalContentStyles [] c
         , delete closeStyles closeMsg
         ]
+
 
 modalStyles : List Style
 modalStyles =
@@ -73,15 +77,28 @@ modalContentStyles =
         ]
     ]
 
+
 fullWidthModalContentStyles : List Style
 fullWidthModalContentStyles =
+    -- [ Css.margin zero
+    -- , Css.overflow auto
+    -- , Css.position absolute
+    -- , Css.top zero
+    -- , Css.right zero
+    -- , Css.bottom zero
+    -- , Css.left zero
+    -- ]
     [ Css.margin zero
+    , Css.maxHeight (calc (vh 100) minus (px 160))
     , Css.overflow auto
-    , Css.position absolute
-    , Css.top zero
-    , Css.right zero
-    , Css.bottom zero
-    , Css.left zero
+    , Css.position relative
+    , Css.width (pct 100)
+    , tablet
+        [ Css.margin2 zero auto
+        , Css.maxHeight (calc (vh 100) minus (px 40))
+
+        -- , Css.width (px 640)
+        ]
     ]
 
 

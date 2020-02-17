@@ -4,6 +4,7 @@ module SE.UI.Image exposing
     )
 
 {-| Image lets you create img tags with multiple sources to support responsive images
+We do not support all aspect ratios and sizes since we can set the dimensions directly
 
 
 # Definition
@@ -28,9 +29,23 @@ import Svg.Styled.Attributes exposing (d, fill, viewBox)
 type Source
     = Source (List Srcset)
 
+
+{-| Dimensions for the image
+
+Example:
+
+    Fluid = ".image"
+
+    Fixed 128 128 = ".image.is-128x128"
+
+    Square = "image.is-square"
+
+-}
 type Modifier
-    = Fixed Width Height
+    = Fluid
+    | Fixed Width Height
     | Square
+
 
 type alias Srcset =
     { url : String
@@ -329,25 +344,30 @@ extractExtension str =
 containerStyles : Modifier -> List Style
 containerStyles mod =
     let
-        (modStyle, imgModStyle) = case mod of
-            Fixed width height ->
-                ([
-                    Css.width (Css.px width)
-                    , Css.height (Css.px height)
-                ], [])
-            Square ->
-                ([
-                    Css.paddingTop (pct 100)
-                ], [
-                    Css.bottom Css.zero
-                    , Css.left Css.zero
-                    , Css.position Css.absolute
-                    , Css.right Css.zero
-                    , Css.top Css.zero
-                    , Css.property "object-fit" "contain"
-                ])
+        ( modStyle, imgModStyle ) =
+            case mod of
+                Fixed width height ->
+                    ( [ Css.width (Css.px width)
+                      , Css.height (Css.px height)
+                      ]
+                    , []
+                    )
+
+                Fluid ->
+                    ( [], [] )
+
+                Square ->
+                    ( [ Css.paddingTop (pct 100)
+                      ]
+                    , [ Css.bottom Css.zero
+                      , Css.left Css.zero
+                      , Css.position Css.absolute
+                      , Css.right Css.zero
+                      , Css.top Css.zero
+                      , Css.property "object-fit" "contain"
+                      ]
+                    )
     in
-    
     [ Css.position relative
     , Css.display block
     , Css.batch modStyle
