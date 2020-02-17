@@ -15,6 +15,7 @@
         "SE.UI.Delete",
         "SE.UI.Dropdown",
         "SE.UI.Form",
+        "SE.UI.Form.Input",
         "SE.UI.Global",
         "SE.UI.Icon",
         "SE.UI.Image",

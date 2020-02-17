@@ -16,6 +16,7 @@ import SE.UI.Container as Container
 import SE.UI.Content as Content
 import SE.UI.Control as Control
 import SE.UI.Form as Form
+import SE.UI.Form.Input as Input
 import SE.UI.Global as Global
 import SE.UI.Icon as Icon
 import SE.UI.Image as Image
@@ -666,7 +667,7 @@ view model =
     styled div
         [ Css.displayFlex
         , descendants
-            [ Css.Global.selector "article:not(#ProductList)"
+            [ Css.Global.selector "article"
                 [ Css.pseudoClass "not(:target)"
                     [ Css.display Css.none
                     ]
@@ -834,7 +835,7 @@ viewMakes makes =
 viewMakeItem : ( Bool, String ) -> Html Msg
 viewMakeItem ( isChecked, make ) =
     li []
-        [ Form.checkbox make isChecked (ClickedMake make)
+        [ Input.checkbox make isChecked (ClickedMake make)
         ]
 
 
@@ -874,7 +875,7 @@ viewFilter index filter =
 viewFilterOption : Int -> ( Bool, String ) -> Html Msg
 viewFilterOption index ( isChecked, option ) =
     li []
-        [ Form.checkbox option isChecked (ClickedFilter index option)
+        [ Input.checkbox option isChecked (ClickedFilter index option)
         ]
 
 
@@ -1540,14 +1541,11 @@ viewCheckout model =
                             , Table.rightCell []
                                 (Form.field [ Form.Attached ]
                                     [ Form.expandedControl False
-                                        [ Form.number
-                                            { value = String.fromInt model.count
-                                            , placeholder = "Antal"
-                                            , modifiers = []
-                                            , onInput = CountSet
-                                            , range = ( 1, 100 )
-                                            , step = 1
-                                            }
+                                        [ Input.number CountSet (String.fromInt model.count)
+                                            |> Input.withPlaceholder "Antal"
+                                            |> Input.withRange ( 1, 100 )
+                                            |> Input.withStep 1
+                                            |> Input.toHtml
                                         ]
                                     , Form.control False
                                         [ Buttons.staticButton [] "st"
@@ -1573,14 +1571,16 @@ viewCheckout model =
                             , Table.rightCell []
                                 (Form.field [ Form.Attached ]
                                     [ Form.expandedControl False
-                                        [ Form.number
-                                            { value = String.fromInt model.count
-                                            , placeholder = "Antal"
-                                            , modifiers = []
-                                            , onInput = CountSet
-                                            , range = ( 1, 100 )
-                                            , step = 1
-                                            }
+                                        [ text "Input number TBA"
+
+                                        -- Input.number
+                                        --     { value = String.fromInt model.count
+                                        --     , placeholder = "Antal"
+                                        --     , modifiers = []
+                                        --     , onInput = CountSet
+                                        --     , range = ( 1, 100 )
+                                        --     , step = 1
+                                        --     }
                                         ]
                                     , Form.control False
                                         [ Buttons.staticButton [] "st"
@@ -1680,10 +1680,10 @@ viewCheckout model =
         , Form.field []
             [ ul []
                 [ li []
-                    [ Form.radio "SPECIAL-ELEKTRONIK I KARLSTAD AB, GRANLIDSVÄGEN 85, 653 51 KARLSTAD" True NoOp
+                    [ Input.radio "SPECIAL-ELEKTRONIK I KARLSTAD AB, GRANLIDSVÄGEN 85, 653 51 KARLSTAD" True NoOp
                     ]
                 , li []
-                    [ Form.radio "SPECIAL-ELEKTRONIK AB, BLOMSTERVÄGEN 19, 343 35 ÄLMHULT" False NoOp
+                    [ Input.radio "SPECIAL-ELEKTRONIK AB, BLOMSTERVÄGEN 19, 343 35 ÄLMHULT" False NoOp
                     ]
                 ]
             ]
@@ -1691,47 +1691,52 @@ viewCheckout model =
         , Form.field []
             [ Form.label "Ert ordernummer"
             , Form.control False
-                [ Form.input
-                    { value = model.yourOrderNo
-                    , placeholder = "Ert ordernummer"
-                    , modifiers = []
-                    , onInput = EnteredYourOrderNo
-                    }
+                [ Input.text EnteredYourOrderNo
+                    model.yourOrderNo
+                    |> Input.toHtml
+
+                -- {
+                -- , placeholder = "Ert ordernummer"
+                -- }
                 ]
             ]
         , Form.field []
             [ Form.label "Godsmärke"
             , Form.control False
-                [ Form.input
-                    { value = model.goodsLabeling
-                    , placeholder = "Godsmärke"
-                    , modifiers = []
-                    , onInput = EnteredGoodsLabeling
-                    }
+                [ Input.text EnteredGoodsLabeling model.goodsLabeling |> Input.toHtml
+
+                -- { value =
+                -- , placeholder = "Godsmärke"
+                -- , modifiers = []
+                -- , onInput =
+                -- }
                 ]
             ]
         , Form.field []
             [ Form.label "Önskat leveransdatum"
             , Form.control False
-                [ Form.date
-                    { value = model.requestedDeliveryDate
-                    , placeholder = "Så snart som möjligt"
-                    , modifiers = []
-                    , onInput = EnteredRequestedDeliveryDate
-                    , min = "2019-05-22"
-                    , max = "2020-05-22"
-                    }
+                [ text "Input.date TBA"
+
+                -- Input.date
+                -- { value = model.requestedDeliveryDate
+                -- , placeholder = "Så snart som möjligt"
+                -- , modifiers = []
+                -- , onInput = EnteredRequestedDeliveryDate
+                -- , min = "2019-05-22"
+                -- , max = "2020-05-22"
+                -- }
                 ]
             ]
         , Form.field []
             [ Form.label "Meddelande"
             , Form.control False
-                [ Form.input
-                    { value = model.message
-                    , placeholder = "Meddelande"
-                    , modifiers = []
-                    , onInput = EnteredMessage
-                    }
+                [ Input.textarea EnteredMessage model.message |> Input.withRows 5 |> Input.toHtml
+
+                -- { value =
+                -- , placeholder = "Meddelande"
+                -- , modifiers = []
+                -- , onInput =
+                -- }
                 ]
             ]
         , Buttons.button [ Buttons.CallToAction, Buttons.Fullwidth ] (Just NoOp) [ text "Skicka order" ]
@@ -1825,12 +1830,13 @@ viewProduct =
                             [ Columns.defaultColumn
                                 [ Form.field [ Form.Attached ]
                                     [ Form.expandedControl False
-                                        [ Form.input
-                                            { value = ""
-                                            , placeholder = "Ange antal"
-                                            , modifiers = [ Form.Size Control.Large ]
-                                            , onInput = \_ -> NoOp
-                                            }
+                                        [ Input.text (\_ -> NoOp) "" |> Input.toHtml
+
+                                        -- { value = ""
+                                        -- , placeholder = "Ange antal"
+                                        -- , modifiers = [ Input.Size Control.Large ]
+                                        -- , onInput =
+                                        -- }
                                         ]
                                     , Form.control False
                                         [ Buttons.staticButton [ Buttons.Size Control.Large ] "st"
