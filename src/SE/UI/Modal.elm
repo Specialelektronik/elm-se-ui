@@ -1,4 +1,4 @@
-module SE.UI.Modal exposing (modal)
+module SE.UI.Modal exposing (modal, fullWidthModal)
 
 {-| Bulmas modal component
 see <https://bulma.io/documentation/components/modal/>
@@ -29,6 +29,15 @@ modal closeMsg c =
         , delete closeStyles closeMsg
         ]
 
+fullWidthModal : msg -> List (Html msg) -> Html msg
+fullWidthModal closeMsg c =
+    styled Html.Styled.div
+        modalStyles
+        []
+        [ styled Html.Styled.div modalBackgroundStyles [ onClick closeMsg ] []
+        , styled Html.Styled.div fullWidthModalContentStyles [] c
+        , delete closeStyles closeMsg
+        ]
 
 modalStyles : List Style
 modalStyles =
@@ -62,6 +71,17 @@ modalContentStyles =
         , Css.maxHeight (calc (vh 100) minus (px 40))
         , Css.width (px 640)
         ]
+    ]
+
+fullWidthModalContentStyles : List Style
+fullWidthModalContentStyles =
+    [ Css.margin zero
+    , Css.overflow auto
+    , Css.position absolute
+    , Css.top zero
+    , Css.right zero
+    , Css.bottom zero
+    , Css.left zero
     ]
 
 
