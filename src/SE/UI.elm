@@ -684,6 +684,7 @@ view model =
                 [ a [ href "#Product" ] [ text "Produkt" ]
                 , a [ href "#Checkout" ] [ text "Checkout" ]
                 , a [ href "#ProductList" ] [ text "Produktlista" ]
+                , a [ href "#Form" ] [ text "Formulär" ]
                 ]
             , article [ id "Product" ]
                 [ section []
@@ -702,6 +703,13 @@ view model =
                 [ section []
                     [ Container.container []
                         [ viewProducts model
+                        ]
+                    ]
+                ]
+            , article [ id "Form" ]
+                [ section []
+                    [ Container.container []
+                        [ viewForm model
                         ]
                     ]
                 ]
@@ -835,7 +843,7 @@ viewMakes makes =
 viewMakeItem : ( Bool, String ) -> Html Msg
 viewMakeItem ( isChecked, make ) =
     li []
-        [ Input.checkbox make isChecked (ClickedMake make)
+        [ Input.checkbox (ClickedMake make) make isChecked |> Input.toHtml
         ]
 
 
@@ -875,7 +883,21 @@ viewFilter index filter =
 viewFilterOption : Int -> ( Bool, String ) -> Html Msg
 viewFilterOption index ( isChecked, option ) =
     li []
-        [ Input.checkbox option isChecked (ClickedFilter index option)
+        [ Input.checkbox (ClickedFilter index option) option isChecked |> Input.toHtml
+        ]
+
+
+viewForm : Model -> Html Msg
+viewForm model =
+    div []
+        [ Form.field []
+            [ Form.label "Ert ordernummer"
+            , Form.control False
+                [ Input.text EnteredYourOrderNo model.yourOrderNo
+                    |> Input.withPlaceholder "Ert ordernummer"
+                    |> Input.toHtml
+                ]
+            ]
         ]
 
 
@@ -1571,16 +1593,11 @@ viewCheckout model =
                             , Table.rightCell []
                                 (Form.field [ Form.Attached ]
                                     [ Form.expandedControl False
-                                        [ text "Input number TBA"
-
-                                        -- Input.number
-                                        --     { value = String.fromInt model.count
-                                        --     , placeholder = "Antal"
-                                        --     , modifiers = []
-                                        --     , onInput = CountSet
-                                        --     , range = ( 1, 100 )
-                                        --     , step = 1
-                                        --     }
+                                        [ Input.number CountSet (String.fromInt model.count)
+                                            |> Input.withPlaceholder "Antal"
+                                            |> Input.withRange ( 1, 100 )
+                                            |> Input.withStep 1
+                                            |> Input.toHtml
                                         ]
                                     , Form.control False
                                         [ Buttons.staticButton [] "st"
@@ -1680,10 +1697,10 @@ viewCheckout model =
         , Form.field []
             [ ul []
                 [ li []
-                    [ Input.radio "SPECIAL-ELEKTRONIK I KARLSTAD AB, GRANLIDSVÄGEN 85, 653 51 KARLSTAD" True NoOp
+                    [ Input.radio NoOp "SPECIAL-ELEKTRONIK I KARLSTAD AB, GRANLIDSVÄGEN 85, 653 51 KARLSTAD" True |> Input.toHtml
                     ]
                 , li []
-                    [ Input.radio "SPECIAL-ELEKTRONIK AB, BLOMSTERVÄGEN 19, 343 35 ÄLMHULT" False NoOp
+                    [ Input.radio NoOp "SPECIAL-ELEKTRONIK AB, BLOMSTERVÄGEN 19, 343 35 ÄLMHULT" False |> Input.toHtml
                     ]
                 ]
             ]
@@ -1691,39 +1708,28 @@ viewCheckout model =
         , Form.field []
             [ Form.label "Ert ordernummer"
             , Form.control False
-                [ Input.text EnteredYourOrderNo
-                    model.yourOrderNo
+                [ Input.text EnteredYourOrderNo model.yourOrderNo
+                    |> Input.withPlaceholder "Ert ordernummer"
                     |> Input.toHtml
-
-                -- {
-                -- , placeholder = "Ert ordernummer"
-                -- }
                 ]
             ]
         , Form.field []
             [ Form.label "Godsmärke"
             , Form.control False
-                [ Input.text EnteredGoodsLabeling model.goodsLabeling |> Input.toHtml
-
-                -- { value =
-                -- , placeholder = "Godsmärke"
-                -- , modifiers = []
-                -- , onInput =
-                -- }
+                [ Input.text EnteredGoodsLabeling model.goodsLabeling
+                    |> Input.withPlaceholder "Godsmärke"
+                    |> Input.toHtml
                 ]
             ]
         , Form.field []
             [ Form.label "Önskat leveransdatum"
             , Form.control False
-                [ text "Input.date TBA"
+                [ Input.date EnteredRequestedDeliveryDate model.requestedDeliveryDate
+                    |> Input.withPlaceholder "Så snart som möjligt"
+                    |> Input.withMinDate "2019-05-22"
+                    |> Input.withMaxDate "2020-05-22"
+                    |> Input.toHtml
 
-                -- Input.date
-                -- { value = model.requestedDeliveryDate
-                -- , placeholder = "Så snart som möjligt"
-                -- , modifiers = []
-                -- , onInput = EnteredRequestedDeliveryDate
-                -- , min = "2019-05-22"
-                -- , max = "2020-05-22"
                 -- }
                 ]
             ]
@@ -1731,12 +1737,36 @@ viewCheckout model =
             [ Form.label "Meddelande"
             , Form.control False
                 [ Input.textarea EnteredMessage model.message |> Input.withRows 5 |> Input.toHtml
-
-                -- { value =
-                -- , placeholder = "Meddelande"
-                -- , modifiers = []
-                -- , onInput =
-                -- }
+                ]
+            ]
+        , Form.field []
+            [ Form.label "Email"
+            , Form.control False
+                [ Input.email (\_ -> NoOp) "carl-fredrik@heroholding.se" |> Input.toHtml
+                ]
+            ]
+        , Form.field []
+            [ Form.label "Telefon"
+            , Form.control False
+                [ Input.tel (\_ -> NoOp) "+46544442000" |> Input.toHtml
+                ]
+            ]
+        , Form.field []
+            [ Form.label "Välj något"
+            , Form.control False
+                [ Input.select (\_ -> NoOp)
+                    [ { label = "One", value = "one" }
+                    , { label = "Two", value = "two" }
+                    , { label = "Three", value = "three" }
+                    ]
+                    "two"
+                    |> Input.toHtml
+                ]
+            ]
+        , Form.field []
+            [ Form.label "Lösenord"
+            , Form.control False
+                [ Input.password (\_ -> NoOp) "hello" |> Input.toHtml
                 ]
             ]
         , Buttons.button [ Buttons.CallToAction, Buttons.Fullwidth ] (Just NoOp) [ text "Skicka order" ]

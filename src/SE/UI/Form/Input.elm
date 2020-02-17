@@ -1,6 +1,6 @@
 module SE.UI.Form.Input exposing
     ( text, textarea, select, checkbox, radio, number, date, email, password, tel, toHtml
-    , withPlaceholder, withStep, withRange, withRows
+    , withPlaceholder, withStep, withRange, withRows, withMinDate, withMaxDate
     )
 
 {-| Holds the basic data for inputs, textareas and selects
@@ -15,7 +15,7 @@ Explain Triggers
 
 # Modifiers
 
-@docs withPlaceholder, withStep, withRange, withRows
+@docs withPlaceholder, withStep, withRange, withRows, withMinDate, withMaxDate
 
 -}
 
@@ -36,13 +36,13 @@ type Input msg
     = Text (InputRecord msg)
     | Number (NumberRecord (InputRecord msg))
     | Textarea (TextareaRecord (InputRecord msg))
-    | Date
-    | Password
-    | Select
-    | Checkbox
-    | Radio
-    | Email
-    | Tel
+    | Date (DateRecord (InputRecord msg))
+    | Password (PasswordRecord (InputRecord msg))
+    | Select (SelectRecord msg)
+    | Checkbox (CheckboxRecord msg)
+    | Radio (CheckboxRecord msg)
+    | Email (InputRecord msg)
+    | Tel (InputRecord msg)
 
 
 type Trigger
@@ -102,9 +102,12 @@ type alias TextareaRecord a =
 
 {-| Selects also need a rows attribute
 -}
-type alias SelectRecord a =
-    { a
-        | options : List Option
+type alias SelectRecord msg =
+    { value : String
+    , placeholder : String
+    , modifiers : List InputModifier
+    , msg : String -> msg
+    , options : List Option
     }
 
 
@@ -116,8 +119,12 @@ type alias Option =
     }
 
 
-type alias IsChecked =
-    Bool
+type alias CheckboxRecord msg =
+    { label : String
+    , msg : msg
+    , checked : Bool
+    , modifiers : List InputModifier
+    }
 
 
 {-| Available input modifiers
@@ -183,49 +190,15 @@ textarea msg value =
 `is-multiple` and `is-rounded` not supported
 
 -}
-select : SelectRecord (InputRecord msg) -> Html msg
-select rec =
-    let
-        after =
-            if List.member Loading rec.modifiers then
-                [ Utils.loader
-                , Css.marginTop zero
-                , Css.position absolute
-                , Css.right (em 0.625)
-                , Css.top (em 0.625)
-                , Css.transform none
-                ]
-
-            else
-                [ arrow
-                , Css.borderColor Colors.darker
-                , Css.right (em 1.125)
-                , Css.zIndex (int 4)
-                ]
-    in
-    styled Html.div
-        [ Css.display inlineBlock
-        , Css.maxWidth (pct 100)
-        , Css.position relative
-        , Css.verticalAlign top
-        , Css.height (em 2.5)
-        , Css.after after
-        ]
-        []
-        [ styled Html.select
-            (inputStyle rec.modifiers
-                ++ [ Css.cursor pointer
-                   , Css.display block
-                   , Css.maxWidth (pct 100)
-                   , Css.outline none
-                   , Css.paddingRight (em 2.5)
-                   , pseudoElement "ms-expand" [ Css.display none ]
-                   ]
-            )
-            [ Utils.onChange rec.msg
-            ]
-            (option rec.value { label = rec.placeholder, value = "" } :: List.map (option rec.value) rec.options)
-        ]
+select : (String -> msg) -> List Option -> String -> Input msg
+select msg options value =
+    Select
+        { value = value
+        , placeholder = ""
+        , modifiers = []
+        , msg = msg
+        , options = options
+        }
 
 
 option : String -> Option -> Html msg
@@ -264,56 +237,14 @@ arrow =
 {-| The checkbox depart from Bulma, instead we use a styled span to get a "better looking" checkbox.
 TODO checkbox does not support modifiers, should it?
 -}
-checkbox : String -> IsChecked -> msg -> Html msg
-checkbox l checked onClick =
-    let
-        tickSize =
-            if checked then
-                24
-
-            else
-                0
-    in
-    styled Html.label
-        [ Css.cursor pointer
-        , adjacentSiblings
-            [ typeSelector "label"
-                [ Css.marginLeft (em 0.5)
-                ]
-            ]
-        , hover
-            [ descendants
-                [ typeSelector "span"
-                    [ Css.borderColor Colors.base
-                    ]
-                ]
-            ]
-        ]
-        [ Events.onClick onClick ]
-        [ styled Html.span
-            (inputStyle []
-                ++ [ Css.width (rem 1.25)
-                   , Css.height (rem 1.25)
-                   , Css.padding zero
-                   , Css.verticalAlign middle
-                   , Css.marginBottom (px 2)
-                   , Css.property "margin-right" "calc(0.625em - 1px)"
-                   , Css.color Colors.success
-                   , Css.display inlineFlex
-                   , Css.justifyContent center
-                   , Css.alignItems center
-                   ]
-            )
-            []
-            [ tick tickSize ]
-        , Html.text
-            l
-        ]
-
-
-tick : Int -> Html msg
-tick size =
-    Svg.svg [ width (String.fromInt size), height (String.fromInt size), viewBox "0 0 24 24", fill "none", stroke "currentColor", strokeWidth "4" ] [ Svg.path [ d "M20 6L9 17l-5-5" ] [] ]
+checkbox : msg -> String -> Bool -> Input msg
+checkbox msg label checked =
+    Checkbox
+        { label = label
+        , msg = msg
+        , checked = checked
+        , modifiers = []
+        }
 
 
 
@@ -323,56 +254,14 @@ tick size =
 {-| The radio depart from Bulma, instead we use a styled span to get a "better looking" radio.
 TODO radio does not support modifiers, should it?
 -}
-radio : String -> IsChecked -> msg -> Html msg
-radio l checked onClick =
-    let
-        checkedInt =
-            if checked then
-                1
-
-            else
-                0
-    in
-    styled Html.label
-        [ Css.cursor pointer
-        , hover
-            [ descendants
-                [ typeSelector "span"
-                    [ Css.borderColor Colors.base
-                    ]
-                ]
-            ]
-        ]
-        [ Events.onClick onClick ]
-        [ styled Html.span
-            (inputStyle []
-                ++ [ Css.width (rem 1.25)
-                   , Css.height (rem 1.25)
-                   , Css.padding zero
-                   , Css.verticalAlign middle
-                   , Css.marginBottom (px 2)
-                   , Css.property "margin-right" "calc(0.625em - 1px)"
-                   , Css.borderRadius (pct 50)
-                   , Css.before
-                        [ Css.display block
-                        , Css.property "content" "\"\""
-                        , Css.width (pct 50)
-                        , Css.height (pct 50)
-                        , Css.margin2 zero auto
-                        , Css.backgroundColor Colors.primary
-                        , Css.borderRadius (pct 50)
-                        , Css.transform (scale checkedInt)
-                        , Css.Transitions.transition
-                            [ Css.Transitions.transform 60
-                            ]
-                        ]
-                   ]
-            )
-            []
-            []
-        , Html.text
-            l
-        ]
+radio : msg -> String -> Bool -> Input msg
+radio msg label checked =
+    Radio
+        { label = label
+        , msg = msg
+        , checked = checked
+        , modifiers = []
+        }
 
 
 {-| `input[type="number"].input`
@@ -395,62 +284,57 @@ number msg value =
 
 {-| `input[type="date"].input`
 -}
-date : DateRecord (InputRecord msg) -> Html msg
-date rec =
-    styled Html.input
-        (inputStyle rec.modifiers)
-        [ Attributes.type_ "date"
-        , Attributes.min rec.min
-        , Attributes.max rec.max
-        , Attributes.pattern "(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))" -- Pattern is for backward compatibility, leap year validation https://stackoverflow.com/a/55025950
-        , Events.onInput rec.msg
-        , Attributes.placeholder rec.placeholder
-        , Attributes.value rec.value
-        ]
-        []
+date : (String -> msg) -> String -> Input msg
+date msg value =
+    Date
+        { value = value
+        , placeholder = ""
+        , modifiers = []
+        , msg = msg
+        , trigger = OnChange
+        , min = ""
+        , max = ""
+        }
 
 
 {-| `input[type="email"].input`
 -}
-email : InputRecord msg -> Html msg
-email rec =
-    styled Html.input
-        (inputStyle rec.modifiers)
-        [ Attributes.type_ "email"
-        , Events.onInput rec.msg
-        , Attributes.placeholder rec.placeholder
-        , Attributes.value rec.value
-        ]
-        []
+email : (String -> msg) -> String -> Input msg
+email msg value =
+    Email
+        { value = value
+        , placeholder = ""
+        , modifiers = []
+        , msg = msg
+        , trigger = OnChange
+        }
 
 
 {-| `input[type="tel"].input`
 -}
-tel : InputRecord msg -> Html msg
-tel rec =
-    styled Html.input
-        (inputStyle rec.modifiers)
-        [ Attributes.type_ "tel"
-        , Events.onInput rec.msg
-        , Attributes.placeholder rec.placeholder
-        , Attributes.value rec.value
-        ]
-        []
+tel : (String -> msg) -> String -> Input msg
+tel msg value =
+    Tel
+        { value = value
+        , placeholder = ""
+        , modifiers = []
+        , msg = msg
+        , trigger = OnChange
+        }
 
 
 {-| `input[type="password"].input`
 -}
-password : PasswordRecord (InputRecord msg) -> Html msg
-password rec =
-    styled Html.input
-        (inputStyle rec.modifiers)
-        [ Attributes.type_ "password"
-        , Events.onInput rec.msg
-        , Attributes.placeholder rec.placeholder
-        , Attributes.value rec.value
-        , Attributes.attribute "autocomplete" (passwordAutocompleteToString rec.autocomplete)
-        ]
-        []
+password : (String -> msg) -> String -> Input msg
+password msg value =
+    Password
+        { value = value
+        , placeholder = ""
+        , modifiers = []
+        , msg = msg
+        , trigger = OnChange
+        , autocomplete = Current
+        }
 
 
 passwordAutocompleteToString : PasswordAutocomplete -> String
@@ -495,7 +379,7 @@ toHtml : Input msg -> Html msg
 toHtml input_ =
     case input_ of
         Text rec ->
-            generalToHtml rec
+            generalToHtml "text" rec
 
         Number rec ->
             numberToHtml rec
@@ -503,15 +387,36 @@ toHtml input_ =
         Textarea rec ->
             textareaToHtml rec
 
-        _ ->
-            Debug.todo (Debug.toString input_ ++ "not implemented yet")
+        Date rec ->
+            dateToHtml rec
+
+        Email rec ->
+            generalToHtml "email" rec
+
+        Tel rec ->
+            generalToHtml "tel" rec
+
+        Select rec ->
+            selectToHtml rec
+
+        Password rec ->
+            passwordToHtml rec
+
+        Checkbox rec ->
+            checkboxToHtml rec
+
+        Radio rec ->
+            radioToHtml rec
 
 
-generalToHtml : InputRecord msg -> Html msg
-generalToHtml rec =
+generalToHtml : String -> InputRecord msg -> Html msg
+generalToHtml type_ rec =
     styled Html.input
         (inputStyle rec.modifiers)
-        (initAttributes rec.trigger rec.msg rec.value)
+        (Attributes.type_ type_
+            :: initAttributes rec.trigger rec.msg rec.value
+            |> noneEmptyAttribute Attributes.placeholder rec.placeholder
+        )
         []
 
 
@@ -524,7 +429,7 @@ numberToHtml rec =
                 |> maybeAttribute (Tuple.first >> String.fromFloat >> Attributes.min) rec.range
                 |> maybeAttribute (Tuple.second >> String.fromFloat >> Attributes.max) rec.range
                 |> maybeAttribute (String.fromFloat >> Attributes.step) rec.step
-                |> boolAttribute (String.isEmpty >> not) Attributes.placeholder rec.placeholder
+                |> noneEmptyAttribute Attributes.placeholder rec.placeholder
     in
     styled Html.input
         (inputStyle rec.modifiers)
@@ -536,12 +441,196 @@ textareaToHtml : TextareaRecord (InputRecord msg) -> Html msg
 textareaToHtml rec =
     let
         attrs =
-            Attributes.rows rec.rows :: initAttributes rec.trigger rec.msg rec.value
+            Attributes.rows rec.rows
+                :: initAttributes rec.trigger rec.msg rec.value
+                |> noneEmptyAttribute Attributes.placeholder rec.placeholder
     in
     styled Html.textarea
         (textareaStyle rec.modifiers)
         attrs
         []
+
+
+dateToHtml : DateRecord (InputRecord msg) -> Html msg
+dateToHtml rec =
+    let
+        attrs =
+            initAttributes rec.trigger rec.msg rec.value
+                ++ [ Attributes.pattern "(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))" -- Pattern is for backward compatibility, leap year validation https://stackoverflow.com/a/55025950
+                   , Attributes.type_ "date"
+                   ]
+                |> noneEmptyAttribute Attributes.min rec.min
+                |> noneEmptyAttribute Attributes.max rec.max
+                |> noneEmptyAttribute Attributes.placeholder rec.placeholder
+    in
+    styled Html.input
+        (inputStyle rec.modifiers)
+        attrs
+        []
+
+
+selectToHtml : SelectRecord msg -> Html msg
+selectToHtml rec =
+    let
+        after =
+            if List.member Loading rec.modifiers then
+                [ Utils.loader
+                , Css.marginTop zero
+                , Css.position absolute
+                , Css.right (em 0.625)
+                , Css.top (em 0.625)
+                , Css.transform none
+                ]
+
+            else
+                [ arrow
+                , Css.borderColor Colors.darker
+                , Css.right (em 1.125)
+                , Css.zIndex (int 4)
+                ]
+    in
+    styled Html.div
+        [ Css.display inlineBlock
+        , Css.maxWidth (pct 100)
+        , Css.position relative
+        , Css.verticalAlign top
+        , Css.height (em 2.5)
+        , Css.after after
+        ]
+        []
+        [ styled Html.select
+            (inputStyle rec.modifiers
+                ++ [ Css.cursor pointer
+                   , Css.display block
+                   , Css.maxWidth (pct 100)
+                   , Css.outline none
+                   , Css.paddingRight (em 2.5)
+                   , pseudoElement "ms-expand" [ Css.display none ]
+                   ]
+            )
+            [ Utils.onChange rec.msg
+            ]
+            (option rec.value { label = rec.placeholder, value = "" } :: List.map (option rec.value) rec.options)
+        ]
+
+
+passwordToHtml : PasswordRecord (InputRecord msg) -> Html msg
+passwordToHtml rec =
+    let
+        attrs =
+            Attributes.type_ "password"
+                :: Attributes.attribute "autocomplete" (passwordAutocompleteToString rec.autocomplete)
+                :: initAttributes rec.trigger rec.msg rec.value
+                |> noneEmptyAttribute Attributes.placeholder rec.placeholder
+    in
+    styled Html.input
+        (inputStyle rec.modifiers)
+        attrs
+        []
+
+
+checkboxToHtml : CheckboxRecord msg -> Html msg
+checkboxToHtml rec =
+    let
+        tickSize =
+            if rec.checked then
+                24
+
+            else
+                0
+    in
+    styled Html.label
+        [ Css.cursor pointer
+        , adjacentSiblings
+            [ typeSelector "label"
+                [ Css.marginLeft (em 0.5)
+                ]
+            ]
+        , hover
+            [ descendants
+                [ typeSelector "span"
+                    [ Css.borderColor Colors.base
+                    ]
+                ]
+            ]
+        ]
+        [ Events.onClick rec.msg ]
+        [ styled Html.span
+            (inputStyle []
+                ++ [ Css.width (rem 1.25)
+                   , Css.height (rem 1.25)
+                   , Css.padding zero
+                   , Css.verticalAlign middle
+                   , Css.marginBottom (px 2)
+                   , Css.property "margin-right" "calc(0.625em - 1px)"
+                   , Css.color Colors.success
+                   , Css.display inlineFlex
+                   , Css.justifyContent center
+                   , Css.alignItems center
+                   ]
+            )
+            []
+            [ tick tickSize ]
+        , Html.text
+            rec.label
+        ]
+
+
+tick : Int -> Html msg
+tick size =
+    Svg.svg [ width (String.fromInt size), height (String.fromInt size), viewBox "0 0 24 24", fill "none", stroke "currentColor", strokeWidth "4" ] [ Svg.path [ d "M20 6L9 17l-5-5" ] [] ]
+
+
+radioToHtml : CheckboxRecord msg -> Html msg
+radioToHtml rec =
+    let
+        checkedInt =
+            if rec.checked then
+                1
+
+            else
+                0
+    in
+    styled Html.label
+        [ Css.cursor pointer
+        , hover
+            [ descendants
+                [ typeSelector "span"
+                    [ Css.borderColor Colors.base
+                    ]
+                ]
+            ]
+        ]
+        [ Events.onClick rec.msg ]
+        [ styled Html.span
+            (inputStyle []
+                ++ [ Css.width (rem 1.25)
+                   , Css.height (rem 1.25)
+                   , Css.padding zero
+                   , Css.verticalAlign middle
+                   , Css.marginBottom (px 2)
+                   , Css.property "margin-right" "calc(0.625em - 1px)"
+                   , Css.borderRadius (pct 50)
+                   , Css.before
+                        [ Css.display block
+                        , Css.property "content" "\"\""
+                        , Css.width (pct 50)
+                        , Css.height (pct 50)
+                        , Css.margin2 zero auto
+                        , Css.backgroundColor Colors.primary
+                        , Css.borderRadius (pct 50)
+                        , Css.transform (scale checkedInt)
+                        , Css.Transitions.transition
+                            [ Css.Transitions.transform 60
+                            ]
+                        ]
+                   ]
+            )
+            []
+            []
+        , Html.text
+            rec.label
+        ]
 
 
 
@@ -561,25 +650,25 @@ withPlaceholder placeholder_ input =
         Textarea rec ->
             Textarea { rec | placeholder = placeholder_ }
 
-        Date ->
+        Date rec ->
+            Date { rec | placeholder = placeholder_ }
+
+        Password rec ->
+            Password { rec | placeholder = placeholder_ }
+
+        Select rec ->
+            Select { rec | placeholder = placeholder_ }
+
+        Email rec ->
+            Email { rec | placeholder = placeholder_ }
+
+        Tel rec ->
+            Tel { rec | placeholder = placeholder_ }
+
+        Checkbox _ ->
             input
 
-        Password ->
-            input
-
-        Select ->
-            input
-
-        Checkbox ->
-            input
-
-        Radio ->
-            input
-
-        Email ->
-            input
-
-        Tel ->
+        Radio _ ->
             input
 
 
@@ -621,6 +710,26 @@ withRows rows input =
             input
 
 
+withMaxDate : String -> Input msg -> Input msg
+withMaxDate max input =
+    case input of
+        Date rec ->
+            Date { rec | max = max }
+
+        _ ->
+            input
+
+
+withMinDate : String -> Input msg -> Input msg
+withMinDate min input =
+    case input of
+        Date rec ->
+            Date { rec | min = min }
+
+        _ ->
+            input
+
+
 triggerToAttribute : Trigger -> (String -> msg) -> Attribute msg
 triggerToAttribute trigger =
     case trigger of
@@ -639,6 +748,11 @@ maybeAttribute attrFn maybeAttr attrs =
 
         Nothing ->
             attrs
+
+
+noneEmptyAttribute : (String -> Attribute msg) -> String -> List (Attribute msg) -> List (Attribute msg)
+noneEmptyAttribute =
+    boolAttribute (String.isEmpty >> not)
 
 
 boolAttribute : (a -> Bool) -> (a -> Attribute msg) -> a -> List (Attribute msg) -> List (Attribute msg)
