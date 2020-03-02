@@ -1,5 +1,5 @@
 module SE.UI.Form exposing
-    ( label
+    ( label, labelRequired
     , field, FieldModifier(..), control, expandedControl
     )
 
@@ -9,7 +9,7 @@ see <https://bulma.io/documentation/form/>
 
 # General
 
-@docs label
+@docs label, labelRequired
 
 
 # Fields and Controls
@@ -52,7 +52,33 @@ type alias IsLoading =
 {-| `label.label`
 -}
 label : String -> Html msg
-label s =
+label =
+    labelHelper False
+
+
+{-| `label.label` with a red \* at the end.let
+**Notice:** There is not validation connected to this function. The validation has to be carried out on the input function.
+in
+-}
+labelRequired : String -> Html msg
+labelRequired =
+    labelHelper True
+
+
+labelHelper : Bool -> String -> Html msg
+labelHelper required s =
+    let
+        star =
+            if required then
+                styled Html.Styled.span
+                    [ Css.color Colors.danger
+                    ]
+                    []
+                    [ text " *" ]
+
+            else
+                text ""
+    in
     styled Html.Styled.label
         [ Css.color Colors.text
         , Css.display block
@@ -63,7 +89,7 @@ label s =
             ]
         ]
         []
-        [ text s ]
+        [ text s, star ]
 
 
 {-| `div.field`

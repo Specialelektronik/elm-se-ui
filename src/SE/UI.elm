@@ -902,15 +902,29 @@ viewForm model =
                 [ Input.text EnteredYourOrderNo model.yourOrderNo
                     |> Input.withPlaceholder "Ert ordernummer"
                     |> Input.withModifier Input.Loading
+                    |> Input.withModifier Input.Danger
                     |> Input.withTrigger Input.OnInput
+                    |> Input.withReadonly
                     |> Input.toHtml
                 ]
             ]
         , Form.field []
-            [ Form.label "Do you accept the terms?"
+            [ Form.labelRequired "Do you accept the terms?"
             , Form.control False
                 [ Input.checkbox ToggledCheckbox "Yes" model.checkboxChecked
-                    |> Input.withModifier Input.Danger
+                    |> Input.withDisabled
+                    |> Input.toHtml
+                ]
+            ]
+        , Form.field [ Form.Grouped ]
+            [ Form.labelRequired "Do you accept the terms?"
+            , Form.control False
+                [ Input.radio ToggledCheckbox "Yes" model.checkboxChecked
+                    |> Input.toHtml
+                ]
+            , Form.control False
+                [ Input.radio ToggledCheckbox "No" (not model.checkboxChecked)
+                    |> Input.withModifier Input.Success
                     |> Input.toHtml
                 ]
             ]

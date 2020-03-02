@@ -1,7 +1,7 @@
 module SE.UI.Form.Input exposing
     ( text, textarea, select, checkbox, radio, number, date, email, password, tel, toHtml
     , withTrigger, Trigger(..)
-    , withPlaceholder, withStep, withRange, withRows, withMinDate, withMaxDate
+    , withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate
     , withModifier, Modifier(..)
     )
 
@@ -33,7 +33,7 @@ To allow the programmer to specify _when_ a message should trigger, the inputs h
 
 # With\*
 
-@docs withPlaceholder, withStep, withRange, withRows, withMinDate, withMaxDate
+@docs withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate
 
 
 ## Modifiers
@@ -42,17 +42,15 @@ To allow the programmer to specify _when_ a message should trigger, the inputs h
 
 -}
 
-import Css exposing (Style, absolute, active, auto, block, center, deg, em, focus, hover, initial, inlineBlock, inlineFlex, int, middle, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, scale, solid, top, vertical, zero)
-import Css.Global exposing (adjacentSiblings, descendants, typeSelector, withAttribute)
-import Css.Transitions
+import Css exposing (Style, absolute, active, block, center, deg, em, focus, hover, initial, inlineBlock, int, middle, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rgba, rotate, solid, top, vertical, zero)
+import Css.Global exposing (withAttribute)
 import Html.Styled as Html exposing (Attribute, Html, styled)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events exposing (onInput)
 import SE.UI.Colors as Colors
 import SE.UI.Control as Control exposing (controlStyle)
 import SE.UI.Utils as Utils
-import Svg.Styled as Svg
-import Svg.Styled.Attributes exposing (d, fill, height, stroke, strokeWidth, viewBox, width)
+import Svg.Styled.Attributes exposing (height, width)
 
 
 type Input msg
@@ -62,10 +60,14 @@ type Input msg
     | Date (DateRecord (InputRecord msg))
     | Password (PasswordRecord (InputRecord msg))
     | Select (SelectRecord msg)
-    | Checkbox (CheckboxRecord msg)
-    | Radio (CheckboxRecord msg)
+    | Button ButtonType (CheckboxRecord msg)
     | Email (InputRecord msg)
     | Tel (InputRecord msg)
+
+
+type ButtonType
+    = Checkbox
+    | Radio
 
 
 {-| Available triggers
@@ -81,6 +83,9 @@ type alias InputRecord msg =
     , modifiers : List Modifier
     , msg : String -> msg
     , trigger : Trigger
+    , required : Bool
+    , disabled : Bool
+    , readonly : Bool
     }
 
 
@@ -133,6 +138,9 @@ type alias SelectRecord msg =
     , modifiers : List Modifier
     , msg : String -> msg
     , options : List Option
+    , required : Bool
+    , disabled : Bool
+    , readonly : Bool
     }
 
 
@@ -149,6 +157,9 @@ type alias CheckboxRecord msg =
     , msg : msg
     , checked : Bool
     , modifiers : List Modifier
+    , required : Bool
+    , disabled : Bool
+    , readonly : Bool
     }
 
 
@@ -166,8 +177,6 @@ type
     | Size Control.Size
       -- State
     | Loading
-    | Disabled
-    | ReadOnly
     | Static
 
 
@@ -185,6 +194,9 @@ text msg value =
         , modifiers = []
         , msg = msg
         , trigger = OnChange
+        , required = False
+        , disabled = False
+        , readonly = False
         }
 
 
@@ -203,6 +215,9 @@ textarea msg value =
         , msg = msg
         , trigger = OnChange
         , rows = 0
+        , required = False
+        , disabled = False
+        , readonly = False
         }
 
 
@@ -223,6 +238,9 @@ select msg options value =
         , modifiers = []
         , msg = msg
         , options = options
+        , required = False
+        , disabled = False
+        , readonly = False
         }
 
 
@@ -259,15 +277,18 @@ arrow =
 -- CHECKBOX
 
 
-{-| The checkbox depart from Bulma, instead we use a styled span to get a "better looking" checkbox.
+{-| The checkbox depart from Bulma to get a "better looking" checkbox.
 -}
 checkbox : msg -> String -> Bool -> Input msg
 checkbox msg label checked =
-    Checkbox
+    Button Checkbox
         { label = label
         , msg = msg
         , checked = checked
         , modifiers = []
+        , required = False
+        , disabled = False
+        , readonly = False
         }
 
 
@@ -275,15 +296,18 @@ checkbox msg label checked =
 -- RADIO
 
 
-{-| The radio depart from Bulma, instead we use a styled span to get a "better looking" radio.
+{-| The radio depart from Bulma to get a "better looking" radio.
 -}
 radio : msg -> String -> Bool -> Input msg
 radio msg label checked =
-    Radio
+    Button Radio
         { label = label
         , msg = msg
         , checked = checked
         , modifiers = []
+        , required = False
+        , disabled = False
+        , readonly = False
         }
 
 
@@ -302,6 +326,9 @@ number msg value =
         , trigger = OnChange
         , range = Nothing
         , step = Nothing
+        , required = False
+        , disabled = False
+        , readonly = False
         }
 
 
@@ -317,6 +344,9 @@ date msg value =
         , trigger = OnChange
         , min = ""
         , max = ""
+        , required = False
+        , disabled = False
+        , readonly = False
         }
 
 
@@ -330,6 +360,9 @@ email msg value =
         , modifiers = []
         , msg = msg
         , trigger = OnChange
+        , required = False
+        , disabled = False
+        , readonly = False
         }
 
 
@@ -343,6 +376,9 @@ tel msg value =
         , modifiers = []
         , msg = msg
         , trigger = OnChange
+        , required = False
+        , disabled = False
+        , readonly = False
         }
 
 
@@ -357,6 +393,9 @@ password msg value =
         , msg = msg
         , trigger = OnChange
         , autocomplete = Current
+        , required = False
+        , disabled = False
+        , readonly = False
         }
 
 
@@ -430,11 +469,8 @@ toHtml input_ =
         Password rec ->
             passwordToHtml rec
 
-        Checkbox rec ->
-            checkboxToHtml rec
-
-        Radio rec ->
-            radioToHtml rec
+        Button type_ rec ->
+            buttonToHtml type_ rec
 
 
 generalToHtml : String -> InputRecord msg -> Html msg
@@ -442,7 +478,7 @@ generalToHtml type_ rec =
     styled Html.input
         (inputStyle rec.modifiers)
         (Attributes.type_ type_
-            :: initAttributes rec.trigger rec.msg rec.value
+            :: initAttributes rec
             |> noneEmptyAttribute Attributes.placeholder rec.placeholder
         )
         []
@@ -453,7 +489,7 @@ numberToHtml rec =
     let
         attrs =
             Attributes.type_ "number"
-                :: initAttributes rec.trigger rec.msg rec.value
+                :: initAttributes rec
                 |> maybeAttribute (Tuple.first >> String.fromFloat >> Attributes.min) rec.range
                 |> maybeAttribute (Tuple.second >> String.fromFloat >> Attributes.max) rec.range
                 |> maybeAttribute (String.fromFloat >> Attributes.step) rec.step
@@ -470,7 +506,7 @@ textareaToHtml rec =
     let
         attrs =
             Attributes.rows rec.rows
-                :: initAttributes rec.trigger rec.msg rec.value
+                :: initAttributes rec
                 |> noneEmptyAttribute Attributes.placeholder rec.placeholder
     in
     styled Html.textarea
@@ -483,7 +519,7 @@ dateToHtml : DateRecord (InputRecord msg) -> Html msg
 dateToHtml rec =
     let
         attrs =
-            initAttributes rec.trigger rec.msg rec.value
+            initAttributes rec
                 ++ [ Attributes.pattern "(((2000|2400|2800|(19|2[0-9](0[48]|[2468][048]|[13579][26])))-02-29)|(((19|2[0-9])[0-9]{2})-02-(0[1-9]|1[0-9]|2[0-8]))|(((19|2[0-9])[0-9]{2})-(0[13578]|10|12)-(0[1-9]|[12][0-9]|3[01]))|(((19|2[0-9])[0-9]{2})-(0[469]|11)-(0[1-9]|[12][0-9]|30)))" -- Pattern is for backward compatibility, leap year validation https://stackoverflow.com/a/55025950
                    , Attributes.type_ "date"
                    ]
@@ -536,8 +572,12 @@ selectToHtml rec =
                    , pseudoElement "ms-expand" [ Css.display none ]
                    ]
             )
-            [ Utils.onChange rec.msg
-            ]
+            ([ Utils.onChange rec.msg
+             ]
+                |> boolAttribute (always rec.required) Attributes.required rec.required
+                |> boolAttribute (always rec.disabled) Attributes.disabled rec.disabled
+                |> boolAttribute (always rec.readonly) Attributes.readonly rec.readonly
+            )
             (option rec.value { label = rec.placeholder, value = "" } :: List.map (option rec.value) rec.options)
         ]
 
@@ -548,7 +588,7 @@ passwordToHtml rec =
         attrs =
             Attributes.type_ "password"
                 :: Attributes.attribute "autocomplete" (passwordAutocompleteToString rec.autocomplete)
-                :: initAttributes rec.trigger rec.msg rec.value
+                :: initAttributes rec
                 |> noneEmptyAttribute Attributes.placeholder rec.placeholder
     in
     styled Html.input
@@ -557,108 +597,117 @@ passwordToHtml rec =
         []
 
 
-checkboxToHtml : CheckboxRecord msg -> Html msg
-checkboxToHtml rec =
+buttonToHtml : ButtonType -> CheckboxRecord msg -> Html msg
+buttonToHtml buttonType rec =
     let
-        tickSize =
-            if rec.checked then
-                24
+        { type_, bg, radius } =
+            case buttonType of
+                Checkbox ->
+                    { type_ = "checkbox", bg = tick, radius = Css.borderRadius (Css.em 0.25) }
+
+                Radio ->
+                    { type_ = "radio", bg = circle, radius = Css.borderRadius (Css.pct 100) }
+
+        cursor =
+            if rec.disabled then
+                Css.notAllowed
 
             else
-                0
+                Css.pointer
     in
     styled Html.label
-        [ Css.cursor pointer
-        , adjacentSiblings
-            [ typeSelector "label"
-                [ Css.marginLeft (em 0.5)
-                ]
-            ]
-        , hover
-            [ descendants
-                [ typeSelector "span"
-                    [ Css.borderColor Colors.base
-                    ]
-                ]
-            ]
+        [ Css.displayFlex
+        , Css.alignItems Css.center
+        , Css.cursor cursor
         ]
-        [ Events.onClick rec.msg ]
-        [ styled Html.span
+        []
+        [ styled Html.input
             (inputStyle rec.modifiers
-                ++ [ Css.width (rem 1.25)
-                   , Css.height (rem 1.25)
-                   , Css.padding zero
-                   , Css.verticalAlign middle
-                   , Css.marginBottom (px 2)
-                   , Css.property "margin-right" "calc(0.625em - 1px)"
-                   , Css.color Colors.success
-                   , Css.display inlineFlex
-                   , Css.justifyContent center
-                   , Css.alignItems center
-                   ]
-            )
-            []
-            [ tick tickSize ]
-        , Html.text
-            rec.label
-        ]
-
-
-tick : Int -> Html msg
-tick size =
-    Svg.svg [ width (String.fromInt size), height (String.fromInt size), viewBox "0 0 24 24", fill "none", stroke "currentColor", strokeWidth "4" ] [ Svg.path [ d "M20 6L9 17l-5-5" ] [] ]
-
-
-radioToHtml : CheckboxRecord msg -> Html msg
-radioToHtml rec =
-    let
-        checkedInt =
-            if rec.checked then
-                1
-
-            else
-                0
-    in
-    styled Html.label
-        [ Css.cursor pointer
-        , hover
-            [ descendants
-                [ typeSelector "span"
-                    [ Css.borderColor Colors.base
-                    ]
-                ]
-            ]
-        ]
-        [ Events.onClick rec.msg ]
-        [ styled Html.span
-            (inputStyle rec.modifiers
-                ++ [ Css.width (rem 1.25)
-                   , Css.height (rem 1.25)
-                   , Css.padding zero
-                   , Css.verticalAlign middle
-                   , Css.marginBottom (px 2)
-                   , Css.property "margin-right" "calc(0.625em - 1px)"
-                   , Css.borderRadius (pct 50)
-                   , Css.before
-                        [ Css.display block
-                        , Css.property "content" "\"\""
-                        , Css.width (pct 50)
-                        , Css.height (pct 50)
-                        , Css.margin2 zero auto
-                        , Css.backgroundColor Colors.primary
-                        , Css.borderRadius (pct 50)
-                        , Css.transform (scale checkedInt)
-                        , Css.Transitions.transition
-                            [ Css.Transitions.transform 60
-                            ]
+                ++ [ Css.property "-webkit-appearance" "none"
+                   , Css.property "-moz-appearance" "none"
+                   , Css.property "appearance" "none"
+                   , Css.property "-webkit-print-color-adjust" "exact"
+                   , Css.property "color-adjust" "exact"
+                   , Css.display Css.inlineBlock
+                   , Css.verticalAlign Css.middle
+                   , Css.backgroundOrigin Css.borderBox
+                   , Css.property "-webkit-user-select" "none"
+                   , Css.property "-moz-user-select" "none"
+                   , Css.property "-ms-user-select" "none"
+                   , Css.property "user-select" "none"
+                   , Css.flexShrink Css.zero
+                   , Css.height (Css.em 1)
+                   , Css.width (Css.em 1)
+                   , Css.color (buttonColor rec.modifiers)
+                   , Css.backgroundColor Colors.white
+                   , Css.borderWidth (Css.px 1)
+                   , radius
+                   , Css.padding Css.zero
+                   , Css.checked
+                        [ Css.backgroundImage (Css.url ("\"" ++ bg ++ "\""))
+                        , Css.borderColor Css.transparent
+                        , Css.backgroundColor Css.currentColor
+                        , Css.backgroundSize2 (Css.pct 100) (Css.pct 100)
+                        , Css.backgroundPosition Css.center
+                        , Css.backgroundRepeat Css.noRepeat
                         ]
+                   , Css.disabled
+                        [ Css.opacity (Css.num 0.7)
+                        ]
+
+                   -- ]
                    ]
             )
+            ([ Attributes.type_ type_, Utils.onChange (always rec.msg) ]
+                |> boolAttribute (always rec.checked) Attributes.checked rec.checked
+                |> boolAttribute (always rec.required) Attributes.required rec.required
+                |> boolAttribute (always rec.disabled) Attributes.disabled rec.disabled
+                |> boolAttribute (always rec.readonly) Attributes.readonly rec.readonly
+            )
             []
+        , styled Html.span
+            [ Css.marginLeft (Css.em 0.5)
+            ]
             []
-        , Html.text
-            rec.label
+            [ Html.text rec.label ]
         ]
+
+
+buttonColor : List Modifier -> Css.Color
+buttonColor mods =
+    List.foldl
+        (\m carry ->
+            case m of
+                Primary ->
+                    Colors.primary
+
+                Info ->
+                    Colors.info
+
+                Success ->
+                    Colors.success
+
+                Warning ->
+                    Colors.warning
+
+                Danger ->
+                    Colors.danger
+
+                _ ->
+                    carry
+        )
+        Colors.link
+        mods
+
+
+tick : String
+tick =
+    "data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M5.707 7.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L7 8.586 5.707 7.293z'/%3e%3c/svg%3e"
+
+
+circle : String
+circle =
+    "data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e"
 
 
 
@@ -697,10 +746,7 @@ withPlaceholder placeholder_ input =
         Tel rec ->
             Tel { rec | placeholder = placeholder_ }
 
-        Checkbox _ ->
-            input
-
-        Radio _ ->
+        Button _ _ ->
             input
 
 
@@ -733,14 +779,110 @@ withTrigger trigger input =
         Tel rec ->
             Tel { rec | trigger = trigger }
 
-        Checkbox _ ->
-            input
-
-        Radio _ ->
+        Button _ _ ->
             input
 
         Select _ ->
             input
+
+
+{-| Add required to the input
+-}
+withRequired : Input msg -> Input msg
+withRequired input =
+    case input of
+        Text rec ->
+            Text { rec | required = True }
+
+        Number rec ->
+            Number { rec | required = True }
+
+        Textarea rec ->
+            Textarea { rec | required = True }
+
+        Date rec ->
+            Date { rec | required = True }
+
+        Password rec ->
+            Password { rec | required = True }
+
+        Select rec ->
+            Select { rec | required = True }
+
+        Email rec ->
+            Email { rec | required = True }
+
+        Tel rec ->
+            Tel { rec | required = True }
+
+        Button type_ rec ->
+            Button type_ { rec | required = True }
+
+
+{-| Add disabled to the input
+-}
+withDisabled : Input msg -> Input msg
+withDisabled input =
+    case input of
+        Text rec ->
+            Text { rec | disabled = True }
+
+        Number rec ->
+            Number { rec | disabled = True }
+
+        Textarea rec ->
+            Textarea { rec | disabled = True }
+
+        Date rec ->
+            Date { rec | disabled = True }
+
+        Password rec ->
+            Password { rec | disabled = True }
+
+        Select rec ->
+            Select { rec | disabled = True }
+
+        Email rec ->
+            Email { rec | disabled = True }
+
+        Tel rec ->
+            Tel { rec | disabled = True }
+
+        Button type_ rec ->
+            Button type_ { rec | disabled = True }
+
+
+{-| Add readonly to the input
+-}
+withReadonly : Input msg -> Input msg
+withReadonly input =
+    case input of
+        Text rec ->
+            Text { rec | readonly = True }
+
+        Number rec ->
+            Number { rec | readonly = True }
+
+        Textarea rec ->
+            Textarea { rec | readonly = True }
+
+        Date rec ->
+            Date { rec | readonly = True }
+
+        Password rec ->
+            Password { rec | readonly = True }
+
+        Select rec ->
+            Select { rec | readonly = True }
+
+        Email rec ->
+            Email { rec | readonly = True }
+
+        Tel rec ->
+            Tel { rec | readonly = True }
+
+        Button type_ rec ->
+            Button type_ { rec | readonly = True }
 
 
 {-| Add min and max to a number input. All other input types will ignore this function
@@ -841,11 +983,8 @@ withModifier mod input =
         Tel rec ->
             Tel { rec | modifiers = mod :: rec.modifiers }
 
-        Checkbox rec ->
-            Checkbox { rec | modifiers = mod :: rec.modifiers }
-
-        Radio rec ->
-            Radio { rec | modifiers = mod :: rec.modifiers }
+        Button type_ rec ->
+            Button type_ { rec | modifiers = mod :: rec.modifiers }
 
 
 triggerToAttribute : Trigger -> (String -> msg) -> Attribute msg
@@ -882,9 +1021,23 @@ boolAttribute predicateFn attrFn val attrs =
         attrs
 
 
-initAttributes : Trigger -> (String -> msg) -> String -> List (Attribute msg)
-initAttributes trigger msg value =
-    [ triggerToAttribute trigger msg, Attributes.value value ]
+initAttributes :
+    { a
+        | trigger : Trigger
+        , msg : String -> msg
+        , value : String
+        , required : Bool
+        , disabled : Bool
+        , readonly : Bool
+    }
+    -> List (Attribute msg)
+initAttributes { trigger, msg, value, required, disabled, readonly } =
+    [ triggerToAttribute trigger msg
+    , Attributes.value value
+    ]
+        |> boolAttribute (always required) Attributes.required required
+        |> boolAttribute (always disabled) Attributes.disabled disabled
+        |> boolAttribute (always readonly) Attributes.readonly readonly
 
 
 
@@ -945,7 +1098,7 @@ inputModifierStyle modifier =
             style Colors.warning (Css.property "box-shadow" "0 0 0 0.125em rgba(255,221,87, 0.25)")
 
         Danger ->
-            Debug.log "danger style" style Colors.danger (Css.property "box-shadow" "0 0 0 0.125em rgba(255,56,96, 0.25)")
+            style Colors.danger (Css.property "box-shadow" "0 0 0 0.125em rgba(255,56,96, 0.25)")
 
         Size _ ->
             Css.batch []
@@ -954,12 +1107,6 @@ inputModifierStyle modifier =
             Css.batch []
 
         Static ->
-            Css.batch []
-
-        Disabled ->
-            Css.batch []
-
-        ReadOnly ->
             Css.batch []
 
 
