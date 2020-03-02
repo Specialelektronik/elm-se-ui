@@ -1,21 +1,44 @@
 module SE.UI.Form.Input exposing
     ( text, textarea, select, checkbox, radio, number, date, email, password, tel, toHtml
+    , withTrigger, Trigger(..)
     , withPlaceholder, withStep, withRange, withRows, withMinDate, withMaxDate
+    , withModifier, Modifier(..)
     )
 
-{-| Holds the basic data for inputs, textareas and selects
+{-| Essentially all input elements except buttons
 
-Uses the with\*-pattern,
 
-TODO elaborate on With\*
-Explain Triggers
+# With\* pattern (pron. With start pattern)
+
+The inspiration to this module and its API comes from Brian Hicks talk about Robot Buttons from Mars (<https://youtu.be/PDyWP-0H4Zo?t=1467>). (Please view the entire talk).
+
+Example:
+
+    Input.text (\input -> TriggerMsgWithInputString input) inputStringValue
+        |> Input.withPlaceholder "A placeholder to explain this input"
+        |> Input.withModifier Input.Primary
+        |> Input.toHtml
 
 @docs text, textarea, select, checkbox, radio, number, date, email, password, tel, toHtml
 
 
-# Modifiers
+# Triggers
+
+Traditionally, Elm apps use [`onInput`](https://package.elm-lang.org/packages/elm/html/latest/Html-Events#onInput) to drive form interactions. Sometimes though, we need to wait for the use to be done modifying the input before we can take action on it. The range filter inputs are an exceptional example of this since we do not want to alter the search result when the user adjust the price range. We should only update the query once the user have decided on an acceptable price range.
+
+To allow the programmer to specify _when_ a message should trigger, the inputs have a `Trigger` type which can take either `OnInput` or `OnChange`. `OnChange` (usually) triggers once the user leaves the input.
+
+@docs withTrigger, Trigger
+
+
+# With\*
 
 @docs withPlaceholder, withStep, withRange, withRows, withMinDate, withMaxDate
+
+
+## Modifiers
+
+@docs withModifier, Modifier
 
 -}
 
@@ -45,6 +68,8 @@ type Input msg
     | Tel (InputRecord msg)
 
 
+{-| Available triggers
+-}
 type Trigger
     = OnInput
     | OnChange
@@ -53,7 +78,7 @@ type Trigger
 type alias InputRecord msg =
     { value : String
     , placeholder : String
-    , modifiers : List InputModifier
+    , modifiers : List Modifier
     , msg : String -> msg
     , trigger : Trigger
     }
@@ -105,7 +130,7 @@ type alias TextareaRecord a =
 type alias SelectRecord msg =
     { value : String
     , placeholder : String
-    , modifiers : List InputModifier
+    , modifiers : List Modifier
     , msg : String -> msg
     , options : List Option
     }
@@ -123,14 +148,14 @@ type alias CheckboxRecord msg =
     { label : String
     , msg : msg
     , checked : Bool
-    , modifiers : List InputModifier
+    , modifiers : List Modifier
     }
 
 
 {-| Available input modifiers
 -}
 type
-    InputModifier
+    Modifier
     -- Colors
     = Primary
     | Info
@@ -235,7 +260,6 @@ arrow =
 
 
 {-| The checkbox depart from Bulma, instead we use a styled span to get a "better looking" checkbox.
-TODO checkbox does not support modifiers, should it?
 -}
 checkbox : msg -> String -> Bool -> Input msg
 checkbox msg label checked =
@@ -252,7 +276,6 @@ checkbox msg label checked =
 
 
 {-| The radio depart from Bulma, instead we use a styled span to get a "better looking" radio.
-TODO radio does not support modifiers, should it?
 -}
 radio : msg -> String -> Bool -> Input msg
 radio msg label checked =
@@ -347,7 +370,7 @@ passwordAutocompleteToString a =
             "new-password"
 
 
-extractControlSize : List InputModifier -> Control.Size
+extractControlSize : List Modifier -> Control.Size
 extractControlSize mods =
     List.foldl
         (\m init ->
@@ -375,6 +398,11 @@ placeholder c =
 -- TO HTML
 
 
+{-| Turn the Input into Html
+
+Use it in the end of a pipeline, see the example at the top.
+
+-}
 toHtml : Input msg -> Html msg
 toHtml input_ =
     case input_ of
@@ -556,7 +584,7 @@ checkboxToHtml rec =
         ]
         [ Events.onClick rec.msg ]
         [ styled Html.span
-            (inputStyle []
+            (inputStyle rec.modifiers
                 ++ [ Css.width (rem 1.25)
                    , Css.height (rem 1.25)
                    , Css.padding zero
@@ -603,7 +631,7 @@ radioToHtml rec =
         ]
         [ Events.onClick rec.msg ]
         [ styled Html.span
-            (inputStyle []
+            (inputStyle rec.modifiers
                 ++ [ Css.width (rem 1.25)
                    , Css.height (rem 1.25)
                    , Css.padding zero
@@ -635,9 +663,13 @@ radioToHtml rec =
 
 
 -- WITH STAR
--- This technique is called the "with*"-pattern (pron. With Star)
 
 
+{-| Add placeholder to the input
+
+Note: The checkbox and radio input does not have a placeholder so they will ignore calls to this function
+
+-}
 withPlaceholder : String -> Input msg -> Input msg
 withPlaceholder placeholder_ input =
     case input of
@@ -672,7 +704,46 @@ withPlaceholder placeholder_ input =
             input
 
 
-{-| Add min and max to a number input. All other input types will ignore the range
+{-| Change the trigger of the input
+
+Note: The checkbox, radio and select input will ignore calls to this function since they can only the onChange trigger
+
+-}
+withTrigger : Trigger -> Input msg -> Input msg
+withTrigger trigger input =
+    case input of
+        Text rec ->
+            Text { rec | trigger = trigger }
+
+        Number rec ->
+            Number { rec | trigger = trigger }
+
+        Textarea rec ->
+            Textarea { rec | trigger = trigger }
+
+        Date rec ->
+            Date { rec | trigger = trigger }
+
+        Password rec ->
+            Password { rec | trigger = trigger }
+
+        Email rec ->
+            Email { rec | trigger = trigger }
+
+        Tel rec ->
+            Tel { rec | trigger = trigger }
+
+        Checkbox _ ->
+            input
+
+        Radio _ ->
+            input
+
+        Select _ ->
+            input
+
+
+{-| Add min and max to a number input. All other input types will ignore this function
 -}
 withRange : ( Float, Float ) -> Input msg -> Input msg
 withRange range input =
@@ -690,6 +761,8 @@ withRange range input =
             input
 
 
+{-| Add step to a number input. All other input types will ignore this function
+-}
 withStep : Float -> Input msg -> Input msg
 withStep step input =
     case input of
@@ -700,6 +773,8 @@ withStep step input =
             input
 
 
+{-| Add rows a textarea input. All other input types will ignore this function
+-}
 withRows : Int -> Input msg -> Input msg
 withRows rows input =
     case input of
@@ -710,6 +785,8 @@ withRows rows input =
             input
 
 
+{-| Add max date to a date input. All other input types will ignore this function
+-}
 withMaxDate : String -> Input msg -> Input msg
 withMaxDate max input =
     case input of
@@ -720,6 +797,8 @@ withMaxDate max input =
             input
 
 
+{-| Add min date to a date input. All other input types will ignore this function
+-}
 withMinDate : String -> Input msg -> Input msg
 withMinDate min input =
     case input of
@@ -728,6 +807,45 @@ withMinDate min input =
 
         _ ->
             input
+
+
+{-| Add a `Modifier` to an input.
+
+Please review the Modifier documentation for further information.
+
+-}
+withModifier : Modifier -> Input msg -> Input msg
+withModifier mod input =
+    case input of
+        Text rec ->
+            Text { rec | modifiers = mod :: rec.modifiers }
+
+        Number rec ->
+            Number { rec | modifiers = mod :: rec.modifiers }
+
+        Textarea rec ->
+            Textarea { rec | modifiers = mod :: rec.modifiers }
+
+        Date rec ->
+            Date { rec | modifiers = mod :: rec.modifiers }
+
+        Password rec ->
+            Password { rec | modifiers = mod :: rec.modifiers }
+
+        Select rec ->
+            Select { rec | modifiers = mod :: rec.modifiers }
+
+        Email rec ->
+            Email { rec | modifiers = mod :: rec.modifiers }
+
+        Tel rec ->
+            Tel { rec | modifiers = mod :: rec.modifiers }
+
+        Checkbox rec ->
+            Checkbox { rec | modifiers = mod :: rec.modifiers }
+
+        Radio rec ->
+            Radio { rec | modifiers = mod :: rec.modifiers }
 
 
 triggerToAttribute : Trigger -> (String -> msg) -> Attribute msg
@@ -773,7 +891,7 @@ initAttributes trigger msg value =
 -- STYLE
 
 
-inputStyle : List InputModifier -> List Style
+inputStyle : List Modifier -> List Style
 inputStyle mods =
     let
         size =
@@ -802,7 +920,7 @@ inputStyle mods =
         ++ List.map inputModifierStyle mods
 
 
-inputModifierStyle : InputModifier -> Style
+inputModifierStyle : Modifier -> Style
 inputModifierStyle modifier =
     let
         style color prop =
@@ -827,7 +945,7 @@ inputModifierStyle modifier =
             style Colors.warning (Css.property "box-shadow" "0 0 0 0.125em rgba(255,221,87, 0.25)")
 
         Danger ->
-            style Colors.danger (Css.property "box-shadow" "0 0 0 0.125em rgba(255,56,96, 0.25)")
+            Debug.log "danger style" style Colors.danger (Css.property "box-shadow" "0 0 0 0.125em rgba(255,56,96, 0.25)")
 
         Size _ ->
             Css.batch []
@@ -845,7 +963,7 @@ inputModifierStyle modifier =
             Css.batch []
 
 
-textareaStyle : List InputModifier -> List Style
+textareaStyle : List Modifier -> List Style
 textareaStyle mods =
     inputStyle mods
         ++ [ Css.display block

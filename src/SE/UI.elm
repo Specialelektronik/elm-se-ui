@@ -44,6 +44,7 @@ type alias Model =
     , makes : List ( Bool, String )
     , filters : Array Filter
     , showModal : Bool
+    , checkboxChecked : Bool
     }
 
 
@@ -533,6 +534,7 @@ initialModel =
           , status = Regular
           }
         ]
+    , checkboxChecked = False
     }
 
 
@@ -551,6 +553,7 @@ type Msg
     | ClickedMake String
     | ClickedFilter Int String
     | ToggledModal
+    | ToggledCheckbox
 
 
 update : Msg -> Model -> Model
@@ -614,6 +617,9 @@ update msg model =
 
         ToggledModal ->
             { model | showModal = not model.showModal }
+
+        ToggledCheckbox ->
+            { model | checkboxChecked = not model.checkboxChecked }
 
 
 updateFilter : String -> Filter -> Filter
@@ -892,9 +898,19 @@ viewForm model =
     div []
         [ Form.field []
             [ Form.label "Ert ordernummer"
-            , Form.control False
+            , Form.control True
                 [ Input.text EnteredYourOrderNo model.yourOrderNo
                     |> Input.withPlaceholder "Ert ordernummer"
+                    |> Input.withModifier Input.Loading
+                    |> Input.withTrigger Input.OnInput
+                    |> Input.toHtml
+                ]
+            ]
+        , Form.field []
+            [ Form.label "Do you accept the terms?"
+            , Form.control False
+                [ Input.checkbox ToggledCheckbox "Yes" model.checkboxChecked
+                    |> Input.withModifier Input.Danger
                     |> Input.toHtml
                 ]
             ]
