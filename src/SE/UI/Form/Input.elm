@@ -2,7 +2,7 @@ module SE.UI.Form.Input exposing
     ( text, textarea, select, checkbox, radio, number, date, email, password, tel, toHtml
     , withTrigger, Trigger(..)
     , withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate
-    , withModifier, Modifier(..)
+    , withModifier, withModifiers, Modifier(..)
     )
 
 {-| Essentially all input elements except buttons
@@ -38,7 +38,7 @@ To allow the programmer to specify _when_ a message should trigger, the inputs h
 
 ## Modifiers
 
-@docs withModifier, Modifier
+@docs withModifier, withModifiers, Modifier
 
 -}
 
@@ -958,33 +958,77 @@ Please review the Modifier documentation for further information.
 -}
 withModifier : Modifier -> Input msg -> Input msg
 withModifier mod input =
+    let
+        newRec rec =
+            { rec | modifiers = mod :: rec.modifiers }
+    in
     case input of
         Text rec ->
-            Text { rec | modifiers = mod :: rec.modifiers }
+            Text (newRec rec)
 
         Number rec ->
-            Number { rec | modifiers = mod :: rec.modifiers }
+            Number (newRec rec)
 
         Textarea rec ->
-            Textarea { rec | modifiers = mod :: rec.modifiers }
+            Textarea (newRec rec)
 
         Date rec ->
-            Date { rec | modifiers = mod :: rec.modifiers }
+            Date (newRec rec)
 
         Password rec ->
-            Password { rec | modifiers = mod :: rec.modifiers }
+            Password (newRec rec)
 
         Select rec ->
-            Select { rec | modifiers = mod :: rec.modifiers }
+            Select (newRec rec)
 
         Email rec ->
-            Email { rec | modifiers = mod :: rec.modifiers }
+            Email (newRec rec)
 
         Tel rec ->
-            Tel { rec | modifiers = mod :: rec.modifiers }
+            Tel (newRec rec)
 
         Button type_ rec ->
-            Button type_ { rec | modifiers = mod :: rec.modifiers }
+            Button type_ (newRec rec)
+
+
+{-| Add (not replace) multiple `Modifier` to an input.
+
+Please review the Modifier documentation for further information.
+
+-}
+withModifiers : List Modifier -> Input msg -> Input msg
+withModifiers mods input =
+    let
+        newRec rec =
+            { rec | modifiers = mods ++ rec.modifiers }
+    in
+    case input of
+        Text rec ->
+            Text (newRec rec)
+
+        Number rec ->
+            Number (newRec rec)
+
+        Textarea rec ->
+            Textarea (newRec rec)
+
+        Date rec ->
+            Date (newRec rec)
+
+        Password rec ->
+            Password (newRec rec)
+
+        Select rec ->
+            Select (newRec rec)
+
+        Email rec ->
+            Email (newRec rec)
+
+        Tel rec ->
+            Tel (newRec rec)
+
+        Button type_ rec ->
+            Button type_ (newRec rec)
 
 
 triggerToAttribute : Trigger -> (String -> msg) -> Attribute msg
