@@ -1,5 +1,5 @@
 module SE.UI.Form.Input exposing
-    ( text, textarea, select, checkbox, radio, number, date, email, password, tel, toHtml
+    ( text, textarea, select, Option, checkbox, radio, number, date, email, password, tel, toHtml
     , withTrigger, Trigger(..)
     , withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate
     , withModifier, withModifiers, Modifier(..)
@@ -19,7 +19,7 @@ Example:
         |> Input.withModifier Input.Primary
         |> Input.toHtml
 
-@docs text, textarea, select, checkbox, radio, number, date, email, password, tel, toHtml
+@docs text, textarea, select, Option, checkbox, radio, number, date, email, password, tel, toHtml
 
 
 # Triggers
