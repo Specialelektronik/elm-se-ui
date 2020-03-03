@@ -924,7 +924,7 @@ viewForm model =
                 ]
             , Form.control False
                 [ Input.radio ToggledCheckbox "No" (not model.checkboxChecked)
-                    |> Input.withModifier Input.Success
+                    |> Input.withModifiers [ Input.Success, Input.Size Control.Large ]
                     |> Input.toHtml
                 ]
             ]
