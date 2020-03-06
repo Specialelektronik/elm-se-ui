@@ -35,7 +35,7 @@ see <https://bulma.io/documentation/form/>
 import Css exposing (Style, absolute, active, auto, block, bold, borderBox, center, deg, em, flexStart, focus, hover, important, initial, inlineBlock, inlineFlex, int, left, middle, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rem, rgba, rotate, scale, solid, top, vertical, zero)
 import Css.Global exposing (adjacentSiblings, descendants, each, typeSelector, withAttribute)
 import Css.Transitions
-import Html.Styled exposing ( Html, styled, text)
+import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes exposing (class)
 import Html.Styled.Events exposing (onInput)
 import SE.UI.Colors as Colors exposing (base, danger, darker, info, link, primary, success, warning)
