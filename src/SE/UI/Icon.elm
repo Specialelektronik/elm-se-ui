@@ -1,4 +1,4 @@
-module SE.UI.Icon exposing (angleDown, bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi)
+module SE.UI.Icon exposing (angleDown, bargain, bid, box, boxes, campaign, cart, category, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi)
 
 {-| Creates a Bulma Icon element set.
 
@@ -9,7 +9,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs angleDown, bargain, bid, box, boxes, campaign, cart, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi
+@docs angleDown, bargain, bid, box, boxes, campaign, cart, category, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi
 
 -}
 
@@ -160,6 +160,13 @@ campaign size =
 cart : Control.Size -> Html msg
 cart size =
     internalIcon size (viewBox 576 512) [ Svg.path [ d "M528.12 301.319l47.273-208C578.806 78.301 567.391 64 551.99 64H159.208l-9.166-44.81C147.758 8.021 137.93 0 126.529 0H24C10.745 0 0 10.745 0 24v16c0 13.255 10.745 24 24 24h69.883l70.248 343.435C147.325 417.1 136 435.222 136 456c0 30.928 25.072 56 56 56s56-25.072 56-56c0-15.674-6.447-29.835-16.824-40h209.647C430.447 426.165 424 440.326 424 456c0 30.928 25.072 56 56 56s56-25.072 56-56c0-22.172-12.888-41.332-31.579-50.405l5.517-24.276c3.413-15.018-8.002-29.319-23.403-29.319H218.117l-6.545-32h293.145c11.206 0 20.92-7.754 23.403-18.681z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/sitemap?style=solid>
+-}
+category : Control.Size -> Html msg
+category size =
+    internalIcon size (viewBox 640 512) [ Svg.path [ d "M128 352H32c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32zm-24-80h192v48h48v-48h192v48h48v-57.59c0-21.17-17.23-38.41-38.41-38.41H344v-64h40c17.67 0 32-14.33 32-32V32c0-17.67-14.33-32-32-32H256c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h40v64H94.41C73.23 224 56 241.23 56 262.41V320h48v-48zm264 80h-96c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32zm240 0h-96c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/dolly?style=solid>
