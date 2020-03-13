@@ -1,0 +1,15 @@
+{
+  "name": "se-elm-ui-package-documenter",
+  "version": "1.0.0",
+  "description": "This Elm program reads the docs.json file from an Elm package and constructs a design document.",
+  "main": "index.js",
+  "dependencies": {
+    "elm-live": "^4.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
