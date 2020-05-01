@@ -2,103 +2,7 @@ port module Main exposing (..)
 
 import Html exposing (text)
 import Json.Decode as JD exposing (Decoder)
-
-
-type alias Module =
-    { name : String
-    , comment : String
-    , values : List Function
-    }
-
-
-type alias Function =
-    { name : String
-    , comment : String
-    , type_ : String
-    }
-
-
-type VerifiedFunction
-    = Unverified Function
-    | Verified
-        { name : String
-        , comment : String
-        , type_ : String
-        , arguments : List Argument
-        }
-
-
-type Argument
-    = String_
-
-
-defaultArgument : Argument -> String
-defaultArgument argument =
-    case argument of
-        String_ ->
-            "\"Hello World\""
-
-
-decoder : Decoder (List Module)
-decoder =
-    JD.list
-        (JD.map3 Module
-            (JD.field "name" JD.string)
-            (JD.field "comment" JD.string)
-            (JD.field "values" (JD.list functionDecoder))
-        )
-
-
-functionDecoder : Decoder Function
-functionDecoder =
-    JD.map3 Function
-        (JD.field "name" JD.string)
-        (JD.field "comment" JD.string)
-        (JD.field "type" JD.string)
-
-
-toVerifiedFunction : Function -> VerifiedFunction
-toVerifiedFunction fn =
-    let
-        arguments =
-            extractArguments fn.type_
-    in
-    if List.isEmpty arguments then
-        Unverified fn
-
-    else
-        Verified
-            { name = fn.name
-            , comment = fn.comment
-            , type_ = fn.type_
-            , arguments = arguments
-            }
-
-
-extractArguments : String -> List Argument
-extractArguments type_ =
-    type_
-        |> String.split " -> "
-        |> dropLast
-        |> List.filterMap stringToArgument
-
-
-dropLast : List a -> List a
-dropLast list =
-    list
-        |> List.reverse
-        |> List.drop 1
-        |> List.reverse
-
-
-stringToArgument : String -> Maybe Argument
-stringToArgument string =
-    case string of
-        "String" ->
-            Just String_
-
-        _ ->
-            Nothing
+import Structure
 
 
 json =
@@ -135,9 +39,9 @@ main =
 build : Cmd msg
 build =
     let
-        modules : List Module
+        modules : List Structure.Module
         modules =
-            JD.decodeString decoder json
+            JD.decodeString Structure.decoder json
                 |> Result.withDefault []
 
         imports =
@@ -154,11 +58,11 @@ build =
     createFile { name = "Docs.elm", content = template }
 
 
-viewModule : Module -> Html.Html Never
+viewModule : Structure.Module -> Html.Html Never
 viewModule module_ =
     let
         verifiedFunctions =
-            List.map toVerifiedFunction module_.values
+            List.map Structure.toVerifiedFunction module_.values
     in
     Html.div []
         [ Html.h1 [] [ text module_.name ]
