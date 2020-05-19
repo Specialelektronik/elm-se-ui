@@ -1,7 +1,7 @@
 module SE.UI.Form.Input exposing
     ( text, textarea, select, Option, checkbox, radio, number, date, email, password, tel, toHtml
     , withTrigger, Trigger(..)
-    , withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate
+    , withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword
     , withModifier, withModifiers, Modifier(..)
     )
 
@@ -33,7 +33,7 @@ To allow the programmer to specify _when_ a message should trigger, the inputs h
 
 # With\*
 
-@docs withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate
+@docs withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword
 
 
 ## Modifiers
@@ -946,6 +946,18 @@ withMinDate min input =
     case input of
         Date rec ->
             Date { rec | min = min }
+
+        _ ->
+            input
+
+
+{-| Add autocomplete = new-password to password input
+-}
+withNewPassword : Input msg -> Input msg
+withNewPassword input =
+    case input of
+        Password rec ->
+            Password { rec | autocomplete = New }
 
         _ ->
             input
