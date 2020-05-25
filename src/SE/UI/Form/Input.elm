@@ -616,9 +616,11 @@ buttonToHtml buttonType rec =
                 Css.pointer
     in
     styled Html.label
-        [ Css.displayFlex
+        [ Css.display Css.inlineBlock
         , Css.alignItems Css.center
         , Css.cursor cursor
+        , Css.marginLeft (Css.rem 0.5)
+        , Css.firstChild [ Css.marginLeft Css.zero ]
         ]
         []
         [ styled Html.input
