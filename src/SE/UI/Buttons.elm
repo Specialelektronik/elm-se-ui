@@ -27,7 +27,7 @@ import Html.Styled.Attributes
 import Html.Styled.Events exposing (onClick)
 import SE.UI.Colors as Colors
 import SE.UI.Control as Control exposing (controlStyle)
-import SE.UI.Utils exposing (centerEm, loader)
+import SE.UI.Utils as Utils exposing (centerEm, loader)
 
 
 {-| Modify the button, support all modifiers in Bulma except the Disabled. To disable a button, use `Nothing` as the Maybe msg.
@@ -112,7 +112,12 @@ buttonStyles mods hasIcon =
         size =
             extractControlSize mods
     in
-    [ controlStyle size
+    [ -- Override padding left and right on buttons
+      Css.property "padding" "calc(0.5em - 1px) calc(1.5em - 1px)"
+    , Utils.desktop
+        [ Css.property "padding" "calc(0.75em - 1px) calc(1.5em - 1px)"
+        ]
+    , controlStyle size
     , Colors.backgroundColor Colors.white
     , Colors.borderColor Colors.border
     , Css.borderWidth (px 1)
@@ -194,7 +199,8 @@ buttonModifier modifier =
                     hsla |> Colors.active
             in
             Css.batch
-                [ Colors.color (hsla |> Colors.invert)
+                [ Css.fontWeight Css.bold
+                , Colors.color (hsla |> Colors.invert)
                 , Colors.backgroundColor hsla
                 , Css.borderColor transparent
                 , Css.hover
@@ -213,8 +219,7 @@ buttonModifier modifier =
 
         Text ->
             Css.batch
-                [ Css.textDecoration underline
-                , Css.backgroundColor transparent
+                [ Css.backgroundColor transparent
                 , Css.borderColor transparent
                 , Css.hover
                     [ Colors.backgroundColor (Colors.background |> Colors.hover)

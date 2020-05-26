@@ -264,7 +264,7 @@ danger =
 -}
 border : Hsla
 border =
-    light
+    lighter
 
 
 {-| Alias for lightest.

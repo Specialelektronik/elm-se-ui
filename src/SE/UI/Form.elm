@@ -31,6 +31,7 @@ import Css.Global exposing (descendants, each, typeSelector)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes exposing (class)
 import SE.UI.Colors as Colors
+import SE.UI.Font as Font
 import SE.UI.Utils as Utils
 
 
@@ -82,7 +83,8 @@ labelHelper required s =
     styled Html.Styled.label
         [ Css.color (Colors.text |> Colors.toCss)
         , Css.display block
-        , Css.fontSize (rem 1)
+        , Font.remSize -2
+        , Css.textTransform Css.uppercase
         , Css.fontWeight bold
         , pseudoClass "not(:last-child)"
             [ Css.marginBottom (em 0.5)
@@ -222,7 +224,7 @@ internalControl isExpanded loading =
     styled Html.Styled.div
         ([ Css.boxSizing borderBox
          , Css.property "clear" "both"
-         , Css.fontSize (rem 1)
+         , Font.remSize 1
          , Css.position relative
          , Css.textAlign left
          , if isExpanded then

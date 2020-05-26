@@ -7,7 +7,8 @@ module SE.UI.Control exposing (controlHeight, controlStyle, Size(..))
 -}
 
 import Css exposing (Style, active, alignItems, border3, borderRadius, boxShadow, center, cursor, disabled, display, em, flexStart, focus, fontSize, height, inlineFlex, justifyContent, lineHeight, none, notAllowed, paddingBottom, paddingLeft, paddingRight, paddingTop, position, property, px, relative, solid, top, transparent, verticalAlign)
-import SE.UI.Utils exposing (radius, smallRadius)
+import SE.UI.Colors as Colors
+import SE.UI.Utils as Utils exposing (radius, smallRadius)
 
 
 {-| Form input controls and buttons use this type as an argument to their Size Modifier
@@ -17,11 +18,6 @@ type Size
     | Small
     | Medium
     | Large
-
-
-controlBorderWidth : Css.Px
-controlBorderWidth =
-    px 1
 
 
 {-| Height used for controls like buttons and text inputs.
@@ -44,16 +40,18 @@ controlStyle size =
         [ property "-moz-appearance" "none"
         , property "-webkit-appearance" "none"
         , alignItems center
-        , border3 controlBorderWidth solid transparent
+        , border3 (Css.px 1) solid transparent
         , boxShadow none
         , display inlineFlex
-        , height controlHeight
+
+        -- , height controlHeight
         , justifyContent flexStart
         , lineHeight controlLineHeight
-        , paddingBottom (em 0.375)
-        , paddingLeft (em 0.75)
-        , paddingRight (em 0.75)
-        , paddingTop (em 0.375)
+        , Css.property "padding" "calc(0.5em - 1px) calc(0.75em - 1px)"
+        , Utils.desktop
+            [ Css.property "padding" "calc(0.75em - 1px)"
+            ]
+        , Colors.backgroundColor Colors.background
         , position relative
         , verticalAlign top
         , focus

@@ -238,9 +238,9 @@ viewButtons model =
         [ Container.container []
             [ Title.title1 "Buttons"
             , Form.field []
-                [ Form.label "Modifiers"
-                , Form.control False (List.map (viewButtonModifier model.mods) allMods)
-                ]
+                (Form.label "Modifiers"
+                    :: List.map (viewButtonModifier model.mods) allMods
+                )
             , Buttons.buttons []
                 [ Buttons.button model.mods (Just ClickedButton) [ Html.text "Save changes" ]
                 ]
@@ -326,8 +326,10 @@ modToString mod =
 
 viewButtonModifier : List Buttons.Modifier -> ( Buttons.Modifier, String ) -> Html Msg
 viewButtonModifier activeMods ( mod, label ) =
-    Input.checkbox (GotButtonsMsg (ToggleModifier mod)) label (List.member mod activeMods)
-        |> Input.toHtml
+    Form.control False
+        [ Input.checkbox (GotButtonsMsg (ToggleModifier mod)) label (List.member mod activeMods)
+            |> Input.toHtml
+        ]
 
 
 viewSection : Html Msg
@@ -353,6 +355,7 @@ viewForm model =
                     [ Form.label "Small label"
                     , Form.control False
                         [ Input.text GotInput model.input
+                            |> Input.withPlaceholder "Placeholder"
                             |> Input.toHtml
                         ]
                     ]

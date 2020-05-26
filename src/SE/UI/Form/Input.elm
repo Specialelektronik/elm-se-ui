@@ -628,7 +628,8 @@ buttonToHtml buttonType rec =
                    , Css.property "-webkit-print-color-adjust" "exact"
                    , Css.property "color-adjust" "exact"
                    , Css.display Css.inlineBlock
-                   , Css.verticalAlign Css.middle
+
+                   --    , Css.verticalAlign Css.middle
                    , Css.backgroundOrigin Css.borderBox
                    , Css.property "-webkit-user-select" "none"
                    , Css.property "-moz-user-select" "none"
@@ -637,9 +638,11 @@ buttonToHtml buttonType rec =
                    , Css.flexShrink Css.zero
                    , Css.height (Css.em 1)
                    , Css.width (Css.em 1)
+                   , Css.cursor cursor
                    , Css.color (buttonColor rec.modifiers |> Colors.toCss)
-                   , Css.backgroundColor (Colors.white |> Colors.toCss)
-                   , Css.borderWidth (Css.px 1)
+                   , Colors.backgroundColor Colors.background
+
+                   --    , Css.borderWidth (Css.px 1)
                    , radius
                    , Css.padding Css.zero
                    , Css.checked
@@ -1097,23 +1100,24 @@ inputStyle mods =
             extractControlSize mods
     in
     [ controlStyle size
-    , Css.borderColor (Colors.base |> Colors.toCss)
-    , Css.color (Colors.darker |> Colors.toCss)
+    , Colors.borderColor Colors.border
+    , Colors.color Colors.darker
     , Css.maxWidth (pct 100)
     , Css.width (pct 100)
+    , Css.property "box-shadow" "inset 0px 1px 2px rgba(0, 0, 0, 0.05)"
     , placeholder
-        [ Css.color (rgba 96 111 123 0.3)
+        [ Colors.color Colors.base
         ]
     , hover
-        [ Css.borderColor (Colors.base |> Colors.toCss)
+        [ Colors.borderColor (Colors.border |> Colors.hover)
         ]
     , focus
-        [ Css.borderColor (Colors.link |> Colors.toCss)
-        , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
+        [ Colors.borderColor Colors.link
+        , Css.property "box-shadow" "inset 0px 1px 2px rgba(0, 0, 0, 0.05), 0 0 0 0.125em rgba(50,115,220, 0.25)"
         ]
     , active
-        [ Css.borderColor (Colors.link |> Colors.toCss)
-        , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
+        [ Colors.borderColor Colors.link
+        , Css.property "box-shadow" "inset 0px 1px 2px rgba(0, 0, 0, 0.05), 0 0 0 0.125em rgba(50,115,220, 0.25)"
         ]
     ]
         ++ List.map inputModifierStyle mods
@@ -1124,10 +1128,10 @@ inputModifierStyle modifier =
     let
         style color prop =
             Css.batch
-                [ Css.borderColor (color |> Colors.toCss)
-                , focus [ prop, Css.borderColor (color |> Colors.toCss) ]
-                , active [ prop, Css.borderColor (color |> Colors.toCss) ]
-                , hover [ Css.borderColor (color |> Colors.toCss) ]
+                [ Colors.borderColor color
+                , focus [ prop, Colors.borderColor (color |> Colors.active) ]
+                , active [ prop, Colors.borderColor (color |> Colors.active) ]
+                , hover [ Colors.borderColor (color |> Colors.hover) ]
                 ]
     in
     case modifier of

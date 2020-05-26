@@ -283,12 +283,13 @@ inlineAndBlock =
                 , Css.height (Css.px 2)
                 , Css.margin2 (Css.rem 1.5) Css.zero
                 ]
-            , Css.Global.each
-                [ Css.Global.selector "input[type=\"checkbox\"]"
-                , Css.Global.selector "input[type=\"radio\"]"
-                ]
-                [ Css.verticalAlign Css.baseline
-                ]
+
+            -- , Css.Global.each
+            --     [ Css.Global.selector "input[type=\"checkbox\"]"
+            --     , Css.Global.selector "input[type=\"radio\"]"
+            --     ]
+            --     [ Css.verticalAlign Css.baseline
+            --     ]
             , Css.Global.small
                 [ Font.emSize -1
                 ]
