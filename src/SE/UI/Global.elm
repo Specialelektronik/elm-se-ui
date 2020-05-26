@@ -13,6 +13,7 @@ import Css
 import Css.Global
 import Html.Styled exposing (Html)
 import SE.UI.Colors as Colors
+import SE.UI.Font as Font
 import SE.UI.Utils as Utils
 
 
@@ -185,18 +186,10 @@ base =
     [ html, block, fonts, code, body, inlineAndBlock ]
 
 
-desktopFontSize =
-    Css.pct 112.5
-
-
-mobileFontSize =
-    Css.pct 100
-
-
 html : Css.Global.Snippet
 html =
     Css.Global.html
-        [ Css.fontSize mobileFontSize
+        [ Css.fontSize Font.mobileBaseSize
         , Css.property "-moz-osx-font-smoothing" "grayscale"
         , Css.property "-webkit-font-smoothing" "antialiased"
         , Css.minWidth (Css.px 300)
@@ -205,7 +198,7 @@ html =
         , Css.textRendering Css.optimizeLegibility
         , Css.property "textSizeAdjust" "100%"
         , Utils.desktop
-            [ Css.fontSize desktopFontSize
+            [ Css.fontSize Font.desktopBaseSize
             ]
         ]
 
@@ -234,7 +227,7 @@ fonts =
         , Css.Global.select
         , Css.Global.textarea
         ]
-        [ Css.property "font-family" "BlinkMacSystemFont, -apple-system, \"Segoe UI\", \"Roboto\", \"Oxygen\", \"Ubuntu\", \"Cantarell\", \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", \"Helvetica\", \"Arial\", sans-serif"
+        [ Css.property "font-family" Font.family
         ]
 
 
@@ -246,7 +239,7 @@ code =
         ]
         [ Css.property "-moz-osx-font-smoothing" "auto"
         , Css.property "-webkit-font-smoothing" "auto"
-        , Css.property "font-family" "monospace"
+        , Css.property "font-family" Font.codeFamily
         ]
 
 
@@ -277,14 +270,14 @@ inlineAndBlock =
                     ]
                 ]
             , Css.Global.code
-                [ Css.backgroundColor (Colors.background |> Colors.toCss)
-                , Css.color (Colors.danger |> Colors.toCss)
-                , Css.fontSize (Css.em 0.875)
+                [ Colors.backgroundColor Colors.background
+                , Colors.color Colors.danger
+                , Font.emSize -1
                 , Css.fontWeight Css.normal
                 , Css.padding3 (Css.em 0.25) (Css.em 0.5) (Css.em 0.25)
                 ]
             , Css.Global.hr
-                [ Css.backgroundColor (Colors.background |> Colors.toCss)
+                [ Colors.backgroundColor Colors.background
                 , Css.border Css.zero
                 , Css.display Css.block
                 , Css.height (Css.px 2)
@@ -297,7 +290,7 @@ inlineAndBlock =
                 [ Css.verticalAlign Css.baseline
                 ]
             , Css.Global.small
-                [ Css.fontSize (Css.em 0.875)
+                [ Font.emSize -1
                 ]
             , Css.Global.span
                 [ Css.fontStyle Css.inherit
@@ -311,9 +304,9 @@ inlineAndBlock =
                 ]
             , Css.Global.pre
                 [ Css.property "-webkit-overflow-scrolling" "touch"
-                , Css.backgroundColor (Colors.background |> Colors.toCss)
-                , Css.color (Colors.darkest |> Colors.toCss)
-                , Css.fontSize (Css.em 0.875)
+                , Colors.backgroundColor Colors.background
+                , Colors.color Colors.darkest
+                , Font.emSize -1
                 , Css.overflowX Css.auto
                 , Css.padding2 (Css.rem 1.25) (Css.rem 1.5)
                 , Css.whiteSpace Css.pre
@@ -322,7 +315,7 @@ inlineAndBlock =
                     [ Css.Global.code
                         [ Css.backgroundColor Css.transparent
                         , Css.color Css.currentColor
-                        , Css.fontSize (Css.em 1)
+                        , Font.emSize 1
                         , Css.padding Css.zero
                         ]
                     ]
@@ -334,7 +327,7 @@ inlineAndBlock =
                         , Css.verticalAlign Css.top
                         ]
                     , Css.Global.th
-                        [ Css.color (Colors.darkest |> Colors.toCss)
+                        [ Colors.color Colors.darkest
                         ]
                     ]
                 ]

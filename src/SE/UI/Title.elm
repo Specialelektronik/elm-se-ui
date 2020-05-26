@@ -9,8 +9,9 @@ Only the title element is supported, not the subtitle
 
 -}
 
-import Css exposing (Style, int, num, rem, uppercase)
+import Css exposing (Style, int, num)
 import Html.Styled exposing (Html, styled, text)
+import SE.UI.Font as Font
 import SE.UI.Utils exposing (block)
 
 
@@ -19,7 +20,8 @@ internalTitle tag style content =
     styled tag
         ([ block
          , Css.property "word-break" "break-word"
-         , Css.lineHeight (num 1.125)
+         , Css.lineHeight (num 1.3)
+         , Css.fontWeight (int 600)
          ]
             ++ style
         )
@@ -32,8 +34,7 @@ internalTitle tag style content =
 title1 : String -> Html msg
 title1 =
     internalTitle Html.Styled.h1
-        [ Css.fontSize (rem 3)
-        , Css.fontWeight (int 200)
+        [ Font.emSize 6
         ]
 
 
@@ -42,8 +43,7 @@ title1 =
 title2 : String -> Html msg
 title2 =
     internalTitle Html.Styled.h2
-        [ Css.fontSize (rem 2.5)
-        , Css.fontWeight (int 200)
+        [ Font.emSize 5
         ]
 
 
@@ -52,8 +52,7 @@ title2 =
 title3 : String -> Html msg
 title3 =
     internalTitle Html.Styled.h3
-        [ Css.fontSize (rem 2)
-        , Css.fontWeight (int 300)
+        [ Font.emSize 4
         ]
 
 
@@ -62,8 +61,7 @@ title3 =
 title4 : String -> Html msg
 title4 =
     internalTitle Html.Styled.h4
-        [ Css.fontSize (rem 1.5)
-        , Css.fontWeight (int 400)
+        [ Font.emSize 3
         ]
 
 
@@ -72,8 +70,7 @@ title4 =
 title5 : String -> Html msg
 title5 =
     internalTitle Html.Styled.h5
-        [ Css.fontSize (rem 1.25)
-        , Css.fontWeight (int 400)
+        [ Font.emSize 2
         ]
 
 
@@ -82,7 +79,5 @@ title5 =
 title6 : String -> Html msg
 title6 =
     internalTitle Html.Styled.h6
-        [ Css.fontSize (rem 0.75)
-        , Css.fontWeight (int 600)
-        , Css.textTransform uppercase
+        [ Font.emSize 1
         ]
