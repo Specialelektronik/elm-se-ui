@@ -10,26 +10,12 @@ see <https://bulma.io/documentation/elements/content/>
 
 -}
 
-import Css exposing (auto, bold, center, circle, decimal, disc, em, inlineBlock, italic, left, outside, pct, pseudoClass, px, rem, solid, square, top, zero)
+import Css exposing (auto, center, circle, decimal, disc, em, inlineBlock, italic, left, outside, pct, pseudoClass, px, solid, square, top, zero)
 import Css.Global exposing (blockquote, dd, descendants, dl, each, h1, h2, h3, h4, h5, h6, img, ol, p, pre, selector, table, td, tfoot, th, thead, typeSelector, ul)
 import Html.Styled exposing (Html, styled)
 import SE.UI.Colors as Colors
+import SE.UI.Font as Font
 import SE.UI.Utils exposing (block)
-
-
-headingColor : Colors.Hsla
-headingColor =
-    Colors.black
-
-
-headingWeight : Css.FontWeight {}
-headingWeight =
-    bold
-
-
-headingLineHeight : Css.Rem
-headingLineHeight =
-    rem 1.125
 
 
 {-| Styles most HTML tags
@@ -66,41 +52,40 @@ content =
                     ]
                 ]
             , each [ h1, h2, h3, h4, h5, h6 ]
-                [ Css.color (headingColor |> Colors.toCss)
-                , Css.fontWeight headingWeight
-                , Css.lineHeight headingLineHeight
+                [ Css.fontWeight (Css.int 600)
+                , Css.lineHeight (Css.num 1.3)
                 ]
             , h1
-                [ Css.fontSize (em 2)
+                [ Font.emSize 6
                 , Css.marginBottom (em 0.5)
                 , pseudoClass "not(:first-child)"
                     [ Css.marginBottom (em 1)
                     ]
                 ]
             , h2
-                [ Css.fontSize (em 1.75)
+                [ Font.emSize 5
                 , Css.marginBottom (em 0.5714)
                 , pseudoClass "not(:first-child)"
                     [ Css.marginBottom (em 1.1428)
                     ]
                 ]
             , h3
-                [ Css.fontSize (em 1.5)
+                [ Font.emSize 4
                 , Css.marginBottom (em 0.6666)
                 , pseudoClass "not(:first-child)"
                     [ Css.marginBottom (em 1.3333)
                     ]
                 ]
             , h4
-                [ Css.fontSize (em 1.25)
+                [ Font.emSize 3
                 , Css.marginBottom (em 0.8)
                 ]
             , h5
-                [ Css.fontSize (em 1.125)
+                [ Font.emSize 2
                 , Css.marginBottom (em 0.8888)
                 ]
             , h6
-                [ Css.fontSize (em 1)
+                [ Font.emSize 1
                 , Css.marginBottom (em 1)
                 ]
             , blockquote
