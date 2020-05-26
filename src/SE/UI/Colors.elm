@@ -1,12 +1,23 @@
 module SE.UI.Colors exposing
-    ( white, lightest, lighter, light, base, dark, darker, darkest, black
-    , primary, primaryHover, primaryActive, link, linkHover, linkActive, info, infoHover, infoActive, success, successHover, successActive, warning, warningHover, warningActive, callToAction, callToActionHover, callToActionActive, danger, dangerHover, dangerActive
-    , border, background, backgroundHover, backgroundActive, text
+    ( Color(..), toHsla, Hsla, toCss, mapHue, mapSaturation, mapLightness, mapAlpha
+    , white, lightest, lighter, light, base, dark, darker, darkest, black
+    , primary, link, buy, danger, bargain, darkGreen, lightBlue
+    , border, background, text
+    , hover, active, invert
+    , color, backgroundColor, borderColor
     )
 
-{-| The colors we use. The grey hues are taken from Tailwind CSS. But we use the color names from Bulma. The grey hues have a little more blue which (in my opinion) makes then feel a little more "sophisticated" and calming. Also, plain grey does not have the same depth a the blue-ish version.
+{-| The colors we use. Some color names are from Bulma but not all of them.
 
-<https://bulma.io/documentation/overview/colors/> and <https://tailwindcss.com/docs/colors>
+We use a custom type and the HSLA Scale (Hue, saturation, lightness, alpha) since Elm Css does not properly support hsla (hsl and hsla values are converted to hex immediately).
+
+    Colors.primary |> Colors.toCss == Css.Color { alpha = 1, blue = 0, color = Compatible, green = 0, red = 0, value = "hsla(138, 100%, 31%, 1)" }
+
+    Colors.primary |> Colors.hover |> Colors.toCss == Css.Color 0 158 47 1
+
+<https://bulma.io/documentation/overview/colors/>
+
+@docs Color, toHsla, Hsla, toCss, mapHue, mapSaturation, mapLightness, mapAlpha
 
 
 # Greys
@@ -16,261 +27,321 @@ module SE.UI.Colors exposing
 
 # Colors
 
-@docs primary, primaryHover, primaryActive, link, linkHover, linkActive, info, infoHover, infoActive, success, successHover, successActive, warning, warningHover, warningActive, callToAction, callToActionHover, callToActionActive, danger, dangerHover, dangerActive
+@docs primary, link, buy, danger, bargain, darkGreen, lightBlue
 
 
 # Derived colors
 
-@docs border, background, backgroundHover, backgroundActive, text
+@docs border, background, text
+
+
+# Modifiers
+
+@docs hover, active, invert
+
+
+# Css utilities
+
+@docs color, backgroundColor, borderColor
 
 -}
 
 import Css
 
 
-{-| White, mostly used as background
--}
-white : Css.Color
+type Color
+    = White
+    | Lightest
+    | Lighter
+    | Light
+    | Base
+    | Dark
+    | Darker
+    | Darkest
+    | Black
+    | Primary
+    | Link
+    | Buy
+    | Danger
+    | Bargain
+    | DarkGreen
+    | LightBlue
+
+
+toHsla : Color -> Hsla
+toHsla color_ =
+    case color_ of
+        White ->
+            white
+
+        Lightest ->
+            lightest
+
+        Lighter ->
+            lighter
+
+        Light ->
+            light
+
+        Base ->
+            base
+
+        Dark ->
+            dark
+
+        Darker ->
+            darker
+
+        Darkest ->
+            darkest
+
+        Black ->
+            black
+
+        Primary ->
+            primary
+
+        Link ->
+            link
+
+        Buy ->
+            buy
+
+        Danger ->
+            danger
+
+        Bargain ->
+            bargain
+
+        DarkGreen ->
+            darkGreen
+
+        LightBlue ->
+            lightBlue
+
+
+type Hsla
+    = Hsla Hue Saturation Lightness Alpha
+
+
+type alias Hue =
+    Int
+
+
+type alias Saturation =
+    Float
+
+
+type alias Lightness =
+    Float
+
+
+type alias Alpha =
+    Float
+
+
+
+-- GREYS
+
+
+white : Hsla
 white =
-    Css.rgb 255 255 255
+    Hsla 0 0 1 1
 
 
-{-| The lightest shade of gray, used as background to make something pop from the regular white background.
+{-| #f4f4f4
 -}
-lightest : Css.Color
+lightest : Hsla
 lightest =
-    Css.rgb 248 250 252
+    Hsla 0 0 0.96 1
 
 
-{-| The lighter shade is used as a hover color for `lightest`.
+{-| #e5e6e6
 -}
-lighter : Css.Color
+lighter : Hsla
 lighter =
-    Css.rgb 241 245 248
+    Hsla 180 0.02 0.9 1
 
 
-{-| The light shade functions as the regular border color.
+{-| #c7c8cA
 -}
-light : Css.Color
+light : Hsla
 light =
-    Css.rgb 218 225 231
+    Hsla 220 0.03 0.79 1
 
 
-{-| Base grey, not used a lot.
+{-| #8f9295
 -}
-base : Css.Color
+base : Hsla
 base =
-    Css.rgb 184 194 204
+    Hsla 210 0.03 0.57 1
 
 
-{-| Dark grey, not used a lot.
+{-| #45494e
 -}
-dark : Css.Color
+dark : Hsla
 dark =
-    Css.rgb 135 149 161
+    Hsla 213 0.06 0.29 1
 
 
-{-| The darker grey can be used to de-emphasis text.
+{-| #292c2f
 -}
-darker : Css.Color
+darker : Hsla
 darker =
-    Css.rgb 96 111 123
+    Hsla 210 0.07 0.17 1
 
 
-{-| The standard text color.
+{-| #0e0f10
 -}
-darkest : Css.Color
+darkest : Hsla
 darkest =
-    Css.rgb 61 72 82
+    Hsla 210 0.07 0.06 1
 
 
-{-| The "black" color (it's not entirely black) is used as a text color when the background is not white or to emphasis text.
+{-| #000000
 -}
-black : Css.Color
+black : Hsla
 black =
-    Css.rgb 34 41 47
+    Hsla 0 0 0 1
 
 
-{-| Our primary green color, the same color is used as the "success" color.
+
+-- COLORS
+
+
+{-| #009e2f Green
 -}
-primary : Css.Color
+primary : Hsla
 primary =
-    Css.rgb 53 157 55
+    Hsla 138 1 0.31 1
 
 
-{-| The color used when primary is hovered.
+{-| #1a6bd4 Blue
 -}
-primaryHover : Css.Color
-primaryHover =
-    Css.rgb 47 138 48
-
-
-{-| The color used when primary is "active" (i.e. clicked).
--}
-primaryActive : Css.Color
-primaryActive =
-    Css.rgb 40 119 42
-
-
-{-| The color used for links.
--}
-link : Css.Color
+link : Hsla
 link =
-    Css.rgb 50 115 220
+    Hsla 214 0.78 0.47 1
 
 
-{-| The color used when links are hovered.
+{-| #daa52f Orange
 -}
-linkHover : Css.Color
-linkHover =
-    Css.rgb 36 102 209
+buy : Hsla
+buy =
+    Hsla 41 0.7 0.42 1
 
 
-{-| The color used when links are active.
+{-| #ff69b4 Hot pink
 -}
-linkActive : Css.Color
-linkActive =
-    Css.rgb 32 91 187
+bargain : Hsla
+bargain =
+    Hsla 330 1 0.71 1
 
 
-{-| The info color a lighter blue than link, it's used for notifications and messages.
+{-| Dark green #0a373e
 -}
-info : Css.Color
-info =
-    Css.rgb 32 156 238
+darkGreen : Hsla
+darkGreen =
+    Hsla 188 0.72 0.14 1
 
 
-{-| The color used when info is hovered.
+{-| #f8f9fB Light blue-grey
 -}
-infoHover : Css.Color
-infoHover =
-    Css.rgb 17 143 228
+lightBlue : Hsla
+lightBlue =
+    Hsla 220 0.27 0.98 1
 
 
-{-| The color used when info is "active" (i.e. clicked).
--}
-infoActive : Css.Color
-infoActive =
-    Css.rgb 15 129 204
-
-
-{-| Alias for primary.
-
-In Bulma, success is a bright green color to express a success result of an action like "Saved!" or "Item #123 placed in the basket.". Since our primary color is green, we use primary and success interchangeably.
-
--}
-success : Css.Color
-success =
-    primary
-
-
-{-| Alias for primaryHover.
--}
-successHover : Css.Color
-successHover =
-    primaryHover
-
-
-{-| Alias for primaryActive.
--}
-successActive : Css.Color
-successActive =
-    primaryActive
-
-
-{-| An orange hue. Warning indicates something that the user should be alerted about. It's not as heavy as "danger".
--}
-warning : Css.Color
-warning =
-    Css.rgb 255 221 87
-
-
-{-| The color used when warning is hovered.
--}
-warningHover : Css.Color
-warningHover =
-    Css.rgb 255 216 62
-
-
-{-| The color used when warning is "active" (i.e. clicked).
--}
-warningActive : Css.Color
-warningActive =
-    Css.rgb 255 211 36
-
-
-{-| Orange call to action, in example a buy button
--}
-callToAction : Css.Color
-callToAction =
-    Css.rgb 239 142 0
-
-
-{-| The color used when call to action is hovered.
--}
-callToActionHover : Css.Color
-callToActionHover =
-    Css.rgb 226 134 0
-
-
-{-| The color used when call to action is "active" (i.e. clicked).
--}
-callToActionActive : Css.Color
-callToActionActive =
-    Css.rgb 214 127 0
-
-
-{-| A red hue indicating an error.
--}
-danger : Css.Color
+danger : Hsla
 danger =
-    Css.rgb 255 56 96
+    Hsla 0 1 0.5 1
 
 
-{-| The color used when danger is hovered.
--}
-dangerHover : Css.Color
-dangerHover =
-    Css.rgb 255 31 76
 
-
-{-| The color used when danger is "active" (i.e. clicked).
--}
-dangerActive : Css.Color
-dangerActive =
-    Css.rgb 255 5 55
+-- DERIVED COLORS
 
 
 {-| Alias for light.
 -}
-border : Css.Color
+border : Hsla
 border =
     light
 
 
 {-| Alias for lightest.
 -}
-background : Css.Color
+background : Hsla
 background =
     lightest
 
 
-{-| The color used when background is hovered.
--}
-backgroundHover : Css.Color
-backgroundHover =
-    lighter
-
-
-{-| The color used when background is "active" (i.e. clicked).
--}
-backgroundActive : Css.Color
-backgroundActive =
-    light
-
-
 {-| Alias for darkest.
 -}
-text : Css.Color
+text : Hsla
 text =
     darkest
+
+
+hover : Hsla -> Hsla
+hover =
+    mapLightness ((*) 0.9)
+
+
+active : Hsla -> Hsla
+active =
+    mapLightness ((*) 0.8)
+
+
+{-| Invert the color to either black or white
+-}
+invert : Hsla -> Hsla
+invert ((Hsla _ _ lightness _) as hsla) =
+    if hsla == bargain then
+        white
+
+    else if lightness < 0.65 then
+        white
+
+    else
+        black |> mapAlpha ((*) 0.7)
+
+
+mapHue : (Int -> Int) -> Hsla -> Hsla
+mapHue f (Hsla hue saturation lightness alpha) =
+    Hsla (f hue) saturation lightness alpha
+
+
+mapSaturation : (Float -> Float) -> Hsla -> Hsla
+mapSaturation f (Hsla hue saturation lightness alpha) =
+    Hsla hue (f saturation) lightness alpha
+
+
+mapLightness : (Float -> Float) -> Hsla -> Hsla
+mapLightness f (Hsla hue saturation lightness alpha) =
+    Hsla hue saturation (f lightness) alpha
+
+
+mapAlpha : (Float -> Float) -> Hsla -> Hsla
+mapAlpha f (Hsla hue saturation lightness alpha) =
+    Hsla hue saturation lightness (f alpha)
+
+
+{-| Transform our custom color to a color that Elm Css understands
+-}
+toCss : Hsla -> Css.Color
+toCss (Hsla hue saturation lightness alpha) =
+    Css.hsla (toFloat hue) saturation lightness alpha
+
+
+backgroundColor : Hsla -> Css.Style
+backgroundColor =
+    toCss >> Css.backgroundColor
+
+
+color : Hsla -> Css.Style
+color =
+    toCss >> Css.color
+
+
+borderColor : Hsla -> Css.Style
+borderColor =
+    toCss >> Css.borderColor

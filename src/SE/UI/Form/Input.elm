@@ -169,9 +169,6 @@ type
     Modifier
     -- Colors
     = Primary
-    | Info
-    | Success
-    | Warning
     | Danger
       -- Size
     | Size Control.Size
@@ -257,7 +254,7 @@ option val o =
 arrow : Style
 arrow =
     Css.batch
-        [ Css.border3 (px 3) solid Colors.link
+        [ Css.border3 (px 3) solid (Colors.link |> Colors.toCss)
         , Css.borderRadius (px 2)
         , Css.borderRight zero
         , Css.borderTop zero
@@ -548,7 +545,7 @@ selectToHtml rec =
 
             else
                 [ arrow
-                , Css.borderColor Colors.darker
+                , Css.borderColor (Colors.darker |> Colors.toCss)
                 , Css.right (em 1.125)
                 , Css.zIndex (int 4)
                 ]
@@ -640,8 +637,8 @@ buttonToHtml buttonType rec =
                    , Css.flexShrink Css.zero
                    , Css.height (Css.em 1)
                    , Css.width (Css.em 1)
-                   , Css.color (buttonColor rec.modifiers)
-                   , Css.backgroundColor Colors.white
+                   , Css.color (buttonColor rec.modifiers |> Colors.toCss)
+                   , Css.backgroundColor (Colors.white |> Colors.toCss)
                    , Css.borderWidth (Css.px 1)
                    , radius
                    , Css.padding Css.zero
@@ -675,22 +672,13 @@ buttonToHtml buttonType rec =
         ]
 
 
-buttonColor : List Modifier -> Css.Color
+buttonColor : List Modifier -> Colors.Hsla
 buttonColor mods =
     List.foldl
         (\m carry ->
             case m of
                 Primary ->
                     Colors.primary
-
-                Info ->
-                    Colors.info
-
-                Success ->
-                    Colors.success
-
-                Warning ->
-                    Colors.warning
 
                 Danger ->
                     Colors.danger
@@ -1109,22 +1097,22 @@ inputStyle mods =
             extractControlSize mods
     in
     [ controlStyle size
-    , Css.borderColor Colors.base
-    , Css.color Colors.darker
+    , Css.borderColor (Colors.base |> Colors.toCss)
+    , Css.color (Colors.darker |> Colors.toCss)
     , Css.maxWidth (pct 100)
     , Css.width (pct 100)
     , placeholder
         [ Css.color (rgba 96 111 123 0.3)
         ]
     , hover
-        [ Css.borderColor Colors.base
+        [ Css.borderColor (Colors.base |> Colors.toCss)
         ]
     , focus
-        [ Css.borderColor Colors.link
+        [ Css.borderColor (Colors.link |> Colors.toCss)
         , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
         ]
     , active
-        [ Css.borderColor Colors.link
+        [ Css.borderColor (Colors.link |> Colors.toCss)
         , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
         ]
     ]
@@ -1136,24 +1124,15 @@ inputModifierStyle modifier =
     let
         style color prop =
             Css.batch
-                [ Css.borderColor color
-                , focus [ prop, Css.borderColor color ]
-                , active [ prop, Css.borderColor color ]
-                , hover [ Css.borderColor color ]
+                [ Css.borderColor (color |> Colors.toCss)
+                , focus [ prop, Css.borderColor (color |> Colors.toCss) ]
+                , active [ prop, Css.borderColor (color |> Colors.toCss) ]
+                , hover [ Css.borderColor (color |> Colors.toCss) ]
                 ]
     in
     case modifier of
         Primary ->
             style Colors.primary (Css.property "box-shadow" "0 0 0 0.125em rgba(53, 157, 55, 0.25)")
-
-        Info ->
-            style Colors.info (Css.property "box-shadow" "0 0 0 0.125em rgba(50, 115, 220, 0.25)")
-
-        Success ->
-            style Colors.success (Css.property "box-shadow" "0 0 0 0.125em rgba(35, 209, 96, 0.25)")
-
-        Warning ->
-            style Colors.warning (Css.property "box-shadow" "0 0 0 0.125em rgba(255,221,87, 0.25)")
 
         Danger ->
             style Colors.danger (Css.property "box-shadow" "0 0 0 0.125em rgba(255,56,96, 0.25)")

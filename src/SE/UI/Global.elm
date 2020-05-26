@@ -13,6 +13,7 @@ import Css
 import Css.Global
 import Html.Styled exposing (Html)
 import SE.UI.Colors as Colors
+import SE.UI.Utils as Utils
 
 
 {-| Add this constant as a plain html element, preferably as high in the hierarchy as possible
@@ -184,11 +185,18 @@ base =
     [ html, block, fonts, code, body, inlineAndBlock ]
 
 
+desktopFontSize =
+    Css.pct 112.5
+
+
+mobileFontSize =
+    Css.pct 100
+
+
 html : Css.Global.Snippet
 html =
     Css.Global.html
-        [ Css.backgroundColor Colors.lighter
-        , Css.fontSize (Css.px 16)
+        [ Css.fontSize mobileFontSize
         , Css.property "-moz-osx-font-smoothing" "grayscale"
         , Css.property "-webkit-font-smoothing" "antialiased"
         , Css.minWidth (Css.px 300)
@@ -196,6 +204,9 @@ html =
         , Css.overflowY Css.scroll
         , Css.textRendering Css.optimizeLegibility
         , Css.property "textSizeAdjust" "100%"
+        , Utils.desktop
+            [ Css.fontSize desktopFontSize
+            ]
         ]
 
 
@@ -242,8 +253,7 @@ code =
 body : Css.Global.Snippet
 body =
     Css.Global.body
-        [ Css.color Colors.darkest
-        , Css.fontSize (Css.rem 1)
+        [ Colors.color Colors.darkest
         , Css.fontWeight Css.normal
         , Css.lineHeight (Css.num 1.5)
         ]
@@ -254,7 +264,7 @@ inlineAndBlock =
     Css.Global.html
         [ Css.Global.descendants
             [ Css.Global.a
-                [ Css.color Colors.link
+                [ Css.color (Colors.link |> Colors.toCss)
                 , Css.cursor Css.pointer
                 , Css.textDecoration Css.none
                 , Css.Global.descendants
@@ -263,18 +273,18 @@ inlineAndBlock =
                         ]
                     ]
                 , Css.hover
-                    [ Css.color Colors.linkHover
+                    [ Css.color (Colors.link |> Colors.hover |> Colors.toCss)
                     ]
                 ]
             , Css.Global.code
-                [ Css.backgroundColor Colors.background
-                , Css.color Colors.danger
+                [ Css.backgroundColor (Colors.background |> Colors.toCss)
+                , Css.color (Colors.danger |> Colors.toCss)
                 , Css.fontSize (Css.em 0.875)
                 , Css.fontWeight Css.normal
                 , Css.padding3 (Css.em 0.25) (Css.em 0.5) (Css.em 0.25)
                 ]
             , Css.Global.hr
-                [ Css.backgroundColor Colors.background
+                [ Css.backgroundColor (Colors.background |> Colors.toCss)
                 , Css.border Css.zero
                 , Css.display Css.block
                 , Css.height (Css.px 2)
@@ -301,8 +311,8 @@ inlineAndBlock =
                 ]
             , Css.Global.pre
                 [ Css.property "-webkit-overflow-scrolling" "touch"
-                , Css.backgroundColor Colors.background
-                , Css.color Colors.darkest
+                , Css.backgroundColor (Colors.background |> Colors.toCss)
+                , Css.color (Colors.darkest |> Colors.toCss)
                 , Css.fontSize (Css.em 0.875)
                 , Css.overflowX Css.auto
                 , Css.padding2 (Css.rem 1.25) (Css.rem 1.5)
@@ -324,7 +334,7 @@ inlineAndBlock =
                         , Css.verticalAlign Css.top
                         ]
                     , Css.Global.th
-                        [ Css.color Colors.darkest
+                        [ Css.color (Colors.darkest |> Colors.toCss)
                         ]
                     ]
                 ]

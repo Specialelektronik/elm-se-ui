@@ -13,13 +13,13 @@ see <https://bulma.io/documentation/elements/content/>
 import Css exposing (auto, bold, center, circle, decimal, disc, em, inlineBlock, italic, left, outside, pct, pseudoClass, px, rem, solid, square, top, zero)
 import Css.Global exposing (blockquote, dd, descendants, dl, each, h1, h2, h3, h4, h5, h6, img, ol, p, pre, selector, table, td, tfoot, th, thead, typeSelector, ul)
 import Html.Styled exposing (Html, styled)
-import SE.UI.Colors as Colors exposing (black, lightest)
+import SE.UI.Colors as Colors
 import SE.UI.Utils exposing (block)
 
 
-headingColor : Css.Color
+headingColor : Colors.Hsla
 headingColor =
-    black
+    Colors.black
 
 
 headingWeight : Css.FontWeight {}
@@ -66,7 +66,7 @@ content =
                     ]
                 ]
             , each [ h1, h2, h3, h4, h5, h6 ]
-                [ Css.color headingColor
+                [ Css.color (headingColor |> Colors.toCss)
                 , Css.fontWeight headingWeight
                 , Css.lineHeight headingLineHeight
                 ]
@@ -104,8 +104,8 @@ content =
                 , Css.marginBottom (em 1)
                 ]
             , blockquote
-                [ Css.backgroundColor lightest
-                , Css.borderLeft3 (px 5) solid Colors.border
+                [ Css.backgroundColor (Colors.lightest |> Colors.toCss)
+                , Css.borderLeft3 (px 5) solid (Colors.border |> Colors.toCss)
                 , Css.padding2 (em 1.25) (em 1.5)
                 ]
             , ol
@@ -168,20 +168,20 @@ content =
                 [ Css.width (pct 100)
                 , descendants
                     [ each [ td, th ]
-                        [ Css.border3 (px 1) solid Colors.border
+                        [ Css.border3 (px 1) solid (Colors.border |> Colors.toCss)
                         , Css.borderWidth3 zero zero (px 1)
                         , Css.padding2 (em 0.5) (em 0.75)
                         , Css.verticalAlign top
                         ]
                     , th
-                        [ Css.color black
+                        [ Css.color (Colors.black |> Colors.toCss)
                         , Css.textAlign left
                         ]
                     , thead
                         [ descendants
                             [ each [ th, td ]
                                 [ Css.borderWidth3 zero zero (px 2)
-                                , Css.color black
+                                , Css.color (Colors.black |> Colors.toCss)
                                 ]
                             ]
                         ]
@@ -189,7 +189,7 @@ content =
                         [ descendants
                             [ each [ th, td ]
                                 [ Css.borderWidth3 (px 2) zero zero
-                                , Css.color black
+                                , Css.color (Colors.black |> Colors.toCss)
                                 ]
                             ]
                         ]

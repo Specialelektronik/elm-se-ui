@@ -71,7 +71,7 @@ labelHelper required s =
         star =
             if required then
                 styled Html.Styled.span
-                    [ Css.color Colors.danger
+                    [ Css.color (Colors.danger |> Colors.toCss)
                     ]
                     []
                     [ text " *" ]
@@ -80,7 +80,7 @@ labelHelper required s =
                 text ""
     in
     styled Html.Styled.label
-        [ Css.color Colors.text
+        [ Css.color (Colors.text |> Colors.toCss)
         , Css.display block
         , Css.fontSize (rem 1)
         , Css.fontWeight bold

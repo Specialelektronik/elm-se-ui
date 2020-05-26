@@ -43,7 +43,7 @@ import Css.Media as Media exposing (maxWidth, minWidth, only, screen)
 import Html.Styled
 import Html.Styled.Events exposing (on)
 import Json.Decode as Json
-import SE.UI.Colors exposing (light)
+import SE.UI.Colors as Colors
 
 
 {-| Column gap in pixels
@@ -154,7 +154,7 @@ loader =
         , Css.animationDuration (ms 500)
         , Css.property "animation-iteration-count" "infinite"
         , Css.property "animation-timing-function" "linear"
-        , Css.border3 (px 2) solid light
+        , Css.border3 (px 2) solid (Colors.light |> Colors.toCss)
         , Css.borderRadius (pct 50)
         , Css.borderRightColor transparent
         , Css.borderTopColor transparent

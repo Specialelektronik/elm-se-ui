@@ -25,6 +25,7 @@ import SE.UI.Utils as Utils
 type alias Model =
     { count : Int
     , button : ButtonModel
+    , input : String
     }
 
 
@@ -37,6 +38,7 @@ initialModel : Model
 initialModel =
     { count = 1
     , button = defaultButton
+    , input = ""
     }
 
 
@@ -53,6 +55,7 @@ defaultButton =
 type Msg
     = NoOp
     | ClickedButton
+    | GotInput String
     | GotButtonsMsg ButtonMsg
 
 
@@ -68,6 +71,9 @@ update msg model =
 
         ClickedButton ->
             model
+
+        GotInput str ->
+            { model | input = str }
 
         GotButtonsMsg subMsg ->
             { model | button = updateButton subMsg model.button }
@@ -102,6 +108,7 @@ view model =
             , viewTypography
             , viewButtons model.button
             , viewSection
+            , viewForm model
             ]
         ]
 
@@ -139,33 +146,25 @@ viewColors : Html Msg
 viewColors =
     let
         greys =
-            [ ( Colors.white, "White" )
-            , ( Colors.lightest, "Lightest" )
-            , ( Colors.lighter, "Lighter" )
-            , ( Colors.light, "Light" )
-            , ( Colors.base, "Base" )
-            , ( Colors.dark, "Dark" )
-            , ( Colors.darker, "Darker" )
-            , ( Colors.darkest, "Darkest" )
-            , ( Colors.black, "Black" )
+            [ ( Colors.White, "White" )
+            , ( Colors.Lightest, "Lightest" )
+            , ( Colors.Lighter, "Lighter" )
+            , ( Colors.Light, "Light" )
+            , ( Colors.Base, "Base" )
+            , ( Colors.Dark, "Dark" )
+            , ( Colors.Darker, "Darker" )
+            , ( Colors.Darkest, "Darkest" )
+            , ( Colors.Black, "Black" )
             ]
 
         colors =
-            [ ( Colors.primary, "Primary" )
-            , ( Colors.primaryHover, "Primary hover state" )
-            , ( Colors.primaryActive, "Primary Active state" )
-            , ( Colors.link, "Link" )
-            , ( Colors.linkHover, "Link hover state" )
-            , ( Colors.linkActive, "Link Active state" )
-            , ( Colors.warning, "Warning" )
-            , ( Colors.warningHover, "Warning hover state" )
-            , ( Colors.warningActive, "Warning Active state" )
-            , ( Colors.danger, "Danger" )
-            , ( Colors.dangerHover, "Danger hover state" )
-            , ( Colors.dangerActive, "Danger Active state" )
-            , ( Colors.callToAction, "Call to Action" )
-            , ( Colors.callToActionHover, "Call to Action hover state" )
-            , ( Colors.callToActionActive, "Call to Action Active state" )
+            [ ( Colors.Primary, "Primary" )
+            , ( Colors.Link, "Link" )
+            , ( Colors.Buy, "Buy" )
+            , ( Colors.Danger, "Danger" )
+            , ( Colors.Bargain, "Bargain" )
+            , ( Colors.DarkGreen, "DarkGreen" )
+            , ( Colors.LightBlue, "LightBlue" )
             ]
     in
     Section.section []
@@ -181,7 +180,7 @@ viewColors =
         ]
 
 
-viewColorBox : ( Css.Color, String ) -> Html Msg
+viewColorBox : ( Colors.Color, String ) -> Html Msg
 viewColorBox ( color, label ) =
     styled Html.div
         [ Css.displayFlex
@@ -191,7 +190,7 @@ viewColorBox ( color, label ) =
         [ styled div
             [ Css.width (Css.rem 3)
             , Css.height (Css.rem 3)
-            , Css.backgroundColor color
+            , Colors.backgroundColor (color |> Colors.toHsla)
             , Css.boxShadow6 Css.inset Css.zero (Css.px 2) (Css.px 4) Css.zero (Css.rgba 0 0 0 0.06)
             , Css.borderRadius (Css.rem 0.5)
             ]
@@ -207,21 +206,22 @@ viewColorBox ( color, label ) =
 
 allMods : List ( Buttons.Modifier, String )
 allMods =
-    [ ( Buttons.Primary, "Primary" )
-    , ( Buttons.Link, "Link" )
-    , ( Buttons.Info, "Info" )
-    , ( Buttons.Success, "Success" )
-    , ( Buttons.Warning, "Warning" )
-    , ( Buttons.CallToAction, "CallToAction" )
-    , ( Buttons.Danger, "Danger" )
-    , ( Buttons.White, "White" )
-    , ( Buttons.Lightest, "Lightest" )
-    , ( Buttons.Lighter, "Lighter" )
-    , ( Buttons.Light, "Light" )
-    , ( Buttons.Dark, "Dark" )
-    , ( Buttons.Darker, "Darker" )
-    , ( Buttons.Darkest, "Darkest" )
-    , ( Buttons.Black, "Black" )
+    [ ( Buttons.Color Colors.Primary, "Primary" )
+    , ( Buttons.Color Colors.Link, "Link" )
+    , ( Buttons.Color Colors.Buy, "Buy" )
+    , ( Buttons.Color Colors.Bargain, "Bargin" )
+    , ( Buttons.Color Colors.Danger, "Danger" )
+    , ( Buttons.Color Colors.White, "White" )
+    , ( Buttons.Color Colors.Lightest, "Lightest" )
+    , ( Buttons.Color Colors.Lighter, "Lighter" )
+    , ( Buttons.Color Colors.Light, "Light" )
+    , ( Buttons.Color Colors.Base, "Base" )
+    , ( Buttons.Color Colors.Dark, "Dark" )
+    , ( Buttons.Color Colors.Darker, "Darker" )
+    , ( Buttons.Color Colors.Darkest, "Darkest" )
+    , ( Buttons.Color Colors.Black, "Black" )
+    , ( Buttons.Color Colors.DarkGreen, "DarkGreen" )
+    , ( Buttons.Color Colors.LightBlue, "LightBlue" )
     , ( Buttons.Text, "Text" )
     , ( Buttons.Size Control.Regular, "Size Control.Regular" )
     , ( Buttons.Size Control.Small, "Size Control.Small" )
@@ -254,50 +254,53 @@ viewButtons model =
 modToString : Buttons.Modifier -> String
 modToString mod =
     case mod of
-        Buttons.Primary ->
+        Buttons.Color Colors.Primary ->
             "Primary"
 
-        Buttons.Link ->
+        Buttons.Color Colors.Link ->
             "Link"
 
-        Buttons.Info ->
-            "Info"
+        Buttons.Color Colors.Buy ->
+            "Buy"
 
-        Buttons.Success ->
-            "Success"
+        Buttons.Color Colors.Bargain ->
+            "Bargain"
 
-        Buttons.Warning ->
-            "Warning"
-
-        Buttons.CallToAction ->
-            "CallToAction"
-
-        Buttons.Danger ->
+        Buttons.Color Colors.Danger ->
             "Danger"
 
-        Buttons.White ->
+        Buttons.Color Colors.White ->
             "White"
 
-        Buttons.Lightest ->
+        Buttons.Color Colors.Lightest ->
             "Lightest"
 
-        Buttons.Lighter ->
+        Buttons.Color Colors.Lighter ->
             "Lighter"
 
-        Buttons.Light ->
+        Buttons.Color Colors.Light ->
             "Light"
 
-        Buttons.Dark ->
+        Buttons.Color Colors.Base ->
+            "Base"
+
+        Buttons.Color Colors.Dark ->
             "Dark"
 
-        Buttons.Darker ->
+        Buttons.Color Colors.Darker ->
             "Darker"
 
-        Buttons.Darkest ->
+        Buttons.Color Colors.Darkest ->
             "Darkest"
 
-        Buttons.Black ->
+        Buttons.Color Colors.Black ->
             "Black"
+
+        Buttons.Color Colors.DarkGreen ->
+            "DarkGreen"
+
+        Buttons.Color Colors.LightBlue ->
+            "LightBlue"
 
         Buttons.Text ->
             "Text"
@@ -335,6 +338,24 @@ viewSection =
             , Html.p [] [ Html.text "Creates a styled section html tag in line with ", Html.a [ Attributes.href "https://bulma.io/documentation/layout/section/" ] [ Html.text "Bulmas section" ], Html.text "." ]
             , Html.code []
                 [ Html.text "section [] [ Html.text \"I'm the text inside the section!\" ]"
+                ]
+            ]
+        ]
+
+
+viewForm : Model -> Html Msg
+viewForm model =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Form"
+            , Html.form []
+                [ Form.field []
+                    [ Form.label "Small label"
+                    , Form.control False
+                        [ Input.text GotInput model.input
+                            |> Input.toHtml
+                        ]
+                    ]
                 ]
             ]
         ]

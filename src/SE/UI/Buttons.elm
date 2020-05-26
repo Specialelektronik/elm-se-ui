@@ -19,10 +19,10 @@ see <https://bulma.io/documentation/elements/button/>
 
 -}
 
-import Css exposing (Style, absolute, active, calc, center, disabled, em, flexEnd, flexStart, focus, hover, important, minus, noWrap, none, num, pct, pointer, pseudoClass, px, rem, transparent, underline, wrap, zero)
+import Css exposing (Style, absolute, calc, center, disabled, em, flexEnd, flexStart, focus, important, minus, noWrap, none, num, pct, pointer, pseudoClass, px, rem, transparent, underline, wrap, zero)
 import Css.Global exposing (children, descendants, typeSelector)
 import Css.Transitions
-import Html.Styled exposing ( Html, styled, text)
+import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes
 import Html.Styled.Events exposing (onClick)
 import SE.UI.Colors as Colors
@@ -35,21 +35,7 @@ import SE.UI.Utils exposing (centerEm, loader)
 type
     Modifier
     -- Colors
-    = Primary
-    | Link
-    | Info
-    | Success
-    | Warning
-    | CallToAction
-    | Danger
-    | White
-    | Lightest
-    | Lighter
-    | Light
-    | Dark
-    | Darker
-    | Darkest
-    | Black
+    = Color Colors.Color
     | Text
       -- Sizes
     | Size Control.Size
@@ -127,25 +113,25 @@ buttonStyles mods hasIcon =
             extractControlSize mods
     in
     [ controlStyle size
-    , Css.backgroundColor Colors.white
-    , Css.borderColor Colors.light
+    , Colors.backgroundColor Colors.white
+    , Colors.borderColor Colors.border
     , Css.borderWidth (px 1)
-    , Css.color Colors.text
+    , Colors.color Colors.text
     , Css.cursor pointer
     , Css.justifyContent center
     , Css.textAlign center
     , Css.whiteSpace noWrap
     , buttonShadow
-    , hover
-        [ Css.borderColor Colors.base
+    , Css.hover
+        [ Colors.borderColor (Colors.border |> Colors.hover)
         , buttonShadowHover
         , Css.Transitions.transition
             [ Css.Transitions.backgroundColor 250
             , Css.Transitions.boxShadow 250
             ]
         ]
-    , active
-        [ Css.borderColor Colors.dark
+    , Css.active
+        [ Colors.borderColor (Colors.border |> Colors.active)
         ]
     , buttonModifiers buttonModifier mods
     , disabled
@@ -181,9 +167,9 @@ buttonStyles mods hasIcon =
 staticButtonStyles : List Modifier -> List Style
 staticButtonStyles mods =
     buttonStyles mods False
-        ++ [ important (Css.backgroundColor Colors.lightest)
-           , important (Css.borderColor Colors.base)
-           , important (Css.color Colors.dark)
+        ++ [ important (Css.backgroundColor (Colors.lightest |> Colors.toCss))
+           , important (Css.borderColor (Colors.base |> Colors.toCss))
+           , important (Css.color (Colors.dark |> Colors.toCss))
            , important (Css.pointerEvents none)
            ]
 
@@ -196,253 +182,32 @@ buttonModifiers callback mods =
 buttonModifier : Modifier -> Style
 buttonModifier modifier =
     case modifier of
-        Primary ->
-            Css.batch
-                [ Css.color Colors.white
-                , Css.backgroundColor Colors.primary
-                , Css.borderColor transparent
-                , hover
-                    [ Css.color Colors.white
-                    , Css.backgroundColor Colors.primaryHover
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.primaryActive
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.primary)
-                    ]
-                ]
+        Color color ->
+            let
+                hsla =
+                    color |> Colors.toHsla
 
-        Link ->
-            Css.batch
-                [ Css.color Colors.white
-                , Css.backgroundColor Colors.link
-                , Css.borderColor transparent
-                , hover
-                    [ Css.color Colors.white
-                    , Css.backgroundColor Colors.linkHover
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.linkActive
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.link)
-                    ]
-                ]
+                hover =
+                    hsla |> Colors.hover
 
-        Info ->
+                active =
+                    hsla |> Colors.active
+            in
             Css.batch
-                [ Css.color Colors.white
-                , Css.backgroundColor Colors.info
+                [ Colors.color (hsla |> Colors.invert)
+                , Colors.backgroundColor hsla
                 , Css.borderColor transparent
-                , hover
-                    [ Css.color Colors.white
-                    , Css.backgroundColor Colors.infoHover
+                , Css.hover
+                    [ Colors.color (hover |> Colors.invert)
+                    , Colors.backgroundColor hover
                     , Css.borderColor transparent
                     ]
-                , active
-                    [ Css.backgroundColor Colors.infoActive
+                , Css.active
+                    [ Colors.color (active |> Colors.invert)
+                    , Colors.backgroundColor active
                     ]
                 , disabled
-                    [ important (Css.backgroundColor Colors.info)
-                    ]
-                ]
-
-        Success ->
-            Css.batch
-                [ Css.color Colors.white
-                , Css.backgroundColor Colors.success
-                , Css.borderColor transparent
-                , hover
-                    [ Css.color Colors.white
-                    , Css.backgroundColor Colors.successHover
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.successActive
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.success)
-                    ]
-                ]
-
-        Warning ->
-            Css.batch
-                [ Css.backgroundColor Colors.warning
-                , Css.borderColor transparent
-                , hover
-                    [ Css.backgroundColor Colors.warningHover
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.warningActive
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.warning)
-                    ]
-                ]
-
-        CallToAction ->
-            Css.batch
-                [ Css.color Colors.white
-                , Css.backgroundColor Colors.callToAction
-                , Css.borderColor transparent
-                , hover
-                    [ Css.color Colors.white
-                    , Css.backgroundColor Colors.callToActionHover
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.callToActionActive
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.callToAction)
-                    ]
-                ]
-
-        Danger ->
-            Css.batch
-                [ Css.color Colors.white
-                , Css.backgroundColor Colors.danger
-                , Css.borderColor transparent
-                , hover
-                    [ Css.color Colors.white
-                    , Css.backgroundColor Colors.dangerHover
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.dangerActive
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.danger)
-                    ]
-                ]
-
-        White ->
-            Css.batch
-                [ Css.backgroundColor Colors.white
-                , Css.borderColor transparent
-                , hover
-                    [ Css.backgroundColor Colors.lightest
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.lighter
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.white)
-                    ]
-                ]
-
-        Lightest ->
-            Css.batch
-                [ Css.backgroundColor Colors.lightest
-                , Css.borderColor transparent
-                , hover
-                    [ Css.backgroundColor Colors.lighter
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.light
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.lightest)
-                    ]
-                ]
-
-        Lighter ->
-            Css.batch
-                [ Css.backgroundColor Colors.lighter
-                , Css.borderColor transparent
-                , hover
-                    [ Css.backgroundColor Colors.light
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.base
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.lighter)
-                    ]
-                ]
-
-        Light ->
-            Css.batch
-                [ Css.backgroundColor Colors.light
-                , Css.borderColor transparent
-                , hover
-                    [ Css.backgroundColor Colors.base
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.dark
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.light)
-                    ]
-                ]
-
-        Dark ->
-            Css.batch
-                [ Css.color Colors.white
-                , Css.backgroundColor Colors.dark
-                , Css.borderColor transparent
-                , hover
-                    [ Css.backgroundColor Colors.darker
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.darkest
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.dark)
-                    ]
-                ]
-
-        Darker ->
-            Css.batch
-                [ Css.color Colors.white
-                , Css.backgroundColor Colors.darker
-                , Css.borderColor transparent
-                , hover
-                    [ Css.backgroundColor Colors.darkest
-                    , Css.borderColor transparent
-                    ]
-                , active
-                    [ Css.backgroundColor Colors.black
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.darker)
-                    ]
-                ]
-
-        Darkest ->
-            Css.batch
-                [ Css.color Colors.white
-                , Css.backgroundColor Colors.darkest
-                , Css.borderColor transparent
-                , hover
-                    [ Css.backgroundColor Colors.black
-                    , Css.borderColor transparent
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.darkest)
-                    ]
-                ]
-
-        Black ->
-            Css.batch
-                [ Css.color Colors.white
-                , Css.backgroundColor Colors.black
-                , Css.borderColor transparent
-                , hover
-                    [ Css.backgroundColor Colors.black
-                    , Css.borderColor transparent
-                    ]
-                , disabled
-                    [ important (Css.backgroundColor Colors.black)
+                    [ important (Colors.backgroundColor hsla)
                     ]
                 ]
 
@@ -451,16 +216,15 @@ buttonModifier modifier =
                 [ Css.textDecoration underline
                 , Css.backgroundColor transparent
                 , Css.borderColor transparent
-                , hover
-                    [ Css.backgroundColor Colors.backgroundHover
+                , Css.hover
+                    [ Colors.backgroundColor (Colors.background |> Colors.hover)
                     , Css.borderColor transparent
                     ]
-                , focus
-                    [ Css.backgroundColor Colors.backgroundHover
+                , Css.focus
+                    [ Colors.backgroundColor (Colors.background |> Colors.hover)
                     ]
-                , active
-                    [ Css.backgroundColor Colors.backgroundActive
-                    , Css.color Colors.black
+                , Css.active
+                    [ Colors.backgroundColor (Colors.background |> Colors.active)
                     ]
                 ]
 
