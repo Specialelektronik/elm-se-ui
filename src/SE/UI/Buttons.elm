@@ -1,6 +1,7 @@
 module SE.UI.Buttons exposing
     ( buttons, ButtonsModifier(..)
     , button, staticButton, Modifier(..)
+    , buttonStyles
     )
 
 {-| Buttons from Bulma with some small design adjustments. Supports all colors and the `buttons` container.
@@ -16,6 +17,11 @@ see <https://bulma.io/documentation/elements/button/>
 # Buttons
 
 @docs button, staticButton, Modifier
+
+
+# Styles
+
+@ docs buttonStyles
 
 -}
 

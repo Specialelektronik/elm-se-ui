@@ -34,7 +34,7 @@ internalTitle tag style content =
 title1 : String -> Html msg
 title1 =
     internalTitle Html.Styled.h1
-        [ Font.emSize 6
+        [ Font.titleSizeEm 6
         ]
 
 
@@ -43,7 +43,7 @@ title1 =
 title2 : String -> Html msg
 title2 =
     internalTitle Html.Styled.h2
-        [ Font.emSize 5
+        [ Font.titleSizeEm 5
         ]
 
 
@@ -52,7 +52,7 @@ title2 =
 title3 : String -> Html msg
 title3 =
     internalTitle Html.Styled.h3
-        [ Font.emSize 4
+        [ Font.titleSizeEm 4
         ]
 
 
@@ -61,7 +61,7 @@ title3 =
 title4 : String -> Html msg
 title4 =
     internalTitle Html.Styled.h4
-        [ Font.emSize 3
+        [ Font.titleSizeEm 3
         ]
 
 
@@ -70,7 +70,7 @@ title4 =
 title5 : String -> Html msg
 title5 =
     internalTitle Html.Styled.h5
-        [ Font.emSize 2
+        [ Font.titleSizeEm 2
         ]
 
 
@@ -79,5 +79,5 @@ title5 =
 title6 : String -> Html msg
 title6 =
     internalTitle Html.Styled.h6
-        [ Font.emSize 1
+        [ Font.titleSizeEm 1
         ]

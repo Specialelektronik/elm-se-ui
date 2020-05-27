@@ -56,36 +56,36 @@ content =
                 , Css.lineHeight (Css.num 1.3)
                 ]
             , h1
-                [ Font.emSize 6
+                [ Font.titleSizeEm 6
                 , Css.marginBottom (em 0.5)
                 , pseudoClass "not(:first-child)"
                     [ Css.marginBottom (em 1)
                     ]
                 ]
             , h2
-                [ Font.emSize 5
+                [ Font.titleSizeEm 5
                 , Css.marginBottom (em 0.5714)
                 , pseudoClass "not(:first-child)"
                     [ Css.marginBottom (em 1.1428)
                     ]
                 ]
             , h3
-                [ Font.emSize 4
+                [ Font.titleSizeEm 4
                 , Css.marginBottom (em 0.6666)
                 , pseudoClass "not(:first-child)"
                     [ Css.marginBottom (em 1.3333)
                     ]
                 ]
             , h4
-                [ Font.emSize 3
+                [ Font.titleSizeEm 3
                 , Css.marginBottom (em 0.8)
                 ]
             , h5
-                [ Font.emSize 2
+                [ Font.titleSizeEm 2
                 , Css.marginBottom (em 0.8888)
                 ]
             , h6
-                [ Font.emSize 1
+                [ Font.titleSizeEm 1
                 , Css.marginBottom (em 1)
                 ]
             , blockquote

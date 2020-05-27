@@ -42,13 +42,14 @@ To allow the programmer to specify _when_ a message should trigger, the inputs h
 
 -}
 
-import Css exposing (Style, absolute, active, block, center, deg, em, focus, hover, initial, inlineBlock, int, middle, none, pct, pointer, pseudoClass, pseudoElement, px, relative, rgba, rotate, solid, top, vertical, zero)
+import Css exposing (Style, active, block, center, em, focus, hover, initial, inlineBlock, none, pct, pointer, pseudoClass, pseudoElement, px, vertical, zero)
 import Css.Global exposing (withAttribute)
 import Html.Styled as Html exposing (Attribute, Html, styled)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events exposing (onInput)
 import SE.UI.Colors as Colors
 import SE.UI.Control as Control exposing (controlStyle)
+import SE.UI.Icon as Icon
 import SE.UI.Utils as Utils
 import Svg.Styled.Attributes exposing (height, width)
 
@@ -249,25 +250,6 @@ option val o =
             (o.value == val)
         ]
         [ Html.text o.label ]
-
-
-arrow : Style
-arrow =
-    Css.batch
-        [ Css.border3 (px 3) solid (Colors.link |> Colors.toCss)
-        , Css.borderRadius (px 2)
-        , Css.borderRight zero
-        , Css.borderTop zero
-        , Css.property "content" "\"\""
-        , Css.display block
-        , Css.height (em 0.625)
-        , Css.marginTop (em -0.4375)
-        , Css.pointerEvents none
-        , Css.position absolute
-        , Css.top (pct 50)
-        , Css.transform (rotate (deg -45))
-        , Css.width (em 0.625)
-        ]
 
 
 
@@ -530,53 +512,19 @@ dateToHtml rec =
         []
 
 
+{-| New select element based on <https://www.filamentgroup.com/lab/select-css.html>
+-}
 selectToHtml : SelectRecord msg -> Html msg
 selectToHtml rec =
-    let
-        after =
-            if List.member Loading rec.modifiers then
-                [ Utils.loader
-                , Css.marginTop zero
-                , Css.position absolute
-                , Css.right (em 0.625)
-                , Css.top (em 0.625)
-                , Css.transform none
-                ]
-
-            else
-                [ arrow
-                , Css.borderColor (Colors.darker |> Colors.toCss)
-                , Css.right (em 1.125)
-                , Css.zIndex (int 4)
-                ]
-    in
-    styled Html.div
-        [ Css.display inlineBlock
-        , Css.maxWidth (pct 100)
-        , Css.position relative
-        , Css.verticalAlign top
-        , Css.height (em 2.5)
-        , Css.after after
-        ]
-        []
-        [ styled Html.select
-            (inputStyle rec.modifiers
-                ++ [ Css.cursor pointer
-                   , Css.display block
-                   , Css.maxWidth (pct 100)
-                   , Css.outline none
-                   , Css.paddingRight (em 2.5)
-                   , pseudoElement "ms-expand" [ Css.display none ]
-                   ]
-            )
-            ([ Utils.onChange rec.msg
-             ]
-                |> boolAttribute (always rec.required) Attributes.required rec.required
-                |> boolAttribute (always rec.disabled) Attributes.disabled rec.disabled
-                |> boolAttribute (always rec.readonly) Attributes.readonly rec.readonly
-            )
-            (option rec.value { label = rec.placeholder, value = "" } :: List.map (option rec.value) rec.options)
-        ]
+    styled Html.select
+        (selectStyle rec.modifiers)
+        ([ Utils.onChange rec.msg
+         ]
+            |> boolAttribute (always rec.required) Attributes.required rec.required
+            |> boolAttribute (always rec.disabled) Attributes.disabled rec.disabled
+            |> boolAttribute (always rec.readonly) Attributes.readonly rec.readonly
+        )
+        (option rec.value { label = rec.placeholder, value = "" } :: List.map (option rec.value) rec.options)
 
 
 passwordToHtml : PasswordRecord (InputRecord msg) -> Html msg
@@ -600,10 +548,10 @@ buttonToHtml buttonType rec =
         { type_, bg, radius } =
             case buttonType of
                 Checkbox ->
-                    { type_ = "checkbox", bg = tick, radius = Css.borderRadius (Css.em 0.25) }
+                    { type_ = "checkbox", bg = Icon.tick, radius = Css.borderRadius (Css.em 0.25) }
 
                 Radio ->
-                    { type_ = "radio", bg = circle, radius = Css.borderRadius (Css.pct 100) }
+                    { type_ = "radio", bg = Icon.circle, radius = Css.borderRadius (Css.pct 100) }
 
         cursor =
             if rec.disabled then
@@ -622,10 +570,7 @@ buttonToHtml buttonType rec =
         []
         [ styled Html.input
             (inputStyle rec.modifiers
-                ++ [ Css.property "-webkit-appearance" "none"
-                   , Css.property "-moz-appearance" "none"
-                   , Css.property "appearance" "none"
-                   , Css.property "-webkit-print-color-adjust" "exact"
+                ++ [ Css.property "-webkit-print-color-adjust" "exact"
                    , Css.property "color-adjust" "exact"
                    , Css.display Css.inlineBlock
 
@@ -691,16 +636,6 @@ buttonColor mods =
         )
         Colors.link
         mods
-
-
-tick : String
-tick =
-    "data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M5.707 7.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L7 8.586 5.707 7.293z'/%3e%3c/svg%3e"
-
-
-circle : String
-circle =
-    "data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e"
 
 
 
@@ -1166,4 +1101,23 @@ textareaStyle mods =
            , withAttribute "rows"
                 [ Css.height initial
                 ]
+           ]
+
+
+selectStyle : List Modifier -> List Style
+selectStyle mods =
+    inputStyle mods
+        ++ [ Css.fontSize (Css.px 16)
+           , Css.cursor pointer
+           , Css.outline none
+           , Colors.backgroundColor Colors.white
+           , Css.backgroundImage (Css.url ("\"" ++ Icon.angleDownCssBackground ++ "\""))
+           , Css.backgroundRepeat Css.noRepeat
+           , Css.property "background-position" "right 0.75em top 50%"
+           , Css.backgroundSize2 (Css.em 0.75) Css.auto
+           , Css.property "box-shadow" "none"
+           , pseudoElement "ms-expand" [ Css.display none ]
+
+           --border: 1px solid #aaa;
+           -- box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
            ]

@@ -37,8 +37,9 @@ controlLineHeight =
 controlStyle : Size -> Style
 controlStyle size =
     Css.batch
-        [ property "-moz-appearance" "none"
-        , property "-webkit-appearance" "none"
+        [ Css.property "-moz-appearance" "none"
+        , Css.property "-webkit-appearance" "none"
+        , Css.property "appearance" "none"
         , alignItems center
         , border3 (Css.px 1) solid transparent
         , boxShadow none

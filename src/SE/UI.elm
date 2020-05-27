@@ -10,9 +10,11 @@ import SE.UI.Columns as Columns
 import SE.UI.Container as Container
 import SE.UI.Content as Content
 import SE.UI.Control as Control
+import SE.UI.Font as Font
 import SE.UI.Form as Form
 import SE.UI.Form.Input as Input
 import SE.UI.Global as Global
+import SE.UI.Icon as Icon
 import SE.UI.Section as Section
 import SE.UI.Title as Title
 import SE.UI.Utils as Utils
@@ -125,17 +127,29 @@ viewTypography =
                     , Html.code [] [ Html.text "content" ]
                     , Html.text " as Bulma. Use it wherever you have html content from a wysiwyg-editor that you can (and should not) style yourself."
                     ]
-                , Html.h1 [] [ Html.text "Title 1" ]
-                , Html.h2 [] [ Html.text "Title 2" ]
-                , Html.h3 [] [ Html.text "Title 3" ]
-                , Html.h4 [] [ Html.text "Title 4" ]
-                , Html.h5 [] [ Html.text "Title 5" ]
-                , Html.h6 [] [ Html.text "Title 6" ]
-                , Html.p [] [ Html.text "Officia commodo laboris irure enim ipsum proident Lorem eu deserunt eiusmod minim. Sint occaecat occaecat aute voluptate voluptate. Aliqua non aliquip aliquip enim aliqua do fugiat reprehenderit ullamco sunt." ]
+                , Html.h1 [] [ Html.text "H1 Title - This is a H1 title 44.79px/58.2px (mobile: 28.83px/37.5px)" ]
+                , Html.h2 [] [ Html.text "H2 Title - This is a H2 title 37.32px/48.5px (mobile: 25.63px/33.3px)" ]
+                , Html.h3 [] [ Html.text "H3 Title - This is a H3 title 31.1px/40.4px (mobile: 22.78px/29.6px)" ]
+                , Html.h4 [] [ Html.text "H4 Title - This is a H4 title 25.92px/33.7px (mobile: 20.25px/26.3px)" ]
+                , Html.h5 [] [ Html.text "H5 Title - This is a H5 title 21.6px/28.1px (mobile: 18px/23.4px)" ]
+                , Html.h6 [] [ Html.text "H6 Title - This is a H6 title 18px/23.4px (mobile: 16px/20.8px)" ]
+                , Html.p [] [ Html.text "Body Standard 18px/27px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , styled Html.p [ Font.bodySizeEm -1 ] [] [ Html.text "Body Medium 16px/24px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , styled Html.p [ Font.bodySizeEm -2 ] [] [ Html.text "Body Small 14px/21px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , styled Html.p [ Font.bodySizeEm -2, Css.lineHeight (Css.num 1.28571428571) ] [] [ Html.text "Body Small less line-height 14px/18px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , styled Html.p [ Font.bodySizeEm -3 ] [] [ Html.text "Small info text 12px/18px" ]
                 , Html.ul []
                     [ Html.li [] [ Html.text "List item 1" ]
                     , Html.li [] [ Html.text "List item 2" ]
                     , Html.li [] [ Html.text "List item 3" ]
+                    ]
+                , Html.p []
+                    [ styled Html.a
+                        Font.textButtonStyles
+                        []
+                        [ Html.text "Visa mer"
+                        , Icon.angleDown Control.Small
+                        ]
                     ]
                 ]
             ]
@@ -355,6 +369,19 @@ viewForm model =
                     [ Form.label "Small label"
                     , Form.control False
                         [ Input.text GotInput model.input
+                            |> Input.withPlaceholder "Placeholder"
+                            |> Input.toHtml
+                        ]
+                    ]
+                , Form.field []
+                    [ Form.label "Select element"
+                    , Form.control False
+                        [ Input.select GotInput
+                            [ { label = "Option 1", value = "option 1" }
+                            , { label = "Option 2", value = "option 2" }
+                            , { label = "Option 3", value = "option 3" }
+                            ]
+                            model.input
                             |> Input.withPlaceholder "Placeholder"
                             |> Input.toHtml
                         ]

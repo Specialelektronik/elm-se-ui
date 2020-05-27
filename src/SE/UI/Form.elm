@@ -83,7 +83,7 @@ labelHelper required s =
     styled Html.Styled.label
         [ Css.color (Colors.text |> Colors.toCss)
         , Css.display block
-        , Font.remSize -2
+        , Font.bodySizeRem -2
         , Css.textTransform Css.uppercase
         , Css.fontWeight bold
         , pseudoClass "not(:last-child)"
@@ -224,7 +224,7 @@ internalControl isExpanded loading =
     styled Html.Styled.div
         ([ Css.boxSizing borderBox
          , Css.property "clear" "both"
-         , Font.remSize 1
+         , Font.bodySizeRem 1
          , Css.position relative
          , Css.textAlign left
          , if isExpanded then

@@ -1,19 +1,17 @@
 module SE.UI.Utils exposing
-    ( mobile, tabletWidth, tablet, desktopWidth, desktop, widescreenWidth, widescreen, extendedWidth, extended, fullhdWidth, fullhd
+    ( mobile, tabletWidth, tablet, desktopWidth, desktop, widescreenWidth, widescreen, fullhdWidth, fullhd
     , loader
     , onChange
-    , block, centerEm, overflowTouch, unselectable
+    , block, centerEm, overflowTouch, unselectable, arrow
     , gap, radius, smallRadius
     )
 
 {-| Utility functions mostly used by the framework itself.
 
-Mostly notably is the extra breakpoint we have compared to Bulma. Bulmas "fullhd" has been renamed to "extended" and fullhd is not targeting screens with 1920 pixel resolution or above.
-
 
 # Media queries
 
-@docs mobile, tabletWidth, tablet, desktopWidth, desktop, widescreenWidth, widescreen, extendedWidth, extended, fullhdWidth, fullhd
+@docs mobile, tabletWidth, tablet, desktopWidth, desktop, widescreenWidth, widescreen, fullhdWidth, fullhd
 
 
 # Animation helpers
@@ -28,7 +26,7 @@ Mostly notably is the extra breakpoint we have compared to Bulma. Bulmas "fullhd
 
 # Helpers
 
-@docs block, centerEm, overflowTouch, unselectable
+@docs block, centerEm, overflowTouch, unselectable, arrow
 
 
 # Constants
@@ -50,7 +48,7 @@ import SE.UI.Colors as Colors
 -}
 gap : Float
 gap =
-    64
+    48
 
 
 {-| Threshold for tablets
@@ -64,28 +62,21 @@ tabletWidth =
 -}
 desktopWidth : Float
 desktopWidth =
-    960 + (2 * gap)
+    1024
 
 
 {-| Threshold for widescreens
 -}
 widescreenWidth : Float
 widescreenWidth =
-    1152 + (2 * gap)
-
-
-{-| Threshold for extendeds
--}
-extendedWidth : Float
-extendedWidth =
-    1344 + (2 * gap)
+    1216
 
 
 {-| Threshold for fullHDs
 -}
 fullhdWidth : Float
 fullhdWidth =
-    1776 + (2 * gap)
+    1408
 
 
 {-| Media query for mobile devices
@@ -115,13 +106,6 @@ desktop =
 widescreen : List Style -> Style
 widescreen =
     Media.withMedia [ only screen [ minWidth (px widescreenWidth) ] ]
-
-
-{-| Media query that maps to @media screen and (min-width: $extended)
--}
-extended : List Style -> Style
-extended =
-    Media.withMedia [ only screen [ minWidth (px extendedWidth) ] ]
 
 
 {-| Media query that maps to @media screen and (min-width: $fullhd)
@@ -231,4 +215,24 @@ centerEm width height =
              else
                 calc (pct 50) minus (em (width / 2))
             )
+        ]
+
+
+{-| Arrow used on select element and "show more" links.
+-}
+arrow : Style
+arrow =
+    Css.batch
+        [ Css.border3 (px 2) solid Css.currentColor
+        , Css.borderRight Css.zero
+        , Css.borderTop Css.zero
+        , Css.property "content" "\"\""
+        , Css.display Css.block
+        , Css.height (em 0.625)
+        , Css.marginTop (em -0.4375)
+        , Css.pointerEvents Css.none
+        , Css.position absolute
+        , Css.top (pct 50)
+        , Css.transform (rotate (deg -45))
+        , Css.width (em 0.625)
         ]

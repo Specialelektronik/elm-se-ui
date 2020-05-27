@@ -1,4 +1,7 @@
-module SE.UI.Icon exposing (angleDown, bargain, bid, box, boxes, campaign, cart, category, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi)
+module SE.UI.Icon exposing
+    ( angleDown, bargain, bid, box, boxes, campaign, cart, category, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi, tick, circle
+    , angleDownCssBackground
+    )
 
 {-| Creates a Bulma Icon element set.
 
@@ -10,6 +13,13 @@ We use more or less the same styles for the icon container but We use plain inli
 # Available icons
 
 @docs angleDown, bargain, bid, box, boxes, campaign, cart, category, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi
+
+
+# Css Backgrounds
+
+For some icons we need include them as a css background (example select-element and "show more"-links)
+
+@docs angleDownCssBackground, tick, circle
 
 -}
 
@@ -109,15 +119,41 @@ containerStyles size =
     ]
 
 
+{-| Checkbox background
+-}
+tick : String
+tick =
+    "data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M5.707 7.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L7 8.586 5.707 7.293z'/%3e%3c/svg%3e"
+
+
+{-| Radio button background
+-}
+circle : String
+circle =
+    "data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e"
+
+
 
 -- ICON PATHS
+
+
+angleDownPath : String
+angleDownPath =
+    "M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z"
 
 
 {-| <https://fontawesome.com/icons/angle-down?style=solid>
 -}
 angleDown : Control.Size -> Html msg
 angleDown size =
-    internalIcon size (viewBox 320 512) [ Svg.path [ d "M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z" ] [] ]
+    internalIcon size (viewBox 320 512) [ Svg.path [ d angleDownPath ] [] ]
+
+
+{-| Used in select elements and "show more" links
+-}
+angleDownCssBackground : String
+angleDownCssBackground =
+    "data:image/svg+xml,%3csvg viewBox='0 0 320 512' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='" ++ angleDownPath ++ "'/%3e%3c/svg%3e"
 
 
 {-| <https://fontawesome.com/icons/piggy-bank?style=solid>

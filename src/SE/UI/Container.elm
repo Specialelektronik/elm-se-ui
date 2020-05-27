@@ -12,7 +12,6 @@ see <https://bulma.io/documentation/layout/container/>
 
 import Css exposing (Style, auto, none, px, relative, zero)
 import Html.Styled exposing (Html, styled)
-import SE.UI.Utils exposing (desktop, desktopWidth, extended, extendedWidth, fullhd, fullhdWidth, gap, widescreen, widescreenWidth)
 
 
 {-| For now, only Fluid modifier is supported
@@ -33,26 +32,9 @@ container modifiers =
     styled Html.Styled.div
         [ Css.margin2 zero auto
         , Css.position relative
-        , fullhd
-            [ Css.maxWidth (px (fullhdWidth - (2 * gap)))
-            , Css.width (px (fullhdWidth - (2 * gap)))
-            , modStyle
-            ]
-        , extended
-            [ Css.maxWidth (px (extendedWidth - (2 * gap)))
-            , Css.width (px (extendedWidth - (2 * gap)))
-            , modStyle
-            ]
-        , widescreen
-            [ Css.maxWidth (px (widescreenWidth - (2 * gap)))
-            , Css.width (px (widescreenWidth - (2 * gap)))
-            , modStyle
-            ]
-        , desktop
-            [ Css.maxWidth (px (desktopWidth - (2 * gap)))
-            , Css.width (px (desktopWidth - (2 * gap)))
-            , modStyle
-            ]
+        , Css.width (Css.pct 100)
+        , Css.maxWidth (Css.px 1680)
+        , modStyle
         ]
         []
 
@@ -62,8 +44,6 @@ modifier m =
     case m of
         Fluid ->
             Css.batch
-                [ Css.marginLeft (px gap)
-                , Css.marginRight (px gap)
-                , Css.maxWidth none
+                [ Css.maxWidth none
                 , Css.width auto
                 ]

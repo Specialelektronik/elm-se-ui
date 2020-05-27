@@ -11,6 +11,7 @@ module SE.UI.Section exposing (section)
 
 import Css exposing (rem)
 import Html.Styled exposing (Attribute, Html, styled)
+import SE.UI.Utils as Utils
 
 
 {-| Creates a styled section html tag in line with [Bulmas section](https://bulma.io/documentation/layout/section/).
@@ -21,5 +22,8 @@ import Html.Styled exposing (Attribute, Html, styled)
 section : List (Attribute msg) -> List (Html msg) -> Html msg
 section =
     styled Html.Styled.section
-        [ Css.padding2 (rem 3) (rem 1.5)
+        [ Css.padding2 (rem 1) (rem 1)
+        , Utils.desktop
+            [ Css.padding2 (rem 2.66666667) (rem 2.66666667)
+            ]
         ]

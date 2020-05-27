@@ -272,7 +272,7 @@ inlineAndBlock =
             , Css.Global.code
                 [ Colors.backgroundColor Colors.background
                 , Colors.color Colors.danger
-                , Font.emSize -1
+                , Font.bodySizeEm -1
                 , Css.fontWeight Css.normal
                 , Css.padding3 (Css.em 0.25) (Css.em 0.5) (Css.em 0.25)
                 ]
@@ -291,7 +291,7 @@ inlineAndBlock =
             --     [ Css.verticalAlign Css.baseline
             --     ]
             , Css.Global.small
-                [ Font.emSize -1
+                [ Font.bodySizeEm -1
                 ]
             , Css.Global.span
                 [ Css.fontStyle Css.inherit
@@ -307,7 +307,7 @@ inlineAndBlock =
                 [ Css.property "-webkit-overflow-scrolling" "touch"
                 , Colors.backgroundColor Colors.background
                 , Colors.color Colors.darkest
-                , Font.emSize -1
+                , Font.bodySizeEm -1
                 , Css.overflowX Css.auto
                 , Css.padding2 (Css.rem 1.25) (Css.rem 1.5)
                 , Css.whiteSpace Css.pre
@@ -316,7 +316,7 @@ inlineAndBlock =
                     [ Css.Global.code
                         [ Css.backgroundColor Css.transparent
                         , Css.color Css.currentColor
-                        , Font.emSize 1
+                        , Font.bodySizeEm 1
                         , Css.padding Css.zero
                         ]
                     ]
