@@ -3,6 +3,7 @@ module SE.UI.Form.Input exposing
     , withTrigger, Trigger(..)
     , withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword
     , withModifier, withModifiers, Modifier(..)
+    , inputStyle
     )
 
 {-| Essentially all input elements except buttons
@@ -39,6 +40,10 @@ To allow the programmer to specify _when_ a message should trigger, the inputs h
 ## Modifiers
 
 @docs withModifier, withModifiers, Modifier
+
+# Styles
+
+@docs inputStyle
 
 -}
 

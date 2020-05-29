@@ -59,7 +59,7 @@ modalStyles =
 modalBackgroundStyles : List Style
 modalBackgroundStyles =
     [ overlay 0
-    , Css.backgroundColor (rgba 0 0 0 0.86)
+    , Css.backgroundColor (rgba 0 0 0 0.7)
     ]
 
 

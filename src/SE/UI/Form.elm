@@ -111,7 +111,7 @@ field mods =
             ]
         , Css.batch (List.map fieldModifier mods)
         ]
-        []
+        [ class "field" ]
 
 
 fieldModifier : FieldModifier -> Style

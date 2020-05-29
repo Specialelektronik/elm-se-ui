@@ -2,7 +2,7 @@ module SE.UI.Utils exposing
     ( mobile, tabletWidth, tablet, desktopWidth, desktop, widescreenWidth, widescreen, fullhdWidth, fullhd
     , loader
     , onChange
-    , block, centerEm, overflowTouch, unselectable, arrow
+    , block, centerEm, overflowTouch, unselectable, arrow, visuallyHidden
     , gap, radius, smallRadius
     )
 
@@ -26,7 +26,7 @@ module SE.UI.Utils exposing
 
 # Helpers
 
-@docs block, centerEm, overflowTouch, unselectable, arrow
+@docs block, centerEm, overflowTouch, unselectable, arrow, visuallyHidden
 
 
 # Constants
@@ -38,7 +38,8 @@ module SE.UI.Utils exposing
 import Css exposing (Style, absolute, block, calc, deg, em, minus, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
 import Css.Media as Media exposing (maxWidth, minWidth, only, screen)
-import Html.Styled
+import Html.Styled as Html exposing (Attribute, Html)
+import Html.Styled.Attributes as Attributes
 import Html.Styled.Events exposing (on)
 import Json.Decode as Json
 import SE.UI.Colors as Colors
@@ -166,7 +167,7 @@ spinAround =
 
 {-| onChange event is used on select form elements
 -}
-onChange : (String -> msg) -> Html.Styled.Attribute msg
+onChange : (String -> msg) -> Html.Attribute msg
 onChange handler =
     on "change" <| Json.map handler <| Json.at [ "target", "value" ] Json.string
 
@@ -178,6 +179,26 @@ block =
     pseudoClass "not(:last-child)"
         [ Css.marginBottom (rem 1.5)
         ]
+
+
+visuallyHidden :
+    (List (Attribute a) -> List (Html b) -> Html msg)
+    -> List (Attribute a)
+    -> List (Html b)
+    -> Html msg
+visuallyHidden fn attrs children =
+    fn (Attributes.css visuallyHiddenStyles :: attrs) children
+
+
+visuallyHiddenStyles : List Style
+visuallyHiddenStyles =
+    [ Css.important (Css.position Css.absolute)
+    , Css.height (Css.px 1)
+    , Css.width (Css.px 1)
+    , Css.overflow Css.hidden
+    , Css.property "clip" "rect(1px, 1px, 1px, 1px)"
+    , Css.whiteSpace Css.noWrap
+    ]
 
 
 {-| Make an element unselectable

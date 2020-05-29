@@ -1,20 +1,27 @@
 module SE.UI exposing (main)
 
 import Browser
-import Css
+import Css exposing (Style)
+import Css.Global
+import Css.Transitions
 import Html.Styled as Html exposing (Html, div, styled, toUnstyled)
 import Html.Styled.Attributes as Attributes
+import Html.Styled.Events as Events
 import SE.UI.Buttons as Buttons
 import SE.UI.Colors as Colors
 import SE.UI.Columns as Columns
 import SE.UI.Container as Container
 import SE.UI.Content as Content
 import SE.UI.Control as Control
+import SE.UI.Dropdown as Dropdown
 import SE.UI.Font as Font
 import SE.UI.Form as Form
 import SE.UI.Form.Input as Input
 import SE.UI.Global as Global
 import SE.UI.Icon as Icon
+import SE.UI.Logo as Logo
+import SE.UI.Modal as Modal
+import SE.UI.Notification as Notification
 import SE.UI.Section as Section
 import SE.UI.Title as Title
 import SE.UI.Utils as Utils
@@ -27,7 +34,13 @@ import SE.UI.Utils as Utils
 type alias Model =
     { count : Int
     , button : ButtonModel
+    , notification : NotificationModel
+    , columns : ColumnsModel
     , input : String
+    , showModal : Bool
+    , showDropdown : Bool
+    , menuOpen : Bool
+    , showMenuDropdown : Bool
     }
 
 
@@ -36,17 +49,70 @@ type alias ButtonModel =
     }
 
 
+type alias NotificationModel =
+    { color : NotificationColor
+    , deleteable : Bool
+    }
+
+
+type NotificationColor
+    = Regular
+    | Primary
+    | Link
+    | Danger
+
+
+type alias ColumnsModel =
+    { count : Int
+    }
+
+
+colorToNotification : NotificationColor -> ( String, Maybe msg -> List (Html msg) -> Html msg )
+colorToNotification color =
+    case color of
+        Regular ->
+            ( "notification", Notification.notification )
+
+        Primary ->
+            ( "primary", Notification.primary )
+
+        Link ->
+            ( "link", Notification.link )
+
+        Danger ->
+            ( "danger", Notification.danger )
+
+
 initialModel : Model
 initialModel =
     { count = 1
     , button = defaultButton
+    , notification = defaultNotification
+    , columns = defaultColumns
     , input = ""
+    , showModal = False
+    , showDropdown = False
+    , menuOpen = False
+    , showMenuDropdown = False
     }
 
 
 defaultButton : ButtonModel
 defaultButton =
     { mods = []
+    }
+
+
+defaultNotification : NotificationModel
+defaultNotification =
+    { color = Regular
+    , deleteable = True
+    }
+
+
+defaultColumns : ColumnsModel
+defaultColumns =
+    { count = 4
     }
 
 
@@ -59,10 +125,28 @@ type Msg
     | ClickedButton
     | GotInput String
     | GotButtonsMsg ButtonMsg
+    | GotNotificationMsg NotificationMsg
+    | GotColumnsMsg ColumnsMsg
+    | ToggledModal
+    | ToggledDropdown
+    | ClosedDropdown
+    | ToggledMenu
+    | ToggledMenuDropdown
+    | ClosedMenuDropdown
 
 
 type ButtonMsg
-    = ToggleModifier Buttons.Modifier
+    = ToggledModifier Buttons.Modifier
+
+
+type NotificationMsg
+    = ClickedColor NotificationColor
+    | ToggledDeleteable
+
+
+type ColumnsMsg
+    = AddColumn
+    | SubtractColumn
 
 
 update : Msg -> Model -> Model
@@ -80,11 +164,35 @@ update msg model =
         GotButtonsMsg subMsg ->
             { model | button = updateButton subMsg model.button }
 
+        GotNotificationMsg subMsg ->
+            { model | notification = updateNotification subMsg model.notification }
+
+        GotColumnsMsg subMsg ->
+            { model | columns = updateColumns subMsg model.columns }
+
+        ToggledModal ->
+            { model | showModal = not model.showModal }
+
+        ToggledDropdown ->
+            { model | showDropdown = not model.showDropdown }
+
+        ClosedDropdown ->
+            { model | showDropdown = False }
+
+        ToggledMenu ->
+            { model | menuOpen = not model.menuOpen }
+
+        ToggledMenuDropdown ->
+            { model | showMenuDropdown = not model.showMenuDropdown }
+
+        ClosedMenuDropdown ->
+            { model | showMenuDropdown = False }
+
 
 updateButton : ButtonMsg -> ButtonModel -> ButtonModel
 updateButton msg model =
     case msg of
-        ToggleModifier mod ->
+        ToggledModifier mod ->
             let
                 newMods =
                     if List.member mod model.mods then
@@ -96,6 +204,26 @@ updateButton msg model =
             { model | mods = newMods }
 
 
+updateNotification : NotificationMsg -> NotificationModel -> NotificationModel
+updateNotification msg model =
+    case msg of
+        ClickedColor color ->
+            { model | color = color }
+
+        ToggledDeleteable ->
+            { model | deleteable = not model.deleteable }
+
+
+updateColumns : ColumnsMsg -> ColumnsModel -> ColumnsModel
+updateColumns msg model =
+    case msg of
+        AddColumn ->
+            { model | count = min 12 (model.count + 1) }
+
+        SubtractColumn ->
+            { model | count = max 1 (model.count - 1) }
+
+
 
 -- VIEW
 
@@ -105,12 +233,393 @@ view model =
     div
         []
         [ Global.global
+        , viewNav model.menuOpen model.showMenuDropdown
         , Html.article []
-            [ viewColors
+            [ viewLogo
+            , viewColors
             , viewTypography
+            , viewColumns model.columns
             , viewButtons model.button
             , viewSection
+            , viewContainer
             , viewForm model
+            , viewNotification model.notification
+            , viewModal model.showModal
+            , viewIcons
+            ]
+        ]
+
+
+viewNav : Bool -> Bool -> Html Msg
+viewNav menuOpen dropdownOpen =
+    styled Html.header
+        headerStyles
+        []
+        [ styled Html.nav ribbonStyles [] [ Container.container [] [ Html.text "Ribbon" ] ]
+        , Container.container []
+            [ styled Html.nav
+                navbarStyles
+                []
+                [ brand menuOpen
+                , menu
+                    [ search
+                    , link "Webbshop" "/webbshop"
+                    , Dropdown.dropdown "services"
+                        ClosedMenuDropdown
+                        dropdownOpen
+                        (Dropdown.button [] (Just ToggledMenuDropdown) [ Html.text "Tjänster", Icon.angleDown Control.Regular ])
+                        [ Dropdown.link "https://google.com" [ Html.text "Google.com" ]
+                        ]
+                    ]
+                    [--item viewOpeningHours
+                     -- , item (viewUser maybeUser)
+                     -- , item viewDocuments
+                     -- , cartOrLoginItem
+                    ]
+                ]
+            ]
+        ]
+
+
+brand : Bool -> Html Msg
+brand menuOpen =
+    styled div
+        brandStyles
+        []
+        [ styled Html.a
+            itemAndLinkStyles
+            [ Attributes.href "/" ]
+            [ Logo.onWhite
+            ]
+        , mobileMenu menuOpen
+        ]
+
+
+brandStyles : List Style
+brandStyles =
+    [ Css.alignItems Css.stretch
+    , Css.displayFlex
+    , Css.flexShrink Css.zero
+    , Css.minHeight (Css.px 60)
+    ]
+
+
+menu : List (Html msg) -> List (Html msg) -> Html msg
+menu startItems endItems =
+    styled div
+        menuStyles
+        [ Attributes.class "menu" ]
+        [ styled div startStyles [ Attributes.class "start" ] startItems
+        , styled div endStyles [ Attributes.class "end" ] endItems
+        ]
+
+
+menuStyles : List Style
+menuStyles =
+    [ Css.display Css.none
+    , Utils.desktop
+        [ Css.alignItems Css.stretch
+        , Css.displayFlex
+        , Css.flexGrow (Css.int 1)
+        , Css.flexShrink Css.zero
+        ]
+    ]
+
+
+item : List (Html msg) -> Html msg
+item =
+    styled div (itemAndLinkStyles ++ itemStyles) []
+
+
+link : String -> String -> Html msg
+link label url =
+    styled Html.a (itemAndLinkStyles ++ linkStyles) [ Attributes.href url ] [ Html.text label ]
+
+
+startStyles : List Style
+startStyles =
+    [ Utils.desktop
+        [ Css.alignItems Css.stretch
+        , Css.displayFlex
+        , Css.justifyContent Css.flexStart
+        , Css.marginRight Css.auto
+        , Css.flexGrow (Css.int 1)
+        ]
+    ]
+
+
+endStyles : List Style
+endStyles =
+    [ Utils.desktop
+        [ Css.alignItems Css.stretch
+        , Css.displayFlex
+        , Css.justifyContent Css.flexEnd
+        , Css.marginLeft Css.auto
+        ]
+    ]
+
+
+headerStyles : List Style
+headerStyles =
+    [ Css.position Css.fixed
+    , Css.top Css.zero
+    , Css.left Css.zero
+    , Css.right Css.zero
+    , Css.zIndex (Css.int 9999)
+    , Colors.backgroundColor Colors.white
+    , Css.boxShadow4 Css.zero (Css.px 2) (Css.px 10) (Colors.black |> Colors.mapAlpha (always 0.08) |> Colors.toCss)
+
+    -- 0px 2px 10px rgba(0, 0, 0, 0.08)
+    ]
+
+
+ribbonStyles : List Style
+ribbonStyles =
+    [ Css.display Css.none ]
+
+
+navbarStyles : List Style
+navbarStyles =
+    [ Css.minHeight (Css.px 60)
+    , Css.position Css.relative
+    , Css.zIndex (Css.int 30)
+    , Utils.desktop
+        [ Css.alignItems Css.stretch
+        , Css.displayFlex
+        ]
+    ]
+
+
+itemAndLinkStyles : List Style
+itemAndLinkStyles =
+    [ Colors.color Colors.text
+    , Css.displayFlex
+    , Css.alignItems Css.center
+    , Css.lineHeight (Css.num 1.5)
+    , Css.padding2 (Css.px 10) (Css.px 10)
+    , Css.position Css.relative
+    , Css.Global.descendants
+        [ Css.Global.selector ".icon:only-child"
+            [ Css.marginLeft (Css.rem -0.25)
+            , Css.marginRight (Css.rem -0.25)
+            ]
+        , Css.Global.typeSelector "svg"
+            [ Css.height (Css.px 40)
+            ]
+        ]
+    ]
+
+
+itemStyles : List Style
+itemStyles =
+    [ Css.flexGrow Css.zero
+    , Css.flexShrink Css.zero
+    ]
+
+
+linkStyles : List Style
+linkStyles =
+    [ Css.cursor Css.pointer
+    , Css.textTransform Css.uppercase
+    , Css.fontWeight Css.bold
+    , Colors.color Colors.text
+    , Css.letterSpacing (Css.px 1)
+    , Css.focus
+        [ Colors.backgroundColor Colors.background
+        , Colors.color Colors.primary
+        ]
+    , Css.pseudoClass "focus-within"
+        [ Colors.backgroundColor Colors.background
+        , Colors.color Colors.primary
+        ]
+    , Css.hover
+        [ Colors.backgroundColor Colors.background
+        , Colors.color Colors.primary
+        ]
+    ]
+
+
+mobileMenu : Bool -> Html Msg
+mobileMenu menuOpen =
+    styled div
+        [ Utils.desktop
+            [ Css.display Css.none
+            ]
+        , Css.marginLeft Css.auto
+        ]
+        []
+        [ navbarBurger menuOpen ]
+
+
+navbarBurger : Bool -> Html Msg
+navbarBurger menuOpen =
+    styled Html.label
+        [ Colors.color Colors.white
+        , Colors.backgroundColor Colors.darker
+        , Css.cursor Css.pointer
+        , Css.display Css.block
+        , Css.height (Css.px 60)
+        , Css.position Css.relative
+        , Css.width (Css.px 60)
+        , Css.hover
+            [ Colors.backgroundColor (Colors.darker |> Colors.hover)
+            ]
+        , Css.Global.descendants
+            [ Css.Global.typeSelector "span"
+                [ Css.backgroundColor Css.currentColor
+                , Css.display Css.block
+                , Css.height (Css.px 2)
+                , Css.left (Css.calc (Css.pct 50) Css.minus (Css.px 12))
+                , Css.position Css.absolute
+                , Css.Transitions.transition
+                    [ Css.Transitions.backgroundColor3 86 0 Css.Transitions.easeOut
+                    , Css.Transitions.opacity3 86 0 Css.Transitions.easeOut
+                    , Css.Transitions.transform3 86 0 Css.Transitions.easeOut
+                    ]
+                , Css.width (Css.px 24)
+                , Css.nthChild "1"
+                    [ Css.top (Css.calc (Css.pct 50) Css.minus (Css.px 8))
+                    ]
+                , Css.nthChild "2"
+                    [ Css.top (Css.calc (Css.pct 50) Css.minus (Css.px 1))
+                    ]
+                , Css.nthChild "3"
+                    [ Css.top (Css.calc (Css.pct 50) Css.plus (Css.px 6))
+                    ]
+                , Css.batch
+                    (if menuOpen then
+                        [ Css.nthChild "1"
+                            [ Css.transforms [ Css.translateY (Css.px 7), Css.rotate (Css.deg 45) ]
+                            ]
+                        , Css.nthChild "2"
+                            [ Css.opacity Css.zero
+                            ]
+                        , Css.nthChild "3"
+                            [ Css.transforms [ Css.translateY (Css.px -7), Css.rotate (Css.deg -45) ]
+                            ]
+                        ]
+
+                     else
+                        []
+                    )
+                ]
+            ]
+        ]
+        [ Attributes.for "menu", Attributes.attribute "role" "button", Attributes.attribute "aria-label" "menu", Events.onClick ToggledMenu ]
+        [ Html.span [ Attributes.attribute "aria-hidden" "true" ] []
+        , Html.span [ Attributes.attribute "aria-hidden" "true" ] []
+        , Html.span [ Attributes.attribute "aria-hidden" "true" ] []
+        ]
+
+
+search : Html Msg
+search =
+    styled Html.form
+        (itemAndLinkStyles ++ [ Css.display Css.block, Css.flexGrow (Css.num 1) ])
+        []
+        [ Form.field [ Form.Attached ]
+            [ Form.expandedControl False
+                [ searchInput searchStyles [ Attributes.placeholder "Sök efter produkter, kategorier och fabrikat" ]
+                , styled Html.button
+                    [ Css.border Css.zero
+                    , Css.backgroundColor Css.transparent
+                    , Css.position Css.absolute
+                    , Css.displayFlex
+                    , Css.top Css.zero
+                    , Css.bottom Css.zero
+                    , Css.right Css.zero
+                    , Css.cursor Css.pointer
+                    , Colors.color Colors.dark
+                    , Css.hover
+                        [ Colors.color Colors.link
+                        ]
+                    ]
+                    [ Attributes.type_ "submit" ]
+                    [ Utils.visuallyHidden Html.span [] [ Html.text "Sök" ], Icon.search Control.Medium ]
+                ]
+
+            -- , Form.control False
+            --     [ Html.button [] [ Html.text "Sök" ]
+            --     ]
+            ]
+        ]
+
+
+searchStyles : List Style
+searchStyles =
+    [ Css.batch (Input.inputStyle [])
+
+    -- , Colors.backgroundColor Colors.lighter
+    -- , Colors.color Colors.darker
+    -- , Css.width (Css.pct 100)
+    -- , Css.hover
+    --     [ Colors.borderColor Colors.base
+    --     ]
+    -- , Css.focus
+    --     [ Colors.borderColor Colors.link
+    --     , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
+    --     , Colors.backgroundColor Colors.white
+    --     , Colors.color Colors.black
+    --     ]
+    -- , Css.active
+    --     [ Colors.borderColor Colors.link
+    --     , Css.property "box-shadow" "0 0 0 0.125em rgba(50,115,220, 0.25)"
+    --     ]
+    -- , Css.height (Css.pct 100)
+    ]
+
+
+searchInput : List Style -> List (Html.Attribute Msg) -> Html Msg
+searchInput styles attrs =
+    Html.styled Html.input
+        styles
+        attrs
+        []
+
+
+
+-- LOGO
+
+
+viewLogo : Html Msg
+viewLogo =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Logos"
+            , Content.content []
+                [ Html.p []
+                    [ Html.text "Special-Elektroniks logo comes in either white text (for dark background) and black text (for light background)."
+                    ]
+                ]
+            , Columns.columns
+                [ Columns.defaultColumn
+                    [ styled div
+                        [ Colors.backgroundColor Colors.lightest
+                        , Css.padding (Css.pct 20)
+                        ]
+                        []
+                        [ Logo.onWhite ]
+                    , Content.content []
+                        [ Html.code []
+                            [ Html.text "SE.UI.Logo.onWhite"
+                            ]
+                        ]
+                    ]
+                , Columns.defaultColumn
+                    [ styled div
+                        [ Colors.backgroundColor Colors.darkest
+                        , Css.padding (Css.pct 20)
+                        ]
+                        []
+                        [ Logo.onBlack
+                        ]
+                    , Content.content []
+                        [ Html.code []
+                            [ Html.text "SE.UI.Logo.onBlack"
+                            ]
+                        ]
+                    ]
+                ]
             ]
         ]
 
@@ -135,9 +644,13 @@ viewTypography =
                 , Html.h6 [] [ Html.text "H6 Title - This is a H6 title 18px/23.4px (mobile: 16px/20.8px)" ]
                 , Html.p [] [ Html.text "Body Standard 18px/27px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
                 , styled Html.p [ Font.bodySizeEm -1 ] [] [ Html.text "Body Medium 16px/24px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , Html.code [] [ Html.text "styled Html.p [ Font.bodySizeEm -1 ] [] [ Html.text \"Text content\" ]" ]
                 , styled Html.p [ Font.bodySizeEm -2 ] [] [ Html.text "Body Small 14px/21px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , Html.code [] [ Html.text "styled Html.p [ Font.bodySizeEm -2 ] [] [ Html.text \"Text content\" ]" ]
                 , styled Html.p [ Font.bodySizeEm -2, Css.lineHeight (Css.num 1.28571428571) ] [] [ Html.text "Body Small less line-height 14px/18px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , Html.code [] [ Html.text "styled Html.p [ Font.bodySizeEm -2, Css.lineHeight (Css.num 1.28571428571) ] [] [ Html.text \"Text content\" ]" ]
                 , styled Html.p [ Font.bodySizeEm -3 ] [] [ Html.text "Small info text 12px/18px" ]
+                , Html.code [] [ Html.text "styled Html.p [ Font.bodySizeEm -3 ] [] [ Html.text \"Text content\" ]" ]
                 , Html.ul []
                     [ Html.li [] [ Html.text "List item 1" ]
                     , Html.li [] [ Html.text "List item 2" ]
@@ -151,8 +664,40 @@ viewTypography =
                         , Icon.angleDown Control.Small
                         ]
                     ]
+                , Html.p [] [ Html.code [] [ Html.text "styled Html.a Font.textButtonStyles [] [ Html.text \"Visa mer\" , Icon.angleDown Control.Small ]" ] ]
                 ]
             ]
+        ]
+
+
+viewColumns : ColumnsModel -> Html Msg
+viewColumns model =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Columns"
+            , Content.content
+                []
+                [ Html.p []
+                    [ Html.text "Columns description" ]
+                ]
+            , Buttons.buttons []
+                [ Buttons.button [] (Just (GotColumnsMsg AddColumn)) [ Html.text "Add column " ]
+                , Buttons.button [] (Just (GotColumnsMsg SubtractColumn)) [ Html.text "Remove column " ]
+                ]
+            , Columns.columns (List.map viewColumn (List.range 1 model.count))
+            ]
+        ]
+
+
+viewColumn index =
+    Columns.defaultColumn
+        [ styled div
+            [ Colors.backgroundColor Colors.background
+            , Css.borderRadius (Css.rem 0.5)
+            , Css.padding (Css.rem 1)
+            ]
+            []
+            [ Html.text ("Column " ++ String.fromInt index) ]
         ]
 
 
@@ -218,25 +763,9 @@ viewColorBox ( color, label ) =
         ]
 
 
-allMods : List ( Buttons.Modifier, String )
-allMods =
-    [ ( Buttons.Color Colors.Primary, "Primary" )
-    , ( Buttons.Color Colors.Link, "Link" )
-    , ( Buttons.Color Colors.Buy, "Buy" )
-    , ( Buttons.Color Colors.Bargain, "Bargin" )
-    , ( Buttons.Color Colors.Danger, "Danger" )
-    , ( Buttons.Color Colors.White, "White" )
-    , ( Buttons.Color Colors.Lightest, "Lightest" )
-    , ( Buttons.Color Colors.Lighter, "Lighter" )
-    , ( Buttons.Color Colors.Light, "Light" )
-    , ( Buttons.Color Colors.Base, "Base" )
-    , ( Buttons.Color Colors.Dark, "Dark" )
-    , ( Buttons.Color Colors.Darker, "Darker" )
-    , ( Buttons.Color Colors.Darkest, "Darkest" )
-    , ( Buttons.Color Colors.Black, "Black" )
-    , ( Buttons.Color Colors.DarkGreen, "DarkGreen" )
-    , ( Buttons.Color Colors.LightBlue, "LightBlue" )
-    , ( Buttons.Text, "Text" )
+allOtherMods : List ( Buttons.Modifier, String )
+allOtherMods =
+    [ ( Buttons.Text, "Text" )
     , ( Buttons.Size Control.Regular, "Size Control.Regular" )
     , ( Buttons.Size Control.Small, "Size Control.Small" )
     , ( Buttons.Size Control.Medium, "Size Control.Medium" )
@@ -246,20 +775,71 @@ allMods =
     ]
 
 
+allButtonColors : List ( Buttons.Modifier, String )
+allButtonColors =
+    [ ( Buttons.Color Colors.Primary, "Primary" )
+    , ( Buttons.Color Colors.Link, "Link" )
+    , ( Buttons.Color Colors.Buy, "Buy" )
+    , ( Buttons.Color Colors.Bargain, "Bargin" )
+    , ( Buttons.Color Colors.Danger, "Danger" )
+    , ( Buttons.Color Colors.DarkGreen, "DarkGreen" )
+    , ( Buttons.Color Colors.LightBlue, "LightBlue" )
+    ]
+
+
+allButtonGreys : List ( Buttons.Modifier, String )
+allButtonGreys =
+    [ ( Buttons.Color Colors.White, "White" )
+    , ( Buttons.Color Colors.Lightest, "Lightest" )
+    , ( Buttons.Color Colors.Lighter, "Lighter" )
+    , ( Buttons.Color Colors.Light, "Light" )
+    , ( Buttons.Color Colors.Base, "Base" )
+    , ( Buttons.Color Colors.Dark, "Dark" )
+    , ( Buttons.Color Colors.Darker, "Darker" )
+    , ( Buttons.Color Colors.Darkest, "Darkest" )
+    , ( Buttons.Color Colors.Black, "Black" )
+    ]
+
+
 viewButtons : ButtonModel -> Html Msg
 viewButtons model =
     Section.section []
         [ Container.container []
             [ Title.title1 "Buttons"
             , Form.field []
-                (Form.label "Modifiers"
-                    :: List.map (viewButtonModifier model.mods) allMods
-                )
+                [ Form.label "Greys"
+                , Form.control False
+                    (List.map (viewButtonModifier model.mods) allButtonGreys)
+                ]
+            , Form.field []
+                [ Form.label "Colors"
+                , Form.control False
+                    (List.map (viewButtonModifier model.mods) allButtonColors)
+                ]
+            , Form.field []
+                [ Form.label "Others"
+                , Form.control False
+                    (List.map (viewButtonModifier model.mods) allOtherMods)
+                ]
             , Buttons.buttons []
                 [ Buttons.button model.mods (Just ClickedButton) [ Html.text "Save changes" ]
                 ]
             , Html.code []
                 [ Html.text ("SE.UI.Buttons.button [ " ++ (List.map modToString model.mods |> String.join ", ") ++ " ] (Just ClickedButton) [ Html.text \"Save changes\" ]")
+                ]
+            , Title.title1 "Button Groups"
+            , Buttons.buttons [ Buttons.Attached, Buttons.Centered ]
+                [ Buttons.button [ Buttons.Color Colors.Lighter ] (Just NoOp) [ Html.text "Visa alla" ]
+                , Buttons.button [] (Just NoOp) [ Html.text "Produktnyheter" ]
+                , Buttons.button [] (Just NoOp) [ Html.text "Pressreleaser" ]
+                , Buttons.button [] (Just NoOp) [ Html.text "Om Special-Elektronik" ]
+                ]
+            , Content.content []
+                [ Html.pre []
+                    [ Html.code []
+                        [ Html.text "SE.UI.Buttons.buttons [ Buttons.Attached, Buttons.Centered ]\n    [ Buttons.button [ Buttons.Color Colors.Lighter ] (Just NoOp) [ Html.text \"Visa alla\" ]\n    , Buttons.button [] (Just NoOp) [ Html.text \"Produktnyheter\" ]\n    , Buttons.button [] (Just NoOp) [ Html.text \"Pressreleaser\" ]\n    , Buttons.button [] (Just NoOp) [ Html.text \"Om Special-Elektronik\" ]\n    ]"
+                        ]
+                    ]
                 ]
             ]
         ]
@@ -340,10 +920,8 @@ modToString mod =
 
 viewButtonModifier : List Buttons.Modifier -> ( Buttons.Modifier, String ) -> Html Msg
 viewButtonModifier activeMods ( mod, label ) =
-    Form.control False
-        [ Input.checkbox (GotButtonsMsg (ToggleModifier mod)) label (List.member mod activeMods)
-            |> Input.toHtml
-        ]
+    Input.checkbox (GotButtonsMsg (ToggledModifier mod)) label (List.member mod activeMods)
+        |> Input.toHtml
 
 
 viewSection : Html Msg
@@ -354,6 +932,19 @@ viewSection =
             , Html.p [] [ Html.text "Creates a styled section html tag in line with ", Html.a [ Attributes.href "https://bulma.io/documentation/layout/section/" ] [ Html.text "Bulmas section" ], Html.text "." ]
             , Html.code []
                 [ Html.text "section [] [ Html.text \"I'm the text inside the section!\" ]"
+                ]
+            ]
+        ]
+
+
+viewContainer : Html Msg
+viewContainer =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Container"
+            , Html.p [] [ Html.text "Bulmas container tag, but max-width is set to 1680px for all devices\nsee ", Html.a [ Attributes.href "https://bulma.io/documentation/layout/container" ] [ Html.text "https://bulma.io/documentation/layout/container" ], Html.text "." ]
+            , Html.code []
+                [ Html.text "section [] [ Html.text \"I'm the text inside the container!\" ]"
                 ]
             ]
         ]
@@ -387,8 +978,174 @@ viewForm model =
                         ]
                     ]
                 ]
+            , Title.title3 "Dropdown"
+            , Dropdown.dropdown "example-dropdown"
+                ClosedDropdown
+                model.showDropdown
+                (Dropdown.button [] (Just ToggledDropdown) [ Html.text "Dropdown menu", Icon.angleDown Control.Regular ])
+                [ Dropdown.link "https://google.com" [ Html.text "Google.com" ]
+                , Dropdown.hr
+                , Dropdown.content [ Html.text "Any content you like can go into the dropdown." ]
+                ]
             ]
         ]
+
+
+viewNotification : NotificationModel -> Html Msg
+viewNotification model =
+    let
+        fn =
+            colorToNotification model.color
+
+        maybeMsg =
+            if model.deleteable then
+                ( "Just (GotNotificationMsg Delete)", Just NoOp )
+
+            else
+                ( "Nothing", Nothing )
+    in
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Notification"
+            , Form.field []
+                [ Form.label "Modifiers"
+                , Form.control False (List.map (viewNotificationColor model.color) allNotificationColors)
+                ]
+            , Form.field []
+                [ Form.control False
+                    [ Input.checkbox (GotNotificationMsg ToggledDeleteable) "Deleteable?" model.deleteable
+                        |> Input.toHtml
+                    ]
+                ]
+            , Tuple.second fn (Tuple.second maybeMsg) [ Html.text "This is a notification with a short message." ]
+            , Html.code []
+                [ Html.text ("SE.UI.Notification." ++ Tuple.first fn ++ " " ++ Tuple.first maybeMsg ++ " [ Html.text \"This is a notification with a short message.\" ]")
+                ]
+            ]
+        ]
+
+
+viewNotificationColor : NotificationColor -> ( NotificationColor, String ) -> Html Msg
+viewNotificationColor activeColor ( color, label ) =
+    Input.radio (GotNotificationMsg (ClickedColor color)) label (activeColor == color)
+        |> Input.toHtml
+
+
+allNotificationColors : List ( NotificationColor, String )
+allNotificationColors =
+    [ ( Regular, "Regular" )
+    , ( Primary, "Primary" )
+    , ( Link, "Link" )
+    , ( Danger, "Danger" )
+    ]
+
+
+viewModal : Bool -> Html Msg
+viewModal visible =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Modal"
+            , Content.content []
+                [ Html.p [] [ Html.text "A modal to show longer information text without leave the page, an high res image or anything else." ]
+                , Buttons.button [ Buttons.Color Colors.Primary ] (Just ToggledModal) [ Html.text "Launch modal example" ]
+                , viewIf visible
+                    (Modal.modal ToggledModal
+                        [ styled Html.div
+                            [ Css.padding (Css.em 2)
+                            , Colors.backgroundColor Colors.white
+                            ]
+                            []
+                            [ Title.title5 "Detta är en info popup. T.ex. för Kem-skatt eller BID-priser"
+                            , Content.content
+                                []
+                                [ Html.p []
+                                    [ Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget."
+                                    ]
+                                , Html.p []
+                                    [ Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget."
+                                    ]
+                                ]
+                            ]
+                        ]
+                    )
+                ]
+            ]
+        ]
+
+
+viewIcons : Html Msg
+viewIcons =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Icons"
+            , Content.content []
+                [ Html.p [] [ Html.text "For now we use some of the free icons from Font Awesome, we bundle the icons we need in Elm and then inline them into the html." ]
+                , Html.p [] [ Html.text "The icons have be displayed in 4 different sizes: Regular, Small, Medium, Large" ]
+                ]
+            , styled Html.div
+                [ Css.displayFlex
+                ]
+                []
+                (List.map viewIcon allIcons)
+            , Html.code []
+                [ Html.text "Icon.angleDown Control.Large"
+                ]
+            ]
+        ]
+
+
+viewIcon : ( String, Control.Size -> Html msg ) -> Html msg
+viewIcon ( label, icon ) =
+    div [ Attributes.title label ] [ icon Control.Large ]
+
+
+allIcons : List ( String, Control.Size -> Html msg )
+allIcons =
+    [ ( "angleDown", Icon.angleDown )
+    , ( "ban", Icon.ban )
+    , ( "bargain", Icon.bargain )
+    , ( "bid", Icon.bid )
+    , ( "box", Icon.box )
+    , ( "boxes", Icon.boxes )
+    , ( "campaign", Icon.campaign )
+    , ( "cart", Icon.cart )
+    , ( "category", Icon.category )
+    , ( "clock", Icon.clock )
+    , ( "dolly", Icon.dolly )
+    , ( "ethernet", Icon.ethernet )
+    , ( "eye", Icon.eye )
+    , ( "facebook", Icon.facebook )
+    , ( "file", Icon.file )
+    , ( "history", Icon.history )
+    , ( "home", Icon.home )
+    , ( "images", Icon.images )
+    , ( "lightbulb", Icon.lightbulb )
+    , ( "linkedin", Icon.linkedin )
+    , ( "new", Icon.new )
+    , ( "notification", Icon.notification )
+    , ( "pdf", Icon.pdf )
+    , ( "phone", Icon.phone )
+    , ( "satelliteDish", Icon.satelliteDish )
+    , ( "search", Icon.search )
+    , ( "table", Icon.table )
+    , ( "th", Icon.th )
+    , ( "thLarge", Icon.thLarge )
+    , ( "thList", Icon.thList )
+    , ( "trash", Icon.trash )
+    , ( "truck", Icon.truck )
+    , ( "tv", Icon.tv )
+    , ( "user", Icon.user )
+    , ( "wifi", Icon.wifi )
+    ]
+
+
+viewIf : Bool -> Html msg -> Html msg
+viewIf predicate html =
+    if predicate then
+        html
+
+    else
+        Html.text ""
 
 
 

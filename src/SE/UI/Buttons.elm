@@ -140,6 +140,9 @@ buttonStyles mods hasIcon =
             [ Css.Transitions.backgroundColor 250
             , Css.Transitions.boxShadow 250
             ]
+        , Css.pseudoClass "not(disabled)"
+            [ Css.zIndex (Css.int 2)
+            ]
         ]
     , Css.active
         [ Colors.borderColor (Colors.border |> Colors.active)
@@ -154,16 +157,16 @@ buttonStyles mods hasIcon =
     , descendants
         [ Css.Global.selector ".icon"
             [ pseudoClass "first-child:not(:last-child)"
-                [ Css.marginLeft (calc (em -0.375) minus (px 1))
-                , Css.marginRight (em 0.1875)
+                [ --Css.marginLeft (calc (em -0.375) minus (px 1))
+                  Css.marginRight (em 0.1875)
                 ]
             , pseudoClass "last-child:not(:first-child)"
                 [ Css.marginRight (calc (em -0.375) minus (px 1))
                 , Css.marginLeft (em 0.1875)
                 ]
             , pseudoClass "first-child:last-child"
-                [ Css.marginLeft (calc (em -0.375) minus (px 1))
-                , Css.marginRight (calc (em -0.375) minus (px 1))
+                [ --Css.marginLeft (calc (em -0.375) minus (px 1))
+                  Css.marginRight (calc (em -0.375) minus (px 1))
                 ]
             ]
         ]

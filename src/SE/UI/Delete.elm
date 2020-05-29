@@ -14,8 +14,8 @@ import Css exposing (Style, absolute, active, after, before, block, deg, focus, 
 import Css.Transitions
 import Html.Styled exposing (Html, styled)
 import Html.Styled.Events exposing (onClick)
-import SE.UI.Colors exposing (white)
-import SE.UI.Utils exposing (block, unselectable)
+import SE.UI.Colors as Colors
+import SE.UI.Utils as Utils
 
 
 {-| A simple circle with a cross, no support for sizes.
@@ -31,7 +31,7 @@ delete styles msg =
 
 deleteStyles : List Style
 deleteStyles =
-    [ unselectable
+    [ Utils.unselectable
     , Css.property "-moz-appearance" "none"
     , Css.property "-webkit-appearance" "none"
     , Css.backgroundColor (rgba 34 41 47 0.2)
@@ -72,7 +72,7 @@ deleteStyles =
 
 afterAndbefore : List Style
 afterAndbefore =
-    [ Css.backgroundColor white
+    [ Colors.backgroundColor Colors.white
     , Css.property "content" "\"\""
     , Css.display Css.block
     , Css.left (pct 50)

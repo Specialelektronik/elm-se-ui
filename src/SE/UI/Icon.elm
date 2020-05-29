@@ -1,6 +1,6 @@
 module SE.UI.Icon exposing
-    ( angleDown, bargain, bid, box, boxes, campaign, cart, category, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi, tick, circle
-    , angleDownCssBackground
+    ( angleDown, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi
+    , angleDownCssBackground, tick, circle
     )
 
 {-| Creates a Bulma Icon element set.
@@ -12,7 +12,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs angleDown, bargain, bid, box, boxes, campaign, cart, category, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi
+@docs angleDown, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi
 
 
 # Css Backgrounds
@@ -156,6 +156,13 @@ angleDownCssBackground =
     "data:image/svg+xml,%3csvg viewBox='0 0 320 512' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='" ++ angleDownPath ++ "'/%3e%3c/svg%3e"
 
 
+{-| <https://fontawesome.com/icons/ban?style=solid>
+-}
+ban : Control.Size -> Html msg
+ban size =
+    internalIcon size (viewBox 512 512) [ Svg.path [ d "M256 8C119.034 8 8 119.033 8 256s111.034 248 248 248 248-111.034 248-248S392.967 8 256 8zm130.108 117.892c65.448 65.448 70 165.481 20.677 235.637L150.47 105.216c70.204-49.356 170.226-44.735 235.638 20.676zM125.892 386.108c-65.448-65.448-70-165.481-20.677-235.637L361.53 406.784c-70.203 49.356-170.226 44.736-235.638-20.676z" ] [] ]
+
+
 {-| <https://fontawesome.com/icons/piggy-bank?style=solid>
 -}
 bargain : Control.Size -> Html msg
@@ -203,6 +210,13 @@ cart size =
 category : Control.Size -> Html msg
 category size =
     internalIcon size (viewBox 640 512) [ Svg.path [ d "M128 352H32c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32zm-24-80h192v48h48v-48h192v48h48v-57.59c0-21.17-17.23-38.41-38.41-38.41H344v-64h40c17.67 0 32-14.33 32-32V32c0-17.67-14.33-32-32-32H256c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h40v64H94.41C73.23 224 56 241.23 56 262.41V320h48v-48zm264 80h-96c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32zm240 0h-96c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/clock?style=solid>
+-}
+clock : Control.Size -> Html msg
+clock size =
+    internalIcon size (viewBox 512 512) [ Svg.path [ d "M256,8C119,8,8,119,8,256S119,504,256,504,504,393,504,256,393,8,256,8Zm92.49,313h0l-20,25a16,16,0,0,1-22.49,2.5h0l-67-49.72a40,40,0,0,1-15-31.23V112a16,16,0,0,1,16-16h32a16,16,0,0,1,16,16V256l58,42.5A16,16,0,0,1,348.49,321Z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/dolly?style=solid>

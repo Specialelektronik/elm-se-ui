@@ -1,4 +1,4 @@
-module SE.UI.Notification exposing (notification, primary, link, info, success, warning, danger)
+module SE.UI.Notification exposing (notification, primary, link, danger)
 
 {-| Bulmas notification element
 see <https://bulma.io/documentation/elements/notification/>
@@ -8,14 +8,14 @@ see <https://bulma.io/documentation/elements/notification/>
 
 This module exposes one function for each color. If you supply a message it will be triggered if the user clicks the delete button. If no message is supplied, no delete button will be displayed.
 
-@docs notification, primary, link, info, success, warning, danger
+@docs notification, primary, link, danger
 
 -}
 
 import Css exposing (Style, absolute, block, currentColor, relative, rem, transparent)
 import Css.Global exposing (descendants, each, selector, typeSelector)
 import Html.Styled exposing (Html, styled, text)
-import SE.UI.Colors as Colors exposing (background, white)
+import SE.UI.Colors as Colors
 import SE.UI.Delete as Delete
 import SE.UI.Utils as Utils exposing (radius)
 
@@ -29,71 +29,32 @@ padding =
 -}
 notification : Maybe msg -> List (Html msg) -> Html msg
 notification =
-    internalNotification []
+    internalNotification Colors.background
 
 
 {-| Primary notification
 -}
 primary : Maybe msg -> List (Html msg) -> Html msg
 primary =
-    internalNotification
-        [ Css.backgroundColor Colors.primary
-        , Css.color Colors.white
-        ]
+    internalNotification Colors.primary
 
 
 {-| Link notification
 -}
 link : Maybe msg -> List (Html msg) -> Html msg
 link =
-    internalNotification
-        [ Css.backgroundColor Colors.link
-        , Css.color Colors.white
-        ]
-
-
-{-| Info notification
--}
-info : Maybe msg -> List (Html msg) -> Html msg
-info =
-    internalNotification
-        [ Css.backgroundColor Colors.info
-        , Css.color Colors.white
-        ]
-
-
-{-| Success notification
--}
-success : Maybe msg -> List (Html msg) -> Html msg
-success =
-    internalNotification
-        [ Css.backgroundColor Colors.success
-        , Css.color Colors.white
-        ]
-
-
-{-| Warning notification
--}
-warning : Maybe msg -> List (Html msg) -> Html msg
-warning =
-    internalNotification
-        [ Css.backgroundColor Colors.warning
-        , Css.color Colors.white
-        ]
+    internalNotification Colors.link
 
 
 {-| Danger notification
 -}
 danger : Maybe msg -> List (Html msg) -> Html msg
 danger =
-    internalNotification
-        [ Css.backgroundColor Colors.danger
-        , Css.color Colors.white
-        ]
+    internalNotification Colors.danger
 
 
-internalNotification : List Style -> Maybe msg -> List (Html msg) -> Html msg
-internalNotification colors maybeMsg content =
+internalNotification : Colors.Hsla -> Maybe msg -> List (Html msg) -> Html msg
+internalNotification color maybeMsg content =
     let
         button =
             Maybe.map delete maybeMsg
@@ -101,7 +62,8 @@ internalNotification colors maybeMsg content =
     in
     styled Html.Styled.div
         [ Utils.block
-        , Css.backgroundColor background
+        , Colors.backgroundColor color
+        , Colors.color (color |> Colors.invert)
         , Css.borderRadius radius
         , padding
         , Css.position relative
@@ -110,13 +72,12 @@ internalNotification colors maybeMsg content =
                 [ Css.color currentColor
                 ]
             , each [ typeSelector "code", typeSelector "pre" ]
-                [ Css.backgroundColor white
+                [ Colors.backgroundColor Colors.white
                 ]
             , selector "pre code"
                 [ Css.backgroundColor transparent
                 ]
             ]
-        , Css.batch colors
         ]
         []
         (button :: content)

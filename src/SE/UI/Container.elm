@@ -1,6 +1,6 @@
 module SE.UI.Container exposing (container, Modifier(..))
 
-{-| Bulmas container tag
+{-| Bulmas container tag, but max-width is set to 1680px for all devices
 see <https://bulma.io/documentation/layout/container/>
 
 

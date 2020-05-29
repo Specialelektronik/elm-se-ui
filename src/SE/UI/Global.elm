@@ -315,7 +315,7 @@ inlineAndBlock =
                 , Css.Global.descendants
                     [ Css.Global.code
                         [ Css.backgroundColor Css.transparent
-                        , Css.color Css.currentColor
+                        , Colors.color Colors.danger
                         , Font.bodySizeEm 1
                         , Css.padding Css.zero
                         ]

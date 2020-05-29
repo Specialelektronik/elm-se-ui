@@ -39,20 +39,7 @@ import SE.UI.Utils exposing (radius)
 type
     TagModifier
     -- Colors
-    = Primary
-    | Link
-    | Info
-    | Success
-    | Warning
-    | Danger
-    | White
-    | Lightest
-    | Lighter
-    | Light
-    | Dark
-    | Darker
-    | Darkest
-    | Black
+    = Color Colors.Color
       -- Sizes
     | Normal
     | Medium
@@ -105,74 +92,9 @@ tagModifier : TagModifier -> Style
 tagModifier m =
     Css.batch
         (case m of
-            Primary ->
-                [ Css.backgroundColor Colors.primary
-                , Css.color Colors.white
-                ]
-
-            Link ->
-                [ Css.backgroundColor Colors.link
-                , Css.color Colors.white
-                ]
-
-            Info ->
-                [ Css.backgroundColor Colors.info
-                , Css.color Colors.white
-                ]
-
-            Success ->
-                [ Css.backgroundColor Colors.success
-                , Css.color Colors.white
-                ]
-
-            Warning ->
-                [ Css.backgroundColor Colors.warning
-                , Css.color Colors.black
-                ]
-
-            Danger ->
-                [ Css.backgroundColor Colors.danger
-                , Css.color Colors.white
-                ]
-
-            White ->
-                [ Css.backgroundColor Colors.white
-                , Css.color Colors.black
-                ]
-
-            Lightest ->
-                [ Css.backgroundColor Colors.lightest
-                , Css.color Colors.black
-                ]
-
-            Lighter ->
-                [ Css.backgroundColor Colors.lighter
-                , Css.color Colors.black
-                ]
-
-            Light ->
-                [ Css.backgroundColor Colors.light
-                , Css.color Colors.black
-                ]
-
-            Dark ->
-                [ Css.backgroundColor Colors.dark
-                , Css.color Colors.white
-                ]
-
-            Darker ->
-                [ Css.backgroundColor Colors.darker
-                , Css.color Colors.white
-                ]
-
-            Darkest ->
-                [ Css.backgroundColor Colors.darkest
-                , Css.color Colors.white
-                ]
-
-            Black ->
-                [ Css.backgroundColor Colors.black
-                , Css.color Colors.white
+            Color color ->
+                [ Colors.backgroundColor (color |> Colors.toHsla)
+                , Colors.color (color |> Colors.toHsla |> Colors.invert)
                 ]
 
             -- Sizes
@@ -221,9 +143,9 @@ tagStyle : Style
 tagStyle =
     Css.batch
         [ Css.alignItems center
-        , Css.backgroundColor Colors.background
+        , Colors.backgroundColor Colors.background
         , Css.borderRadius radius
-        , Css.color Colors.text
+        , Colors.color Colors.text
         , Css.display inlineFlex
         , Css.fontSize (rem 0.75)
         , Css.height (em 2)
@@ -277,13 +199,13 @@ deleteTagStyle =
             , Css.width (px 1)
             ]
         , hover
-            [ Css.backgroundColor Colors.backgroundHover
+            [ Colors.backgroundColor (Colors.background |> Colors.hover)
             ]
         , focus
-            [ Css.backgroundColor Colors.backgroundHover
+            [ Colors.backgroundColor (Colors.background |> Colors.hover)
             ]
         , active
-            [ Css.backgroundColor Colors.backgroundActive
+            [ Colors.backgroundColor (Colors.background |> Colors.active)
             ]
         ]
 

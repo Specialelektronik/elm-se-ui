@@ -85,9 +85,7 @@ dropdown id closeMsg isOpen btn items =
     styled Html.Styled.div
         dropdownStyles
         outerClickAttributes
-        [ Html.Styled.div []
-            [ buttonToHtml btn
-            ]
+        [ buttonToHtml btn
         , styled Html.Styled.div
             (menuStyles isOpen)
             []
@@ -184,7 +182,7 @@ menuStyles isOpen =
 
 contentStyles : List Style
 contentStyles =
-    [ Css.backgroundColor Colors.white
+    [ Colors.backgroundColor Colors.white
     , Css.borderRadius radius
     , dropdownContentShadow
     , Css.paddingBottom (rem 0.5)
@@ -194,7 +192,7 @@ contentStyles =
 
 itemStyles : List Style
 itemStyles =
-    [ Css.color Colors.darker
+    [ Colors.color Colors.text
     , Css.display block
     , Css.fontSize (rem 0.875)
     , Css.lineHeight (num 1.5)
@@ -210,15 +208,15 @@ linkStyles =
     , Css.whiteSpace noWrap
     , Css.width (pct 100)
     , hover
-        [ Css.backgroundColor Colors.background
-        , Css.color Colors.black
+        [ Colors.backgroundColor Colors.background
+        , Colors.color Colors.black
         ]
     ]
 
 
 hrStyles : List Style
 hrStyles =
-    [ Css.backgroundColor Colors.border
+    [ Colors.backgroundColor Colors.border
     , Css.borderStyle none
     , Css.display block
     , Css.height (px 1)
