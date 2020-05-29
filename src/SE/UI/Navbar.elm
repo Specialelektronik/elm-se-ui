@@ -7,7 +7,7 @@ import Css exposing (Style, center, displayFlex, hex, int, ms, none, relative, r
 import Css.Animations exposing (Keyframes, keyframes)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes exposing (href)
-import SE.UI.Colors exposing (black, lightest, linkHover, primary, white)
+import SE.UI.Colors as Colors
 import SE.UI.Utils exposing (desktop)
 
 
@@ -55,10 +55,10 @@ navbarItem =
     , Css.padding2 (rem 0.5) (rem 0.75)
     , Css.position relative
     , Css.alignItems center
-    , Css.color black
+    , Colors.color Colors.black
     , Css.hover
-        [ Css.color linkHover
-        , Css.backgroundColor lightest
+        [ Colors.color Colors.primary
+        , Colors.backgroundColor Colors.background
         ]
     ]
 
@@ -118,7 +118,7 @@ navbarMenu links =
 navbar : Brand msg -> List Link -> Html msg
 navbar b links =
     styled Html.Styled.nav
-        [ Css.backgroundColor white
+        [ Colors.backgroundColor Colors.white
         , Css.minHeight navbarHeight
         , Css.position relative
         , Css.zIndex (int 30)
@@ -149,12 +149,11 @@ led : Bool -> Html msg
 led lit =
     let
         color =
-            case lit of
-                True ->
-                    ledOnColor
+            if lit then
+                ledOnColor
 
-                False ->
-                    Css.backgroundColor primary
+            else
+                Colors.backgroundColor Colors.primary
     in
     styled Html.Styled.hr
         [ Css.margin zero
