@@ -18,6 +18,7 @@ import Html.Styled exposing (Html, styled)
 -}
 type Modifier
     = Fluid
+    | Small
 
 
 {-| A simple container to center your content horizontally
@@ -33,7 +34,7 @@ container modifiers =
         [ Css.margin2 zero auto
         , Css.position relative
         , Css.width (Css.pct 100)
-        , Css.maxWidth (Css.px 1680)
+        , Css.maxWidth (Css.calc (Css.px 1920) Css.minus (Css.rem (2 * 2.66666667)))
         , modStyle
         ]
         []
@@ -46,4 +47,10 @@ modifier m =
             Css.batch
                 [ Css.maxWidth none
                 , Css.width auto
+                ]
+
+        Small ->
+            Css.batch
+                [ -- Css.maxWidth (Css.calc (Css.px 1920) Css.minus (Css.rem (2 * 2.66666667)))
+                  Css.maxWidth (Css.px 1208)
                 ]
