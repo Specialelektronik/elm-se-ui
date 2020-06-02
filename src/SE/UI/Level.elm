@@ -16,7 +16,7 @@ This module is divided levels and items.
 
 # Item
 
-@docs item
+@docs Item, item
 
 -}
 
