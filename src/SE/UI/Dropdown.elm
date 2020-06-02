@@ -1,7 +1,7 @@
 module SE.UI.Dropdown exposing
     ( dropdown
-    , button
-    , link, content, hr
+    , button, customButton
+    , Item, link, content, hr
     )
 
 {-| Bulmas Dropdown component
@@ -24,18 +24,18 @@ The Elm Arcitecture makes it a little difficult to listen to clicks on the entir
 
 # Button
 
-@docs button
+@docs button, customButton
 
 
 # Content
 
-@docs link, content, hr
+@docs Item, link, content, hr
 
 -}
 
 import Css exposing (Style, absolute, block, focus, hover, inlineFlex, int, left, noWrap, none, num, pct, px, relative, rem, top, zero)
-import Html.Styled exposing (Html, styled)
-import Html.Styled.Attributes
+import Html.Styled as Html exposing (Html, styled)
+import Html.Styled.Attributes as Attributes
 import SE.UI.Buttons as Buttons exposing (button)
 import SE.UI.Colors as Colors exposing (black, darker, link, white)
 import SE.UI.OuterClick exposing (withId)
@@ -54,6 +54,7 @@ type Item msg
 
 type Button msg
     = Button (List Buttons.Modifier) (Maybe msg) (List (Html msg))
+    | CustomButton (Html msg)
 
 
 dropdownContentOffset : Css.Px
@@ -82,14 +83,14 @@ dropdown id closeMsg isOpen btn items =
         outerClickAttributes =
             withId id closeMsg
     in
-    styled Html.Styled.div
+    styled Html.div
         dropdownStyles
-        outerClickAttributes
+        (Attributes.class "dropdown" :: outerClickAttributes)
         [ buttonToHtml btn
-        , styled Html.Styled.div
+        , styled Html.div
             (menuStyles isOpen)
             []
-            [ styled Html.Styled.div
+            [ styled Html.div
                 contentStyles
                 []
                 (List.map itemToHtml items)
@@ -103,6 +104,11 @@ see the button component for more documentation on the modifiers
 button : List Buttons.Modifier -> Maybe msg -> List (Html msg) -> Button msg
 button =
     Button
+
+
+customButton : Html msg -> Button msg
+customButton =
+    CustomButton
 
 
 {-| Renders a dropdown item
@@ -130,18 +136,23 @@ itemToHtml : Item msg -> Html msg
 itemToHtml item =
     case item of
         Link url html ->
-            styled Html.Styled.a (itemStyles ++ linkStyles) [ Html.Styled.Attributes.href url ] html
+            styled Html.a (itemStyles ++ linkStyles) [ Attributes.href url ] html
 
         Content html ->
-            styled Html.Styled.div itemStyles [] html
+            styled Html.div itemStyles [] html
 
         Hr ->
-            styled Html.Styled.hr hrStyles [] []
+            styled Html.hr hrStyles [] []
 
 
 buttonToHtml : Button msg -> Html msg
-buttonToHtml (Button modifiers onPress html) =
-    Buttons.button modifiers onPress html
+buttonToHtml btn =
+    case btn of
+        Button modifiers onPress html ->
+            Buttons.button modifiers onPress html
+
+        CustomButton html ->
+            html
 
 
 
