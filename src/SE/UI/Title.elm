@@ -21,7 +21,7 @@ internalTitle tag style content =
         ([ block
          , Css.property "word-break" "break-word"
          , Css.lineHeight (num 1.3)
-         , Css.fontWeight (int 600)
+         , Css.fontWeight (int 700)
          ]
             ++ style
         )
