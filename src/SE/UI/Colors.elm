@@ -227,7 +227,7 @@ link =
 -}
 buy : Hsla
 buy =
-    Hsla 41 0.7 0.42 1
+    Hsla 41 0.7 0.52 1
 
 
 {-| #ff69b4 Hot pink
