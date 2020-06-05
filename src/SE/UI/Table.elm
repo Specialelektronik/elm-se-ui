@@ -100,10 +100,10 @@ wrapper mods t =
 tableStyles : List Style
 tableStyles =
     [ block
-    , Css.color Colors.darker
+    , Colors.color Colors.darker
     , descendants
         [ each [ typeSelector "td", typeSelector "th" ]
-            [ Css.border3 (px 1) solid Colors.light
+            [ Css.border3 (px 1) solid (Colors.light |> Colors.toCss)
             , Css.borderWidth3 zero zero (px 1)
             , Css.padding2 (em 0.5) (em 0.75)
             , Css.verticalAlign top
@@ -113,11 +113,11 @@ tableStyles =
             ]
         , selector "thead th"
             [ Css.borderWidth3 zero zero (px 2)
-            , Css.color Colors.darkest
+            , Colors.color Colors.darkest
             ]
         , selector "tfoot td"
             [ Css.borderWidth3 (px 2) zero zero
-            , Css.color Colors.darkest
+            , Colors.color Colors.darkest
             ]
         , selector "tbody tr:last-child td"
             [ Css.borderBottomWidth zero
@@ -154,13 +154,12 @@ tableModifierStyle allMods mod =
         Hoverable ->
             Css.batch
                 [ descendants
-                    ([ selector "tbody tr:not([selected]):hover"
-                        [ Css.backgroundColor Colors.lighter
+                    (selector "tbody tr:not([selected]):hover"
+                        [ Colors.backgroundColor Colors.lighter
                         ]
-                     ]
-                        ++ (if List.member Striped allMods then
+                        :: (if List.member Striped allMods then
                                 [ selector "tbody tr:not([selected]):hover:nth-child(even)"
-                                    [ Css.backgroundColor Colors.light
+                                    [ Colors.backgroundColor Colors.light
                                     ]
                                 ]
 
@@ -186,20 +185,20 @@ tableModifierStyle allMods mod =
             Css.batch
                 [ descendants
                     [ selector "tbody tr:not([selected]):nth-child(even)"
-                        [ Css.backgroundColor Colors.lighter
+                        [ Colors.backgroundColor Colors.lighter
                         ]
                     ]
                 ]
 
         White ->
             Css.batch
-                [ Css.color Colors.lighter
+                [ Colors.color Colors.lighter
                 , descendants
                     [ selector "thead th"
-                        [ Css.color Colors.lightest
+                        [ Colors.color Colors.lightest
                         ]
                     , selector "tfoot td"
-                        [ Css.color Colors.lightest
+                        [ Colors.color Colors.lightest
                         ]
                     ]
                 ]

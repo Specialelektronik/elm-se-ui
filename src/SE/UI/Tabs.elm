@@ -85,7 +85,7 @@ navModifier mod =
 ulStyles : List Style
 ulStyles =
     [ Css.alignItems center
-    , Css.borderBottomColor Colors.border
+    , Css.borderBottomColor (Colors.border |> Colors.toCss)
     , Css.borderBottomStyle solid
     , Css.borderBottomWidth (px 1)
     , Css.displayFlex
@@ -131,23 +131,23 @@ liStyles isActive =
 aStyles : IsActive -> List Style
 aStyles isActive =
     [ Css.alignItems center
-    , Css.borderBottomColor Colors.border
+    , Css.borderBottomColor (Colors.border |> Colors.toCss)
     , Css.borderBottomStyle solid
     , Css.borderBottomWidth (px 1)
-    , Css.color Colors.text
+    , Colors.color Colors.text
     , Css.displayFlex
     , Css.justifyContent center
     , Css.marginBottom (px -1)
     , Css.padding2 (em 0.5) (em 1)
     , Css.verticalAlign top
     , hover
-        [ Css.color Colors.linkHover
-        , Css.borderBottomColor Colors.linkHover
+        [ Colors.color (Colors.border |> Colors.hover)
+        , Css.borderBottomColor (Colors.border |> Colors.hover |> Colors.toCss)
         ]
     , if isActive then
         Css.batch
-            [ Css.borderBottomColor Colors.link
-            , Css.color Colors.link
+            [ Css.borderBottomColor (Colors.link |> Colors.hover |> Colors.toCss)
+            , Colors.color Colors.link
             ]
 
       else

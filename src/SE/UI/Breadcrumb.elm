@@ -104,10 +104,8 @@ liStyles =
     , adjacentSiblings
         [ typeSelector "li"
             [ Css.before
-                [ Css.color Colors.light
-                , Css.property
-                    "content"
-                    "\"/\""
+                [ Colors.color Colors.light
+                , Css.property "content" "\"/\""
                 ]
             ]
         ]
@@ -117,16 +115,16 @@ liStyles =
 aStyles : IsActive -> List Style
 aStyles isActive =
     [ Css.alignItems center
-    , Css.color Colors.link
+    , Colors.color Colors.link
     , Css.displayFlex
     , Css.justifyContent center
     , Css.padding2 zero (em 0.75)
     , hover
-        [ Css.color Colors.linkHover
+        [ Colors.color (Colors.link |> Colors.hover)
         ]
     , if isActive then
         Css.batch
-            [ Css.color Colors.darkest
+            [ Colors.color Colors.darkest
             , Css.cursor
                 default
             , Css.pointerEvents

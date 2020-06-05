@@ -108,7 +108,8 @@ lists =
 form : Css.Global.Snippet
 form =
     Css.Global.each
-        [ Css.Global.button
+        [ Css.Global.form
+        , Css.Global.button
         , Css.Global.input
         , Css.Global.select
         , Css.Global.textarea
