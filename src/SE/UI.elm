@@ -21,6 +21,7 @@ import SE.UI.Global as Global
 import SE.UI.Icon as Icon
 import SE.UI.Logo as Logo
 import SE.UI.Modal as Modal
+import SE.UI.Navbar as Navbar
 import SE.UI.Notification as Notification
 import SE.UI.Section as Section
 import SE.UI.Title as Title
@@ -39,7 +40,8 @@ type alias Model =
     , input : String
     , showModal : Bool
     , showDropdown : Bool
-    , menuOpen : Bool
+    , navbar : Navbar.Model
+    , isOpen : Bool
     , showMenuDropdown : Bool
     }
 
@@ -92,7 +94,8 @@ initialModel =
     , input = ""
     , showModal = False
     , showDropdown = False
-    , menuOpen = False
+    , navbar = Navbar.defaultModel
+    , isOpen = False
     , showMenuDropdown = False
     }
 
@@ -127,12 +130,11 @@ type Msg
     | GotButtonsMsg ButtonMsg
     | GotNotificationMsg NotificationMsg
     | GotColumnsMsg ColumnsMsg
+    | GotNavbarMsg Navbar.Msg
+    | ToggledMenu
     | ToggledModal
     | ToggledDropdown
     | ClosedDropdown
-    | ToggledMenu
-    | ToggledMenuDropdown
-    | ClosedMenuDropdown
 
 
 type ButtonMsg
@@ -170,23 +172,20 @@ update msg model =
         GotColumnsMsg subMsg ->
             { model | columns = updateColumns subMsg model.columns }
 
+        GotNavbarMsg subMsg ->
+            { model | navbar = Navbar.update subMsg model.navbar }
+
         ToggledModal ->
             { model | showModal = not model.showModal }
 
         ToggledDropdown ->
             { model | showDropdown = not model.showDropdown }
 
+        ToggledMenu ->
+            { model | isOpen = not model.isOpen }
+
         ClosedDropdown ->
             { model | showDropdown = False }
-
-        ToggledMenu ->
-            { model | menuOpen = not model.menuOpen }
-
-        ToggledMenuDropdown ->
-            { model | showMenuDropdown = not model.showMenuDropdown }
-
-        ClosedMenuDropdown ->
-            { model | showMenuDropdown = False }
 
 
 updateButton : ButtonMsg -> ButtonModel -> ButtonModel
@@ -228,12 +227,81 @@ updateColumns msg model =
 -- VIEW
 
 
+navbarConfig : Navbar.Config Msg
+navbarConfig =
+    { transform = GotNavbarMsg
+    , ribbon =
+        [ { href = Attributes.href "/"
+          , label = "Tjänster"
+          , icon = Nothing
+          }
+        , { href = Attributes.href "/"
+          , label = "Om oss"
+          , icon = Nothing
+          }
+        , { href = Attributes.href "/"
+          , label = "Branscher"
+          , icon = Nothing
+          }
+        , { href = Attributes.href "/"
+          , label = "Kontakt"
+          , icon = Nothing
+          }
+        , { href = Attributes.href "/"
+          , label = "Event"
+          , icon = Nothing
+          }
+        ]
+    , mainNav =
+        [ Navbar.LinkItem
+            { href = Attributes.href "/"
+            , label = "Webbshop"
+            , icon = Nothing
+            }
+        , Navbar.DropdownItem
+            { label = "Tjänster"
+            , items = [ Dropdown.link "https://google.com" [ Html.text "Google.com" ] ]
+            }
+        , Navbar.DropdownItem
+            { label = "Om oss"
+            , items = [ Dropdown.link "https://google.com" [ Html.text "Google.com" ] ]
+            }
+        , Navbar.CustomItem
+            [ viewLoginIcon ]
+        , Navbar.CustomItem
+            [ viewCartIcon ]
+        , Navbar.CustomItem
+            [ viewContactAndOpeningHours ]
+        ]
+    , megaNav =
+        [ { label = "AV-Teknik"
+          , href = Attributes.href "/av-teknik"
+          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          }
+        ]
+    , socialMedia =
+        [ { url = "https://facebook.com/specialelektronik"
+          , icon = Icon.facebook
+          }
+        , { url = "https://instagram.com/specialelektronik"
+          , icon = Icon.instagram
+          }
+        , { url = "https://www.linkedin.com/company/specialelektronik-ab"
+          , icon = Icon.linkedin
+          }
+        , { url = "https://www.youtube.com/channel/UC-dTyW9181xms8TpxXHF7oQ"
+          , icon = Icon.youtube
+          }
+        ]
+    }
+
+
 view : Model -> Html Msg
 view model =
     div
         []
         [ Global.global
-        , viewNav model.menuOpen model.showMenuDropdown
+        , Navbar.view navbarConfig search model.navbar
         , Html.article []
             [ viewLogo
             , viewColors
@@ -247,275 +315,128 @@ view model =
             , viewModal model.showModal
             , viewIcons
             ]
+        , Navbar.backdrop navbarConfig model.navbar
         ]
 
 
-viewNav : Bool -> Bool -> Html Msg
-viewNav menuOpen dropdownOpen =
-    styled Html.header
-        headerStyles
-        []
-        [ styled Html.nav ribbonStyles [] [ Container.container [] [ Html.text "Ribbon" ] ]
-        , Container.container []
-            [ styled Html.nav
-                navbarStyles
-                []
-                [ brand menuOpen
-                , menu
-                    [ search
-                    , link "Webbshop" "/webbshop"
-                    , Dropdown.dropdown "services"
-                        ClosedMenuDropdown
-                        dropdownOpen
-                        (Dropdown.button [] (Just ToggledMenuDropdown) [ Html.text "Tjänster", Icon.angleDown Control.Regular ])
-                        [ Dropdown.link "https://google.com" [ Html.text "Google.com" ]
-                        ]
-                    ]
-                    [--item viewOpeningHours
-                     -- , item (viewUser maybeUser)
-                     -- , item viewDocuments
-                     -- , cartOrLoginItem
-                    ]
-                ]
-            ]
-        ]
-
-
-brand : Bool -> Html Msg
-brand menuOpen =
-    styled div
-        brandStyles
-        []
-        [ styled Html.a
-            itemAndLinkStyles
-            [ Attributes.href "/" ]
-            [ Logo.onWhite
-            ]
-        , mobileMenu menuOpen
-        ]
-
-
-brandStyles : List Style
-brandStyles =
-    [ Css.alignItems Css.stretch
-    , Css.displayFlex
-    , Css.flexShrink Css.zero
-    , Css.minHeight (Css.px 60)
-    ]
-
-
-menu : List (Html msg) -> List (Html msg) -> Html msg
-menu startItems endItems =
-    styled div
-        menuStyles
-        [ Attributes.class "menu" ]
-        [ styled div startStyles [ Attributes.class "start" ] startItems
-        , styled div endStyles [ Attributes.class "end" ] endItems
-        ]
-
-
-menuStyles : List Style
-menuStyles =
-    [ Css.display Css.none
-    , Utils.desktop
-        [ Css.alignItems Css.stretch
+viewLoginIcon : Html Msg
+viewLoginIcon =
+    styled Html.a
+        [ Colors.color Colors.text
         , Css.displayFlex
-        , Css.flexGrow (Css.int 1)
-        , Css.flexShrink Css.zero
-        ]
-    ]
-
-
-item : List (Html msg) -> Html msg
-item =
-    styled div (itemAndLinkStyles ++ itemStyles) []
-
-
-link : String -> String -> Html msg
-link label url =
-    styled Html.a (itemAndLinkStyles ++ linkStyles) [ Attributes.href url ] [ Html.text label ]
-
-
-startStyles : List Style
-startStyles =
-    [ Utils.desktop
-        [ Css.alignItems Css.stretch
-        , Css.displayFlex
-        , Css.justifyContent Css.flexStart
-        , Css.marginRight Css.auto
-        , Css.flexGrow (Css.int 1)
-        ]
-    ]
-
-
-endStyles : List Style
-endStyles =
-    [ Utils.desktop
-        [ Css.alignItems Css.stretch
-        , Css.displayFlex
-        , Css.justifyContent Css.flexEnd
-        , Css.marginLeft Css.auto
-        ]
-    ]
-
-
-headerStyles : List Style
-headerStyles =
-    [ Css.position Css.fixed
-    , Css.top Css.zero
-    , Css.left Css.zero
-    , Css.right Css.zero
-    , Css.zIndex (Css.int 9999)
-    , Colors.backgroundColor Colors.white
-    , Css.boxShadow4 Css.zero (Css.px 2) (Css.px 10) (Colors.black |> Colors.mapAlpha (always 0.08) |> Colors.toCss)
-
-    -- 0px 2px 10px rgba(0, 0, 0, 0.08)
-    ]
-
-
-ribbonStyles : List Style
-ribbonStyles =
-    [ Css.display Css.none ]
-
-
-navbarStyles : List Style
-navbarStyles =
-    [ Css.minHeight (Css.px 60)
-    , Css.position Css.relative
-    , Css.zIndex (Css.int 30)
-    , Utils.desktop
-        [ Css.alignItems Css.stretch
-        , Css.displayFlex
-        ]
-    ]
-
-
-itemAndLinkStyles : List Style
-itemAndLinkStyles =
-    [ Colors.color Colors.text
-    , Css.displayFlex
-    , Css.alignItems Css.center
-    , Css.lineHeight (Css.num 1.5)
-    , Css.padding2 (Css.px 10) (Css.px 10)
-    , Css.position Css.relative
-    , Css.Global.descendants
-        [ Css.Global.selector ".icon:only-child"
-            [ Css.marginLeft (Css.rem -0.25)
-            , Css.marginRight (Css.rem -0.25)
-            ]
-        , Css.Global.typeSelector "svg"
-            [ Css.height (Css.px 40)
-            ]
-        ]
-    ]
-
-
-itemStyles : List Style
-itemStyles =
-    [ Css.flexGrow Css.zero
-    , Css.flexShrink Css.zero
-    ]
-
-
-linkStyles : List Style
-linkStyles =
-    [ Css.cursor Css.pointer
-    , Css.textTransform Css.uppercase
-    , Css.fontWeight Css.bold
-    , Colors.color Colors.text
-    , Css.letterSpacing (Css.px 1)
-    , Css.focus
-        [ Colors.backgroundColor Colors.background
-        , Colors.color Colors.primary
-        ]
-    , Css.pseudoClass "focus-within"
-        [ Colors.backgroundColor Colors.background
-        , Colors.color Colors.primary
-        ]
-    , Css.hover
-        [ Colors.backgroundColor Colors.background
-        , Colors.color Colors.primary
-        ]
-    ]
-
-
-mobileMenu : Bool -> Html Msg
-mobileMenu menuOpen =
-    styled div
-        [ Utils.desktop
-            [ Css.display Css.none
-            ]
-        , Css.marginLeft Css.auto
-        ]
-        []
-        [ navbarBurger menuOpen ]
-
-
-navbarBurger : Bool -> Html Msg
-navbarBurger menuOpen =
-    styled Html.label
-        [ Colors.color Colors.white
-        , Colors.backgroundColor Colors.darker
-        , Css.cursor Css.pointer
-        , Css.display Css.block
-        , Css.height (Css.px 60)
-        , Css.position Css.relative
-        , Css.width (Css.px 60)
+        , Css.flexDirection Css.column
+        , Css.alignItems Css.center
         , Css.hover
-            [ Colors.backgroundColor (Colors.darker |> Colors.hover)
+            [ Colors.color Colors.primary
             ]
-        , Css.Global.descendants
-            [ Css.Global.typeSelector "span"
-                [ Css.backgroundColor Css.currentColor
-                , Css.display Css.block
-                , Css.height (Css.px 2)
-                , Css.left (Css.calc (Css.pct 50) Css.minus (Css.px 12))
-                , Css.position Css.absolute
-                , Css.Transitions.transition
-                    [ Css.Transitions.backgroundColor3 86 0 Css.Transitions.easeOut
-                    , Css.Transitions.opacity3 86 0 Css.Transitions.easeOut
-                    , Css.Transitions.transform3 86 0 Css.Transitions.easeOut
-                    ]
-                , Css.width (Css.px 24)
-                , Css.nthChild "1"
-                    [ Css.top (Css.calc (Css.pct 50) Css.minus (Css.px 8))
-                    ]
-                , Css.nthChild "2"
-                    [ Css.top (Css.calc (Css.pct 50) Css.minus (Css.px 1))
-                    ]
-                , Css.nthChild "3"
-                    [ Css.top (Css.calc (Css.pct 50) Css.plus (Css.px 6))
-                    ]
-                , Css.batch
-                    (if menuOpen then
-                        [ Css.nthChild "1"
-                            [ Css.transforms [ Css.translateY (Css.px 7), Css.rotate (Css.deg 45) ]
-                            ]
-                        , Css.nthChild "2"
-                            [ Css.opacity Css.zero
-                            ]
-                        , Css.nthChild "3"
-                            [ Css.transforms [ Css.translateY (Css.px -7), Css.rotate (Css.deg -45) ]
-                            ]
-                        ]
+        ]
+        [ Attributes.href "/login" ]
+        [ Icon.user Control.Medium
+        , styled Html.span
+            [ Colors.color Colors.base
+            , Font.bodySizeRem -3
+            ]
+            []
+            [ Html.text "Logga in"
+            ]
+        ]
 
-                     else
-                        []
-                    )
+
+viewCartIcon : Html Msg
+viewCartIcon =
+    styled Html.a
+        [ Colors.color Colors.text
+        , Css.displayFlex
+        , Css.flexDirection Css.column
+        , Css.alignItems Css.center
+        , Css.hover
+            [ Colors.color Colors.primary
+            ]
+        , Css.Global.withAttribute "data-badge"
+            [ Css.after
+                [ Colors.backgroundColor Colors.primary
+                , Colors.color Colors.white
+                , Css.borderRadius (Css.pct 50)
+                , Css.position Css.absolute
+                , Css.top Css.zero
+                , Css.right Css.zero
+                , Css.bottom Css.auto
+                , Css.left Css.auto
+                , Css.minWidth (Css.em 2)
+                , Css.minHeight (Css.em 2)
+                , Css.textAlign Css.center
+                , Css.lineHeight (Css.num 1)
+                , Css.padding2 (Css.em 0.5) (Css.em 0.5)
+                , Font.bodySizeEm -4
+                , Css.property "content" "attr(data-badge)"
+                , Css.boxShadow5 Css.zero Css.zero Css.zero (Css.px 2) (Colors.white |> Colors.toCss)
+                , Css.transform (Css.translate2 (Css.pct -25) (Css.pct 25))
                 ]
             ]
         ]
-        [ Attributes.for "menu", Attributes.attribute "role" "button", Attributes.attribute "aria-label" "menu", Events.onClick ToggledMenu ]
-        [ Html.span [ Attributes.attribute "aria-hidden" "true" ] []
-        , Html.span [ Attributes.attribute "aria-hidden" "true" ] []
-        , Html.span [ Attributes.attribute "aria-hidden" "true" ] []
+        [ Attributes.href "/cart", Attributes.attribute "data-badge" "33" ]
+        [ Icon.cart Control.Medium
+        , styled Html.span
+            [ Colors.color Colors.base
+            , Font.bodySizeRem -3
+            ]
+            []
+            [ Html.text "Varukorg"
+            ]
         ]
 
 
-search : Html Msg
-search =
+viewContactAndOpeningHours : Html Msg
+viewContactAndOpeningHours =
+    styled Html.div
+        [ Css.displayFlex
+        , Font.bodySizeRem -3
+        , Css.alignItems Css.center
+        , Css.borderStyle Css.solid
+        , Css.borderWidth (Css.px 1)
+        , Colors.borderColor Colors.border
+        , Css.padding (Css.em 0.75)
+        , Css.borderRadius Utils.radius
+        ]
+        []
+        [ Icon.phone Control.Regular
+        , styled Html.p
+            [ Css.paddingLeft (Css.em 0.75)
+            ]
+            []
+            [ Html.strong [] [ Html.text "Prata med säljare?" ]
+            , Html.br [] []
+            , Html.a [ Attributes.href "tel:+46544442030" ] [ Html.text "054 - 444 2030" ]
+            ]
+        , styled Html.p
+            [ Css.paddingLeft (Css.em 0.75)
+            , Css.marginLeft (Css.em 0.75)
+            , Css.borderStyle Css.solid
+            , Colors.borderColor Colors.border
+            , Css.borderWidth Css.zero
+            , Css.borderLeftWidth (Css.px 1)
+            ]
+            []
+            [ Html.strong [] [ Html.text "Öppet idag:" ]
+            , Html.br [] []
+            , styled Html.span [ Colors.color Colors.base ] [] [ Html.text "08:00-17:00" ]
+            ]
+        ]
+
+
+
+-- item : List (Html msg) -> Html msg
+-- item =
+--     styled div (itemAndLinkStyles ++ itemStyles) []
+-- link : String -> String -> Html msg
+-- link label url =
+--     styled Html.a (itemAndLinkStyles ++ linkStyles) [ Attributes.href url ] [ Html.text label ]
+
+
+search : List Style -> Html Msg
+search styles =
     styled Html.form
-        (itemAndLinkStyles ++ [ Css.display Css.block, Css.flexGrow (Css.num 1) ])
+        (styles ++ [ Css.display Css.block, Css.flexGrow (Css.num 1) ])
         []
         [ Form.field [ Form.Attached ]
             [ Form.expandedControl False
@@ -548,6 +469,9 @@ search =
 searchStyles : List Style
 searchStyles =
     [ Css.batch (Input.inputStyle [])
+    , Utils.mobile
+        [ Css.property "padding" "calc(0.75em - 1px) calc(1em - 1px)"
+        ]
 
     -- , Colors.backgroundColor Colors.lighter
     -- , Colors.color Colors.darker
@@ -665,6 +589,36 @@ viewTypography =
                         ]
                     ]
                 , Html.p [] [ Html.code [] [ Html.text "styled Html.a Font.textButtonStyles [] [ Html.text \"Visa mer\" , Icon.angleDown Control.Small ]" ] ]
+                ]
+            ]
+        , Container.container [ Container.Small ]
+            [ Content.content
+                []
+                [ Html.p []
+                    [ Html.text "We support the same "
+                    , Html.code [] [ Html.text "content" ]
+                    , Html.text " as Bulma. Use it wherever you have html content from a wysiwyg-editor that you can (and should not) style yourself."
+                    ]
+                , Html.h1 [] [ Html.text "H1 Title - This is a H1 title 44.79px/58.2px (mobile: 28.83px/37.5px)" ]
+                , Html.h2 [] [ Html.text "H2 Title - This is a H2 title 37.32px/48.5px (mobile: 25.63px/33.3px)" ]
+                , Html.h3 [] [ Html.text "H3 Title - This is a H3 title 31.1px/40.4px (mobile: 22.78px/29.6px)" ]
+                , Html.h4 [] [ Html.text "H4 Title - This is a H4 title 25.92px/33.7px (mobile: 20.25px/26.3px)" ]
+                , Html.h5 [] [ Html.text "H5 Title - This is a H5 title 21.6px/28.1px (mobile: 18px/23.4px)" ]
+                , Html.h6 [] [ Html.text "H6 Title - This is a H6 title 18px/23.4px (mobile: 16px/20.8px)" ]
+                , Html.p [] [ Html.text "Body Standard 18px/27px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , styled Html.p [ Font.bodySizeEm -1 ] [] [ Html.text "Body Medium 16px/24px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , Html.code [] [ Html.text "styled Html.p [ Font.bodySizeEm -1 ] [] [ Html.text \"Text content\" ]" ]
+                , styled Html.p [ Font.bodySizeEm -2 ] [] [ Html.text "Body Small 14px/21px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , Html.code [] [ Html.text "styled Html.p [ Font.bodySizeEm -2 ] [] [ Html.text \"Text content\" ]" ]
+                , styled Html.p [ Font.bodySizeEm -2, Css.lineHeight (Css.num 1.28571428571) ] [] [ Html.text "Body Small less line-height 14px/18px", Html.br [] [], Html.text "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras id pellentesque lorem, eget efficitur sem. In sit amet ipsum nec massa congue dictum. Duis ultricies lorem erat, eget aliquam nunc luctus eget." ]
+                , Html.code [] [ Html.text "styled Html.p [ Font.bodySizeEm -2, Css.lineHeight (Css.num 1.28571428571) ] [] [ Html.text \"Text content\" ]" ]
+                , styled Html.p [ Font.bodySizeEm -3 ] [] [ Html.text "Small info text 12px/18px" ]
+                , Html.code [] [ Html.text "styled Html.p [ Font.bodySizeEm -3 ] [] [ Html.text \"Text content\" ]" ]
+                , Html.ul []
+                    [ Html.li [] [ Html.text "List item 1" ]
+                    , Html.li [] [ Html.text "List item 2" ]
+                    , Html.li [] [ Html.text "List item 3" ]
+                    ]
                 ]
             ]
         ]
@@ -822,7 +776,7 @@ viewButtons model =
                     (List.map (viewButtonModifier model.mods) allOtherMods)
                 ]
             , Buttons.buttons []
-                [ Buttons.button model.mods (Just ClickedButton) [ Html.text "Save changes" ]
+                [ Buttons.button model.mods (Just ClickedButton) [ Icon.cart Control.Medium, Html.span [] [ Html.text "Save changes" ] ]
                 ]
             , Html.code []
                 [ Html.text ("SE.UI.Buttons.button [ " ++ (List.map modToString model.mods |> String.join ", ") ++ " ] (Just ClickedButton) [ Html.text \"Save changes\" ]")
@@ -979,15 +933,28 @@ viewForm model =
                     ]
                 ]
             , Title.title3 "Dropdown"
-            , Dropdown.dropdown "example-dropdown"
-                ClosedDropdown
-                model.showDropdown
-                (Dropdown.button [] (Just ToggledDropdown) [ Html.text "Dropdown menu", Icon.angleDown Control.Regular ])
-                [ Dropdown.link "https://google.com" [ Html.text "Google.com" ]
-                , Dropdown.hr
-                , Dropdown.content [ Html.text "Any content you like can go into the dropdown." ]
-                ]
+            , viewDropdown model.showDropdown
             ]
+        ]
+
+
+viewDropdown : Bool -> Html Msg
+viewDropdown isOpen =
+    let
+        icon =
+            if isOpen then
+                Icon.angleUp
+
+            else
+                Icon.angleDown
+    in
+    Dropdown.dropdown "example-dropdown"
+        ClosedDropdown
+        isOpen
+        (Dropdown.button [] (Just ToggledDropdown) [ Html.text "Dropdown menu", icon Control.Regular ])
+        [ Dropdown.link "https://google.com" [ Html.text "Google.com" ]
+        , Dropdown.hr
+        , Dropdown.content [ Html.text "Any content you like can go into the dropdown." ]
         ]
 
 
@@ -1084,6 +1051,7 @@ viewIcons =
                 ]
             , styled Html.div
                 [ Css.displayFlex
+                , Css.flexWrap Css.wrap
                 ]
                 []
                 (List.map viewIcon allIcons)
@@ -1102,6 +1070,7 @@ viewIcon ( label, icon ) =
 allIcons : List ( String, Control.Size -> Html msg )
 allIcons =
     [ ( "angleDown", Icon.angleDown )
+    , ( "angleUp", Icon.angleUp )
     , ( "ban", Icon.ban )
     , ( "bargain", Icon.bargain )
     , ( "bid", Icon.bid )
