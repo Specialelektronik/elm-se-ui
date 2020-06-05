@@ -1,5 +1,5 @@
 module SE.UI.Icon exposing
-    ( angleDown, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi
+    ( angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
     , angleDownCssBackground, tick, circle
     )
 
@@ -12,7 +12,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs angleDown, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi
+@docs angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
 
 
 # Css Backgrounds
@@ -149,6 +149,11 @@ angleDown size =
     internalIcon size (viewBox 320 512) [ Svg.path [ d angleDownPath ] [] ]
 
 
+angleUp : Control.Size -> Html msg
+angleUp size =
+    internalIcon size (viewBox 320 512) [ Svg.path [ d angleDownPath, Attributes.transform "scale(1,-1) translate(0,-512)" ] [] ]
+
+
 {-| Used in select elements and "show more" links
 -}
 angleDownCssBackground : String
@@ -244,7 +249,7 @@ eye size =
 -}
 facebook : Control.Size -> Html msg
 facebook size =
-    internalIcon size (viewBox 448 512) [ Svg.path [ d "M400 32H48A48 48 0 0 0 0 80v352a48 48 0 0 0 48 48h137.25V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.27c-30.81 0-40.42 19.12-40.42 38.73V256h68.78l-11 71.69h-57.78V480H400a48 48 0 0 0 48-48V80a48 48 0 0 0-48-48z" ] [] ]
+    internalIcon size (viewBox 35 40) [ Svg.path [ d "M34.32 9.42L19 .57a2 2 0 00-2 0L1.68 9.42a2 2 0 00-1 1.73v17.69a2 2 0 001 1.73L17 39.42a2 2 0 002 0l15.32-8.85a2 2 0 001-1.73V11.15a2 2 0 00-1-1.73zM22.82 14h-1.41a1.8 1.8 0 00-1.44.53 1.84 1.84 0 00-.42 1.23v2.11h3.13l-.5 3.27h-2.63V29H16v-7.88h-2.82v-3.27H16v-2.46a5 5 0 01.56-2.39A3.41 3.41 0 0118 11.52a4.67 4.67 0 012.29-.52 10.08 10.08 0 011.19.07 6.46 6.46 0 011 .1h.36z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/file-alt?style=solid>
@@ -275,6 +280,16 @@ images size =
     internalIcon size (viewBox 576 512) [ Svg.path [ d "M480 416v16c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V176c0-26.51 21.49-48 48-48h16v208c0 44.112 35.888 80 80 80h336zm96-80V80c0-26.51-21.49-48-48-48H144c-26.51 0-48 21.49-48 48v256c0 26.51 21.49 48 48 48h384c26.51 0 48-21.49 48-48zM256 128c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-96 144l55.515-55.515c4.686-4.686 12.284-4.686 16.971 0L272 256l135.515-135.515c4.686-4.686 12.284-4.686 16.971 0L512 208v112H160v-48z" ] [] ]
 
 
+instagram : Control.Size -> Html msg
+instagram size =
+    internalIcon size
+        (viewBox 35 40)
+        [ Svg.path [ d "M20.09 19.69a2.77 2.77 0 11-2.77-2.77 2.77 2.77 0 012.77 2.77z" ] []
+        , Svg.path [ d "M23.8 14.79a2.85 2.85 0 00-1.58-1.58c-1.09-.43-3.69-.33-4.9-.33s-3.8-.1-4.89.33a2.85 2.85 0 00-1.58 1.58c-.43 1.09-.34 3.69-.34 4.9s-.1 3.8.34 4.89a2.79 2.79 0 001.58 1.58c1.09.43 3.68.34 4.89.34s3.8.1 4.9-.34a2.79 2.79 0 001.58-1.58c.43-1.08.33-3.68.33-4.89s.1-3.8-.33-4.9zm-6.48 9.16a4.26 4.26 0 114.26-4.26 4.25 4.25 0 01-4.26 4.26zm4.43-7.7a1 1 0 010-2 1 1 0 110 2z" ] []
+        , Svg.path [ d "M33.64 9.11L18.32.27a2 2 0 00-2 0L1 9.11a2 2 0 00-1 1.73v17.69a2 2 0 001 1.74l15.32 8.84a2 2 0 002 0l15.32-8.84a2 2 0 001-1.74V10.84a2 2 0 00-1-1.73zm-8.07 14a5 5 0 01-1.34 3.48 4.93 4.93 0 01-3.48 1.35c-1.37.07-5.49.07-6.86 0a5 5 0 01-3.48-1.35 4.92 4.92 0 01-1.34-3.48c-.08-1.37-.08-5.48 0-6.85a5 5 0 011.34-3.48 5 5 0 013.48-1.34c1.37-.08 5.49-.08 6.86 0a5 5 0 013.48 1.34 4.94 4.94 0 011.34 3.48c.08 1.43.08 5.48 0 6.85z" ] []
+        ]
+
+
 {-| <https://fontawesome.com/icons/lightbulb?style=solid>
 -}
 lightbulb : Control.Size -> Html msg
@@ -286,7 +301,7 @@ lightbulb size =
 -}
 linkedin : Control.Size -> Html msg
 linkedin size =
-    internalIcon size (viewBox 448 512) [ Svg.path [ d "M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z" ] [] ]
+    internalIcon size (viewBox 35 40) [ Svg.path [ d "M33.64 9.11L18.32.26a2 2 0 00-2 0L1 9.11a2 2 0 00-1 1.73v17.69a2 2 0 001 1.73l15.32 8.85a2 2 0 002 0l15.32-8.85a2 2 0 001-1.73V10.84a2 2 0 00-1-1.73zM12.96 27.54H9.69V17.03h3.27zm-1.64-11.92a1.91 1.91 0 01-1.88-1.93 1.89 1.89 0 013.77 0 1.92 1.92 0 01-1.89 1.93zm13.87 11.92h-3.26v-5.09c0-1.24 0-2.78-1.73-2.78s-1.88 1.3-1.88 2.67v5.2H15V17.03h3.13v1.44a3.52 3.52 0 013.1-1.69c3.3 0 3.93 2.18 3.93 5z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/notification?style=solid>
@@ -392,3 +407,12 @@ user size =
 wifi : Control.Size -> Html msg
 wifi size =
     internalIcon size (viewBox 640 512) [ Svg.path [ d "M634.91 154.88C457.74-8.99 182.19-8.93 5.09 154.88c-6.66 6.16-6.79 16.59-.35 22.98l34.24 33.97c6.14 6.1 16.02 6.23 22.4.38 145.92-133.68 371.3-133.71 517.25 0 6.38 5.85 16.26 5.71 22.4-.38l34.24-33.97c6.43-6.39 6.3-16.82-.36-22.98zM320 352c-35.35 0-64 28.65-64 64s28.65 64 64 64 64-28.65 64-64-28.65-64-64-64zm202.67-83.59c-115.26-101.93-290.21-101.82-405.34 0-6.9 6.1-7.12 16.69-.57 23.15l34.44 33.99c6 5.92 15.66 6.32 22.05.8 83.95-72.57 209.74-72.41 293.49 0 6.39 5.52 16.05 5.13 22.05-.8l34.44-33.99c6.56-6.46 6.33-17.06-.56-23.15z" ] [] ]
+
+
+youtube : Control.Size -> Html msg
+youtube size =
+    internalIcon size
+        (viewBox 35 40)
+        [ Svg.path [ d "M15.29 16.75l5.18 2.95-5.18 2.94v-5.89z" ] []
+        , Svg.path [ d "M33.64 9.11L18.32.26a2 2 0 00-2 0L1 9.11a2 2 0 00-1 1.73v17.69a2 2 0 001 1.73l15.32 8.85a2 2 0 002 0l15.32-8.85a2 2 0 001-1.73V10.84a2 2 0 00-1-1.73zM26.81 24.5a2.45 2.45 0 01-1.75 1.73c-1.55.46-7.74.46-7.74.46s-6.19 0-7.74-.42a2.45 2.45 0 01-1.75-1.73 26.4 26.4 0 01-.41-4.85 26.4 26.4 0 01.41-4.8 2.49 2.49 0 011.75-1.76c1.55-.44 7.74-.44 7.74-.44s6.19 0 7.74.42a2.49 2.49 0 011.75 1.76 26.4 26.4 0 01.41 4.82 26.4 26.4 0 01-.41 4.81z" ] []
+        ]
