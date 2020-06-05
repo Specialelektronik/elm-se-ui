@@ -324,17 +324,23 @@ viewLoginIcon =
     styled Html.a
         [ Colors.color Colors.text
         , Css.displayFlex
-        , Css.flexDirection Css.column
-        , Css.alignItems Css.center
+        , Utils.desktop
+            [ Css.flexDirection Css.column
+            , Css.alignItems Css.center
+            ]
         , Css.hover
             [ Colors.color Colors.primary
             ]
         ]
         [ Attributes.href "/login" ]
-        [ Icon.user Control.Medium
+        [ Icon.user Control.Regular
         , styled Html.span
-            [ Colors.color Colors.base
-            , Font.bodySizeRem -3
+            [ Css.fontWeight Css.bold
+            , Utils.desktop
+                [ Colors.color Colors.base
+                , Font.bodySizeRem -3
+                , Css.fontWeight Css.normal
+                ]
             ]
             []
             [ Html.text "Logga in"
@@ -347,8 +353,10 @@ viewCartIcon =
     styled Html.a
         [ Colors.color Colors.text
         , Css.displayFlex
-        , Css.flexDirection Css.column
-        , Css.alignItems Css.center
+        , Utils.desktop
+            [ Css.flexDirection Css.column
+            , Css.alignItems Css.center
+            ]
         , Css.hover
             [ Colors.color Colors.primary
             ]
@@ -375,10 +383,14 @@ viewCartIcon =
             ]
         ]
         [ Attributes.href "/cart", Attributes.attribute "data-badge" "33" ]
-        [ Icon.cart Control.Medium
+        [ Icon.cart Control.Regular
         , styled Html.span
-            [ Colors.color Colors.base
-            , Font.bodySizeRem -3
+            [ Css.fontWeight Css.bold
+            , Utils.desktop
+                [ Colors.color Colors.base
+                , Font.bodySizeRem -3
+                , Css.fontWeight Css.normal
+                ]
             ]
             []
             [ Html.text "Varukorg"
