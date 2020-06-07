@@ -8,6 +8,7 @@ import Html.Styled as Html exposing (Html, div, styled, toUnstyled)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import SE.UI.Buttons as Buttons
+import SE.UI.Card as Card
 import SE.UI.Colors as Colors
 import SE.UI.Columns as Columns
 import SE.UI.Container as Container
@@ -314,6 +315,7 @@ view model =
             , viewNotification model.notification
             , viewModal model.showModal
             , viewIcons
+            , viewCard
             ]
         , Navbar.backdrop navbarConfig model.navbar
         ]
@@ -1118,6 +1120,29 @@ allIcons =
     , ( "user", Icon.user )
     , ( "wifi", Icon.wifi )
     ]
+
+
+viewCard : Html Msg
+viewCard =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Card"
+            , Content.content []
+                [ Html.p [] [ Html.text "The card component originates from Bulmas equivalent without the footer and image header. We also have a sub title available." ]
+                ]
+            , Card.content
+                [ Content.content []
+                    [ Html.p []
+                        [ Html.text "This is where the content goes. It can be any content you like."
+                        ]
+                    ]
+                ]
+                |> Card.withTitle "This is a title"
+                |> Card.withSubTitle "This is a subtitle"
+                |> Card.withBoxShadow
+                |> Card.toHtml
+            ]
+        ]
 
 
 viewIf : Bool -> Html msg -> Html msg

@@ -1,51 +1,154 @@
-module SE.UI.Card exposing (delete)
+module SE.UI.Card exposing (content, withTitle, withSubTitle, withBoxShadow, toHtml)
 
-{-| Bulmas delete tag
+{-| Bulmas card component
 see <https://bulma.io/documentation/components/card/>
 
-The card component comprises several elements that you can mix and match:
-
-card: the main container
-card-header: a horizontal bar with a shadow
-card-header-title: a left-aligned bold text
-card-header-icon: a placeholder for an icon
-card-image: a fullwidth container for a responsive image
-card-content: a multi-purpose container for any other element
-card-footer: a horizontal list of controls
-card-footer-item: a repeatable list item
+The card component originates from Bulmas equivalent without the footer and image header. We also have a sub title available.
 
 
 # Definition
 
-@docs delete
+@docs content, withTitle, withSubTitle, withBoxShadow, toHtml
 
 -}
 
 import Css exposing (Style)
-import Css.Transitions
-import Html.Styled exposing (Html, styled)
-import Html.Styled.Events as Events
+import Css.Global
+import Html.Styled as Html exposing (Html, styled)
 import SE.UI.Colors as Colors
+import SE.UI.Font as Font
+import SE.UI.Title as Title
 import SE.UI.Utils as Utils
 
 
-type alias Card msg =
-    { header : Header msg
-    , image : Maybe Image.Image
+type Card msg
+    = Card (Internals msg)
+
+
+type alias Internals msg =
+    { title : String
+    , subTitle : String
     , content : List (Html msg)
-    , footer : List (FooterItem msg)
+    , boxShadow : Bool
     }
 
 
-type FooterItem msg
-    = Link (Html.Attribute msg)
-    | Custom List (Html msg)
+toHtml : Card msg -> Html msg
+toHtml (Card internals) =
+    styled Html.div
+        (cardStyles internals.boxShadow)
+        []
+        [ titleToHtml internals
+        , styled Html.div contentStyles [] internals.content
+        ]
 
 
-type Header msg
-    = NoHeader
-    | Header String
-    | WithIcon String (Control.Size -> Html msg)
+titleToHtml : Internals msg -> Html msg
+titleToHtml { title, subTitle } =
+    if String.isEmpty title then
+        Html.text ""
+
+    else
+        styled Html.div
+            headerStyles
+            []
+            [ Title.title5 title
+            , subTitleToHtml subTitle
+            ]
 
 
-toHtml : Html msg
+subTitleToHtml : String -> Html msg
+subTitleToHtml subTitle =
+    if String.isEmpty subTitle then
+        Html.text ""
+
+    else
+        styled Html.p
+            [ Css.margin Css.zero
+            , Font.bodySizeEm -2
+            , Utils.desktop
+                [ Css.marginLeft (Css.rem 0.88888888)
+                ]
+            ]
+            []
+            [ Html.text subTitle ]
+
+
+content : List (Html msg) -> Card msg
+content kids =
+    Card
+        { title = ""
+        , subTitle = ""
+        , content = kids
+        , boxShadow = False
+        }
+
+
+withTitle : String -> Card msg -> Card msg
+withTitle title (Card internals) =
+    Card { internals | title = title }
+
+
+withSubTitle : String -> Card msg -> Card msg
+withSubTitle subTitle (Card internals) =
+    Card { internals | subTitle = subTitle }
+
+
+withBoxShadow : Card msg -> Card msg
+withBoxShadow (Card internals) =
+    Card { internals | boxShadow = True }
+
+
+
+-- STYLES
+
+
+cardStyles : Bool -> List Style
+cardStyles hasBoxShadow =
+    [ Colors.backgroundColor Colors.white
+
+    --   box-shadow: $card-shadow
+    , Css.maxWidth (Css.pct 100)
+    , Css.position Css.relative
+    , Css.borderRadius Utils.radius
+    , Css.borderWidth (Css.px 1)
+    , Css.borderStyle Css.solid
+    , Colors.borderColor Colors.border
+    , if hasBoxShadow then
+        Css.boxShadow4 Css.zero (Css.px 4) (Css.px 10) (Colors.black |> Colors.mapAlpha (always 0.15) |> Colors.toCss)
+
+      else
+        Css.batch []
+    ]
+
+
+contentStyles : List Style
+contentStyles =
+    [ Css.padding (Css.rem 0.88888888) ]
+
+
+headerStyles : List Style
+headerStyles =
+    [ Css.displayFlex
+    , Css.flexDirection Css.column
+    , Colors.backgroundColor Colors.lightBlue
+    , Css.alignItems Css.stretch
+    , Css.borderBottomWidth (Css.px 1)
+    , Css.borderBottomStyle Css.solid
+    , Colors.borderColor Colors.border
+    , Css.padding (Css.rem 0.88888888)
+    , Css.Global.children
+        [ Css.Global.typeSelector "h5"
+            [ Css.important (Css.margin Css.zero)
+            ]
+        ]
+    ]
+
+
+titleStyles : List Style
+titleStyles =
+    [ Css.alignItems Css.center
+    , Css.displayFlex
+    , Css.flexGrow (Css.int 1)
+    , Css.padding2 (Css.rem 0.88888888) (Css.rem 0.55555555)
+    ]
