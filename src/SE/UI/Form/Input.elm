@@ -41,6 +41,7 @@ To allow the programmer to specify _when_ a message should trigger, the inputs h
 
 @docs withModifier, withModifiers, Modifier
 
+
 # Styles
 
 @docs inputStyle
@@ -1033,6 +1034,8 @@ initAttributes { trigger, msg, value, required, disabled, readonly } =
 -- STYLE
 
 
+{-| Use this if you need a custom input with our styling
+-}
 inputStyle : List Modifier -> List Style
 inputStyle mods =
     let

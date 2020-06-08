@@ -9,7 +9,7 @@ module SE.UI.Colors exposing
 
 {-| The colors we use. Some color names are from Bulma but not all of them.
 
-We use a custom type and the HSLA Scale (Hue, saturation, lightness, alpha) since Elm Css does not properly support hsla (hsl and hsla values are converted to hex immediately).
+We use a custom type and the HSLA Scale (Hue, saturation, lightness, alpha) since Elm Css does not properly support working with colors like we want to do.
 
     Colors.primary |> Colors.toCss == Css.Color { alpha = 1, blue = 0, color = Compatible, green = 0, red = 0, value = "hsla(138, 100%, 31%, 1)" }
 
@@ -49,6 +49,8 @@ We use a custom type and the HSLA Scale (Hue, saturation, lightness, alpha) sinc
 import Css
 
 
+{-| The defined colors we use. This type is just a way for other components to specify color as a Modifier.
+-}
 type Color
     = White
     | Lightest
@@ -68,6 +70,8 @@ type Color
     | LightBlue
 
 
+{-| Convert the Color type to a value we can use
+-}
 toHsla : Color -> Hsla
 toHsla color_ =
     case color_ of
@@ -120,6 +124,8 @@ toHsla color_ =
             lightBlue
 
 
+{-| Colors are represented as HSLA value <https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#HSL_colors>
+-}
 type Hsla
     = Hsla Hue Saturation Lightness Alpha
 
@@ -144,6 +150,8 @@ type alias Alpha =
 -- GREYS
 
 
+{-| white #ffffff
+-}
 white : Hsla
 white =
     Hsla 0 0 1 1
@@ -251,9 +259,11 @@ lightBlue =
     Hsla 220 0.27 0.98 1
 
 
+{-| #CC4B4B Red
+-}
 danger : Hsla
 danger =
-    Hsla 0 1 0.5 1
+    Hsla 0 0.56 0.55 1
 
 
 
@@ -281,17 +291,26 @@ text =
     darkest
 
 
+{-| Make the provided color a bit darker (it reduces lightness with 10%)
+-}
 hover : Hsla -> Hsla
 hover =
     mapLightness ((*) 0.9)
 
 
+{-| Make the provided color a bit darker (it reduces lightness with 20%)
+-}
 active : Hsla -> Hsla
 active =
     mapLightness ((*) 0.8)
 
 
 {-| Invert the color to either black or white
+
+    [ SE.UI.Colors.backgroundColor SE.UI.Colors.danger
+    , SE.UI.Colors.color (SE.UI.Colors.danger |> SE.UI.Colors.invert)
+    ]
+
 -}
 invert : Hsla -> Hsla
 invert ((Hsla _ _ lightness _) as hsla) =
@@ -305,21 +324,29 @@ invert ((Hsla _ _ lightness _) as hsla) =
         black |> mapAlpha ((*) 0.7)
 
 
+{-| Change hue of the color
+-}
 mapHue : (Int -> Int) -> Hsla -> Hsla
 mapHue f (Hsla hue saturation lightness alpha) =
     Hsla (f hue) saturation lightness alpha
 
 
+{-| Change saturation of the color
+-}
 mapSaturation : (Float -> Float) -> Hsla -> Hsla
 mapSaturation f (Hsla hue saturation lightness alpha) =
     Hsla hue (f saturation) lightness alpha
 
 
+{-| Change lightness of the color
+-}
 mapLightness : (Float -> Float) -> Hsla -> Hsla
 mapLightness f (Hsla hue saturation lightness alpha) =
     Hsla hue saturation (f lightness) alpha
 
 
+{-| Change alpha of the color
+-}
 mapAlpha : (Float -> Float) -> Hsla -> Hsla
 mapAlpha f (Hsla hue saturation lightness alpha) =
     Hsla hue saturation lightness (f alpha)
@@ -332,16 +359,22 @@ toCss (Hsla hue saturation lightness alpha) =
     Css.hsla (toFloat hue) saturation lightness alpha
 
 
+{-| Css property backgroundColor but takes our Hsla value instead of regular Elm css color values
+-}
 backgroundColor : Hsla -> Css.Style
 backgroundColor =
     toCss >> Css.backgroundColor
 
 
+{-| Css property oclor but takes our Hsla value instead of regular Elm css color values
+-}
 color : Hsla -> Css.Style
 color =
     toCss >> Css.color
 
 
+{-| Css property borderColor but takes our Hsla value instead of regular Elm css color values
+-}
 borderColor : Hsla -> Css.Style
 borderColor =
     toCss >> Css.borderColor

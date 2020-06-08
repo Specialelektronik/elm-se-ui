@@ -1,6 +1,6 @@
 module SE.UI.Level exposing
     ( level, mobileLevel, centeredLevel
-    , item
+    , Item, item
     )
 
 {-| Bulmas level component
@@ -27,6 +27,8 @@ import Html.Styled.Attributes exposing (class)
 import SE.UI.Utils exposing (block, mobile, radius, tablet)
 
 
+{-| Use the `item` function to create a level item
+-}
 type Item msg
     = Item (List (Html msg))
 

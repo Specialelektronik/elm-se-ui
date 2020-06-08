@@ -21,7 +21,7 @@ see <https://bulma.io/documentation/elements/button/>
 
 # Styles
 
-@ docs buttonStyles
+@docs buttonStyles
 
 -}
 
@@ -112,6 +112,8 @@ buttons mods btns =
     styled Html.Styled.div (buttonsStyles mods) [] btns
 
 
+{-| Use this if you need a custom button with our styling
+-}
 buttonStyles : List Modifier -> HasIcon -> List Style
 buttonStyles mods hasIcon =
     let

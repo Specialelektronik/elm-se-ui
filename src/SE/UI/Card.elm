@@ -5,6 +5,20 @@ see <https://bulma.io/documentation/components/card/>
 
 The card component originates from Bulmas equivalent without the footer and image header. We also have a sub title available.
 
+Like the [Input](SE.UI.Form.Input) components, Card uses the withStar-pattern.
+
+    Card.content
+        [ Content.content []
+            [ Html.p []
+                [ Html.text "This is where the content goes. It can be any content you like."
+                ]
+            ]
+        ]
+        |> Card.withTitle "This is a title"
+        |> Card.withSubTitle "This is a subtitle"
+        |> Card.withBoxShadow
+        |> Card.toHtml
+
 
 # Definition
 
@@ -21,6 +35,8 @@ import SE.UI.Title as Title
 import SE.UI.Utils as Utils
 
 
+{-| Use `content` to create a card.
+-}
 type Card msg
     = Card (Internals msg)
 
@@ -33,6 +49,11 @@ type alias Internals msg =
     }
 
 
+{-| Turn the Card into Html
+
+Use it in the end of a pipeline, see the example at the top.
+
+-}
 toHtml : Card msg -> Html msg
 toHtml (Card internals) =
     styled Html.div
@@ -74,6 +95,8 @@ subTitleToHtml subTitle =
             [ Html.text subTitle ]
 
 
+{-| Create a Card with the provided Html.
+-}
 content : List (Html msg) -> Card msg
 content kids =
     Card
@@ -84,16 +107,22 @@ content kids =
         }
 
 
+{-| Add a title to the card
+-}
 withTitle : String -> Card msg -> Card msg
 withTitle title (Card internals) =
     Card { internals | title = title }
 
 
+{-| Add a subtitle to the card, note that a title also needs to be present in order for the card to display the subtitle.
+-}
 withSubTitle : String -> Card msg -> Card msg
 withSubTitle subTitle (Card internals) =
     Card { internals | subTitle = subTitle }
 
 
+{-| Add box-shadow to the card
+-}
 withBoxShadow : Card msg -> Card msg
 withBoxShadow (Card internals) =
     Card { internals | boxShadow = True }
@@ -132,11 +161,14 @@ headerStyles =
     [ Css.displayFlex
     , Css.flexDirection Css.column
     , Colors.backgroundColor Colors.lightBlue
-    , Css.alignItems Css.stretch
+    , Css.alignItems Css.baseline
     , Css.borderBottomWidth (Css.px 1)
     , Css.borderBottomStyle Css.solid
     , Colors.borderColor Colors.border
     , Css.padding (Css.rem 0.88888888)
+    , Utils.desktop
+        [ Css.flexDirection Css.row
+        ]
     , Css.Global.children
         [ Css.Global.typeSelector "h5"
             [ Css.important (Css.margin Css.zero)

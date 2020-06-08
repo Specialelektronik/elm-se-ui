@@ -1141,6 +1141,13 @@ viewCard =
                 |> Card.withSubTitle "This is a subtitle"
                 |> Card.withBoxShadow
                 |> Card.toHtml
+            , Content.content []
+                [ Html.pre []
+                    [ Html.code []
+                        [ Html.text "Card.content\n    [ Content.content []\n        [ Html.p []\n            [ Html.text \"This is where the content goes. It can be any content you like.\"\n            ]\n        ]\n    ]\n    |> Card.withTitle \"This is a title\"\n    |> Card.withSubTitle \"This is a subtitle\"\n    |> Card.withBoxShadow\n    |> Card.toHtml"
+                        ]
+                    ]
+                ]
             ]
         ]
 

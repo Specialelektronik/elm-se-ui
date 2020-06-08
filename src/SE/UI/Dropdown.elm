@@ -46,6 +46,8 @@ type alias Url =
     String
 
 
+{-| Use `link`, `content` or `hr` to create a dropdown item
+-}
 type Item msg
     = Link Url (List (Html msg))
     | Content (List (Html msg))
@@ -106,6 +108,8 @@ button =
     Button
 
 
+{-| Like the `button` function but completely custom. The navbar uses this to create dropdowns with text links instead of a regular button.
+-}
 customButton : Html msg -> Button msg
 customButton =
     CustomButton

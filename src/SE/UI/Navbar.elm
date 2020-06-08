@@ -132,7 +132,7 @@ view config searchFn model =
         global =
             Css.Global.global
                 [ Css.Global.body
-                    [ Css.marginTop (Css.px (75 + 3 + 40)) -- 75px brand, 3px LED, 40px search bar
+                    [ Css.marginTop (Css.px (75 + 3 + 51)) -- 75px brand, 3px LED, 40px search bar
                     ]
                 , Css.Global.html
                     [ if model.isOpen then
@@ -302,10 +302,10 @@ viewLED =
         [ Colors.backgroundColor Colors.primary
         , Css.height (Css.px 3)
         , Css.order (Css.int 2)
+        , Css.flexShrink (Css.int 0)
         , Utils.desktop
             [ Css.order (Css.int 5)
             , Css.width (Css.pct 100)
-            , Css.flexShrink (Css.int 0)
             ]
         ]
         []
@@ -526,6 +526,7 @@ headerStyles isOpen =
     , Css.zIndex (Css.int 10)
     , Css.displayFlex
     , Css.maxWidth (Css.pct 100)
+    , Css.height (Css.px (75 + 3 + 51))
     , Css.flexDirection Css.column
     , Utils.mobile
         [ Css.Global.descendants

@@ -21,7 +21,9 @@ A good example is the [Dropdown](/SE-Framework-Dropdown) and [Table](/SE-Framewo
 
 # How to use it
 
-`node_modules/.bin/parcel docs/index.html --no-cache` (parcel has some problems with reloading if we use the cache)
+You need elm-live installed globally.
+
+`elm-live -s .\docs\index.html .\src\SE\UI.elm -- --output=app.js`
 
 More information to come
 
@@ -38,15 +40,13 @@ https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-script
  - https://github.com/dillonkearns/idiomatic-elm-package-guide
 
 # TODO
- - [ ] Consider using [NoRedInks Versioning policy](https://package.elm-lang.org/packages/NoRedInk/noredink-ui/latest/)
  - [ ] Form File button
  - [ ] Documentation (type that takes a label, description, code examples)
- - [ ] Refactor Image, add alt text and improve dimensions (figure tag, width and height optional and is should be responsive)
+ - [x] Refactor Image, add alt text and improve dimensions (figure tag, width and height optional and is should be responsive)
 
 # Maybe TODO
+ - [ ] Consider using [NoRedInks Versioning policy](https://package.elm-lang.org/packages/NoRedInk/noredink-ui/latest/)
  - [ ] Message (can be useful to insert into a product listing to announce stuff)
  - [ ] Modal card (do we need the card option?)
  - [ ] Box (different styling from Bulma?)
- - [ ] Card, or should be have Card and Box as one unified component?
-
-`elm-live -s .\docs\index.html .\src\SE\UI.elm -- --output=app.js`
+ - [x] Card, or should be have Card and Box as one unified component?

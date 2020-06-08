@@ -181,6 +181,9 @@ block =
         ]
 
 
+{-| Hides an element, visually. Works just like Html.Styled.styled
+See <https://a11yproject.com/posts/how-to-hide-content/>
+-}
 visuallyHidden :
     (List (Attribute a) -> List (Html b) -> Html msg)
     -> List (Attribute a)
