@@ -1,4 +1,4 @@
-module SE.UI.Delete exposing (large, medium, regular, small)
+module SE.UI.Delete exposing (small, regular, medium, large)
 
 {-| Bulmas delete tag
 see <https://bulma.io/documentation/elements/delete/>
@@ -6,7 +6,7 @@ see <https://bulma.io/documentation/elements/delete/>
 
 # Definition
 
-@docs delete
+@docs small, regular, medium, large
 
 -}
 
@@ -43,21 +43,29 @@ sizeToPx size =
         )
 
 
+{-| Small delete button (16px)
+-}
 small : List Style -> msg -> Html msg
 small =
     helper Small
 
 
+{-| Regular delete button (20px)
+-}
 regular : List Style -> msg -> Html msg
 regular =
     helper Regular
 
 
+{-| Medium delete button (28px)
+-}
 medium : List Style -> msg -> Html msg
 medium =
     helper Medium
 
 
+{-| Large delete button (40px)
+-}
 large : List Style -> msg -> Html msg
 large =
     helper Large

@@ -24,6 +24,7 @@
     "SE.UI.Logo",
     "SE.UI.Logos.Crestron",
     "SE.UI.Modal",
+    "SE.UI.Navbar",
     "SE.UI.Notification",
     "SE.UI.OuterClick",
     "SE.UI.Section",
