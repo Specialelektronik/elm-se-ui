@@ -13,7 +13,7 @@ see <https://bulma.io/documentation/components/modal/>
 import Css exposing (Style, absolute, auto, calc, center, column, fixed, hidden, int, minus, none, pct, px, relative, rgba, vh, zero)
 import Html.Styled exposing (Html, styled)
 import Html.Styled.Events exposing (onClick)
-import SE.UI.Delete exposing (delete)
+import SE.UI.Delete as Delete
 import SE.UI.Utils exposing (tablet)
 
 
@@ -26,7 +26,7 @@ modal closeMsg c =
         []
         [ styled Html.Styled.div modalBackgroundStyles [ onClick closeMsg ] []
         , styled Html.Styled.div modalContentStyles [] c
-        , delete closeStyles closeMsg
+        , Delete.large closeStyles closeMsg
         ]
 
 
@@ -39,7 +39,7 @@ fullWidthModal closeMsg c =
         []
         [ styled Html.Styled.div modalBackgroundStyles [ onClick closeMsg ] []
         , styled Html.Styled.div fullWidthModalContentStyles [] c
-        , delete closeStyles closeMsg
+        , Delete.large closeStyles closeMsg
         ]
 
 

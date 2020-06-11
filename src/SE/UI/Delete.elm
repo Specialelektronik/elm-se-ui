@@ -1,4 +1,4 @@
-module SE.UI.Delete exposing (delete)
+module SE.UI.Delete exposing (large, medium, regular, small)
 
 {-| Bulmas delete tag
 see <https://bulma.io/documentation/elements/delete/>
@@ -18,19 +18,68 @@ import SE.UI.Colors as Colors
 import SE.UI.Utils as Utils
 
 
-{-| A simple circle with a cross, no support for sizes.
+type Size
+    = Small
+    | Regular
+    | Medium
+    | Large
+
+
+sizeToPx : Size -> Css.Px
+sizeToPx size =
+    Css.px
+        (case size of
+            Small ->
+                16
+
+            Regular ->
+                20
+
+            Medium ->
+                28
+
+            Large ->
+                40
+        )
+
+
+small : List Style -> msg -> Html msg
+small =
+    helper Small
+
+
+regular : List Style -> msg -> Html msg
+regular =
+    helper Regular
+
+
+medium : List Style -> msg -> Html msg
+medium =
+    helper Medium
+
+
+large : List Style -> msg -> Html msg
+large =
+    helper Large
+
+
+{-| A simple circle with a cross.
 You can supply custom styles with the first argument.
 -}
-delete : List Style -> msg -> Html msg
-delete styles msg =
+helper : Size -> List Style -> msg -> Html msg
+helper size styles msg =
     styled Html.Styled.button
-        (deleteStyles ++ styles)
+        (deleteStyles size ++ styles)
         [ onClick msg ]
-        []
+        [ Utils.visuallyHidden Html.Styled.span [] [ Html.Styled.text "Stäng" ] ]
 
 
-deleteStyles : List Style
-deleteStyles =
+deleteStyles : Size -> List Style
+deleteStyles size =
+    let
+        pxSize =
+            sizeToPx size
+    in
     [ Utils.unselectable
     , Css.property "-moz-appearance" "none"
     , Css.property "-webkit-appearance" "none"
@@ -43,15 +92,15 @@ deleteStyles =
     , Css.flexGrow zero
     , Css.flexShrink zero
     , Css.fontSize (px 0)
-    , Css.height (px 20)
-    , Css.maxHeight (px 20)
-    , Css.maxWidth (px 20)
-    , Css.minHeight (px 20)
-    , Css.minWidth (px 20)
+    , Css.height pxSize
+    , Css.maxHeight pxSize
+    , Css.maxWidth pxSize
+    , Css.minHeight pxSize
+    , Css.minWidth pxSize
     , Css.outline none
     , Css.position relative
     , Css.verticalAlign top
-    , Css.width (px 20)
+    , Css.width pxSize
     , after
         (afterAndbefore
             ++ [ Css.height (pct 50)

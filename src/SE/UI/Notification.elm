@@ -85,7 +85,7 @@ internalNotification color maybeMsg content =
 
 delete : msg -> Html msg
 delete msg =
-    Delete.delete
+    Delete.regular
         [ Css.position absolute
         , Css.right (rem 0.5)
         , Css.top (rem 0.5)
