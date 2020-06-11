@@ -279,6 +279,26 @@ navbarConfig =
           , href = Attributes.href "/av-teknik"
           , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
           }
+        , { label = "Belysning"
+          , href = Attributes.href "/av-teknik"
+          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          }
+        , { label = "IP / IT"
+          , href = Attributes.href "/av-teknik"
+          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          }
+        , { label = "Säkerhet"
+          , href = Attributes.href "/av-teknik"
+          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          }
+        , { label = "CATV"
+          , href = Attributes.href "/av-teknik"
+          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          }
+        , { label = "Fiberoptik"
+          , href = Attributes.href "/av-teknik"
+          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          }
         ]
     , socialMedia =
         [ { url = "https://facebook.com/specialelektronik"
@@ -317,7 +337,8 @@ view model =
             , viewIcons
             , viewCard
             ]
-        , Navbar.backdrop navbarConfig model.navbar
+
+        -- , Navbar.backdrop navbarConfig model.navbar
         ]
 
 
@@ -335,7 +356,7 @@ viewLoginIcon =
             ]
         ]
         [ Attributes.href "/login" ]
-        [ Icon.user Control.Regular
+        [ Icon.user Control.Medium
         , styled Html.span
             [ Css.fontWeight Css.bold
             , Utils.desktop
@@ -354,6 +375,7 @@ viewCartIcon : Html Msg
 viewCartIcon =
     styled Html.a
         [ Colors.color Colors.text
+        , Css.position Css.relative
         , Css.displayFlex
         , Utils.desktop
             [ Css.flexDirection Css.column
@@ -385,7 +407,7 @@ viewCartIcon =
             ]
         ]
         [ Attributes.href "/cart", Attributes.attribute "data-badge" "33" ]
-        [ Icon.cart Control.Regular
+        [ Icon.cart Control.Medium
         , styled Html.span
             [ Css.fontWeight Css.bold
             , Utils.desktop
@@ -465,6 +487,7 @@ search styles =
                     , Css.right Css.zero
                     , Css.cursor Css.pointer
                     , Colors.color Colors.dark
+                    , Css.alignItems Css.center
                     , Css.hover
                         [ Colors.color Colors.link
                         ]
@@ -483,9 +506,7 @@ search styles =
 searchStyles : List Style
 searchStyles =
     [ Css.batch (Input.inputStyle [])
-    , Utils.mobile
-        [ Css.property "padding" "calc(0.75em - 1px) calc(1em - 1px)"
-        ]
+    , Css.property "padding" "calc(0.75em - 1px) calc(1em - 1px)"
 
     -- , Colors.backgroundColor Colors.lighter
     -- , Colors.color Colors.darker
@@ -817,73 +838,73 @@ modToString : Buttons.Modifier -> String
 modToString mod =
     case mod of
         Buttons.Color Colors.Primary ->
-            "Primary"
+            "Buttons.Color Colors.Primary"
 
         Buttons.Color Colors.Link ->
-            "Link"
+            "Buttons.Color Colors.Link"
 
         Buttons.Color Colors.Buy ->
-            "Buy"
+            "Buttons.Color Colors.Buy"
 
         Buttons.Color Colors.Bargain ->
-            "Bargain"
+            "Buttons.Color Colors.Bargain"
 
         Buttons.Color Colors.Danger ->
-            "Danger"
+            "Buttons.Color Colors.Danger"
 
         Buttons.Color Colors.White ->
-            "White"
+            "Buttons.Color Colors.White"
 
         Buttons.Color Colors.Lightest ->
-            "Lightest"
+            "Buttons.Color Colors.Lightest"
 
         Buttons.Color Colors.Lighter ->
-            "Lighter"
+            "Buttons.Color Colors.Lighter"
 
         Buttons.Color Colors.Light ->
-            "Light"
+            "Buttons.Color Colors.Light"
 
         Buttons.Color Colors.Base ->
-            "Base"
+            "Buttons.Color Colors.Base"
 
         Buttons.Color Colors.Dark ->
-            "Dark"
+            "Buttons.Color Colors.Dark"
 
         Buttons.Color Colors.Darker ->
-            "Darker"
+            "Buttons.Color Colors.Darker"
 
         Buttons.Color Colors.Darkest ->
-            "Darkest"
+            "Buttons.Color Colors.Darkest"
 
         Buttons.Color Colors.Black ->
-            "Black"
+            "Buttons.Color Colors.Black"
 
         Buttons.Color Colors.DarkGreen ->
-            "DarkGreen"
+            "Buttons.Color Colors.DarkGreen"
 
         Buttons.Color Colors.LightBlue ->
-            "LightBlue"
+            "Buttons.Color Colors.LightBlue"
 
         Buttons.Text ->
-            "Text"
+            "Buttons.Text"
 
         Buttons.Size Control.Regular ->
-            "Size Control.Regular"
+            "Buttons.Size Control.Regular"
 
         Buttons.Size Control.Small ->
-            "Size Control.Small"
+            "Buttons.Size Control.Small"
 
         Buttons.Size Control.Medium ->
-            "Size Control.Medium"
+            "Buttons.Size Control.Medium"
 
         Buttons.Size Control.Large ->
-            "Size Control.Large"
+            "Buttons.Size Control.Large"
 
         Buttons.Fullwidth ->
-            "Fullwidth"
+            "Buttons.Fullwidth"
 
         Buttons.Loading ->
-            "Loading"
+            "Buttons.Loading"
 
 
 viewButtonModifier : List Buttons.Modifier -> ( Buttons.Modifier, String ) -> Html Msg

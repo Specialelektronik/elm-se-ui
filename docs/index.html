@@ -9,6 +9,7 @@
 
 <body>
 <div id="elm-f0111bc4e658d0f98db96260c16f7e49"></div>
+<script src="https://unpkg.com/headroom.js/dist/headroom.min.js"></script>
 <script src="./app.js"></script>
 <script>
   var app = Elm.SE.UI.init({
@@ -18,6 +19,13 @@ if (document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49")) {
   document.getElementById("elm-f0111bc4e658d0f98db96260c16f7e49").innerText =
     "This is a headless program, meaning there is nothing to show here.\n\nI started the program anyway though, and you can access it as `app` in the developer console.";
 }
+
+// grab an element
+var myElement = document.querySelector("header");
+// construct an instance of Headroom, passing the element
+var headroom  = new Headroom(myElement);
+// initialise
+headroom.init();
 </script>
 </body>
 </html>
