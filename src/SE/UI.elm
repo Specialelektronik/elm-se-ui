@@ -25,6 +25,7 @@ import SE.UI.Modal as Modal
 import SE.UI.Navbar as Navbar
 import SE.UI.Notification as Notification
 import SE.UI.Section as Section
+import SE.UI.Table.V2 as Table
 import SE.UI.Title as Title
 import SE.UI.Utils as Utils
 
@@ -42,6 +43,7 @@ type alias Model =
     , showModal : Bool
     , showDropdown : Bool
     , navbar : Navbar.Model
+    , table : TableModel
     , isOpen : Bool
     , showMenuDropdown : Bool
     }
@@ -67,6 +69,11 @@ type NotificationColor
 
 type alias ColumnsModel =
     { count : Int
+    }
+
+
+type alias TableModel =
+    { mods : List Table.Modifier
     }
 
 
@@ -96,6 +103,7 @@ initialModel =
     , showModal = False
     , showDropdown = False
     , navbar = Navbar.defaultModel
+    , table = defaultTableModel
     , isOpen = False
     , showMenuDropdown = False
     }
@@ -120,6 +128,12 @@ defaultColumns =
     }
 
 
+defaultTableModel : TableModel
+defaultTableModel =
+    { mods = []
+    }
+
+
 
 -- UPDATE
 
@@ -132,6 +146,7 @@ type Msg
     | GotNotificationMsg NotificationMsg
     | GotColumnsMsg ColumnsMsg
     | GotNavbarMsg Navbar.Msg
+    | GotTableMsg TableMsg
     | ToggledMenu
     | ToggledModal
     | ToggledDropdown
@@ -150,6 +165,10 @@ type NotificationMsg
 type ColumnsMsg
     = AddColumn
     | SubtractColumn
+
+
+type TableMsg
+    = ToggledTableModifier Table.Modifier
 
 
 update : Msg -> Model -> Model
@@ -175,6 +194,9 @@ update msg model =
 
         GotNavbarMsg subMsg ->
             { model | navbar = Navbar.update subMsg model.navbar }
+
+        GotTableMsg subMsg ->
+            { model | table = updateTable subMsg model.table }
 
         ToggledModal ->
             { model | showModal = not model.showModal }
@@ -222,6 +244,21 @@ updateColumns msg model =
 
         SubtractColumn ->
             { model | count = max 1 (model.count - 1) }
+
+
+updateTable : TableMsg -> TableModel -> TableModel
+updateTable msg model =
+    case msg of
+        ToggledTableModifier mod ->
+            let
+                newMods =
+                    if List.member mod model.mods then
+                        List.filter (\a -> a /= mod) model.mods
+
+                    else
+                        mod :: model.mods
+            in
+            { model | mods = newMods }
 
 
 
@@ -336,6 +373,7 @@ view model =
             , viewModal model.showModal
             , viewIcons
             , viewCard
+            , viewTable model.table
             ]
 
         -- , Navbar.backdrop navbarConfig model.navbar
@@ -469,10 +507,10 @@ viewContactAndOpeningHours =
 --     styled Html.a (itemAndLinkStyles ++ linkStyles) [ Attributes.href url ] [ Html.text label ]
 
 
-search : List Style -> Html Msg
-search styles =
+search : Html Msg
+search =
     styled Html.form
-        (styles ++ [ Css.display Css.block, Css.flexGrow (Css.num 1) ])
+        [ Css.display Css.block, Css.flexGrow (Css.num 1) ]
         []
         [ Form.field [ Form.Attached ]
             [ Form.expandedControl False
@@ -1171,6 +1209,103 @@ viewCard =
                 ]
             ]
         ]
+
+
+viewTable : TableModel -> Html Msg
+viewTable model =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Table"
+            , Form.field []
+                [ Form.label "Modifiers"
+                , Form.control False (List.map (viewTableModifier model.mods) allTableModifiers)
+                ]
+            , Content.content []
+                [ Html.p [] [ Html.text "The table component originates from Bulmas equivalent." ]
+                ]
+            ]
+        , styled Html.div
+            [ Utils.block
+            , Colors.backgroundColor
+                (if List.member Table.OnBlack model.mods then
+                    Colors.black
+
+                 else
+                    Colors.lightBlue
+                )
+            , Css.padding (Css.px 16)
+            ]
+            []
+            [ Table.body []
+                [ Html.tr []
+                    [ Html.td [] [ Html.text "This is text in a cell." ]
+                    , Html.td [] [ Html.text "This is text in a cell." ]
+                    , Html.td [] [ Html.text "This is text in a cell." ]
+                    ]
+                , Html.tr []
+                    [ Html.td [] [ Html.text "This is text in a cell." ]
+                    , Html.td [] [ Html.text "This is text in a cell." ]
+                    , Html.td [] [ Html.text "This is text in a cell." ]
+                    ]
+                ]
+                |> Table.withModifiers model.mods
+                |> Table.toHtml
+            ]
+        , Content.content []
+            [ Html.pre []
+                [ Html.code []
+                    [ Html.text "Table.body []\n            [ Html.tr []\n                [ Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                ]\n            , Html.tr []\n                [ Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                ]\n            ]\n            |> Table.withModifiers "
+                    , Html.text ("[ " ++ (List.map tableModToString model.mods |> String.join ", ") ++ " ]")
+                    , Html.text "\n            |> Table.toHtml"
+                    ]
+
+                -- model.mods
+                ]
+            ]
+        ]
+
+
+viewTableModifier : List Table.Modifier -> ( Table.Modifier, String ) -> Html Msg
+viewTableModifier activeMods ( mod, label ) =
+    Input.checkbox (GotTableMsg (ToggledTableModifier mod)) label (List.member mod activeMods)
+        |> Input.toHtml
+
+
+allTableModifiers : List ( Table.Modifier, String )
+allTableModifiers =
+    [ ( Table.Bordered, "Table.Bordered" )
+    , ( Table.Fullwidth, "Table.Fullwidth" )
+    , ( Table.Hoverable, "Table.Hoverable" )
+    , ( Table.Narrow, "Table.Narrow" )
+    , ( Table.Striped, "Table.Striped" )
+    , ( Table.OnBlack, "Table.OnBlack" )
+    , ( Table.Mobilefriendly, "Table.Mobilefriendly" )
+    ]
+
+
+tableModToString : Table.Modifier -> String
+tableModToString mod =
+    case mod of
+        Table.Bordered ->
+            "Table.Bordered"
+
+        Table.Fullwidth ->
+            "Table.Fullwidth"
+
+        Table.Hoverable ->
+            "Table.Hoverable"
+
+        Table.Narrow ->
+            "Table.Narrow"
+
+        Table.Striped ->
+            "Table.Striped"
+
+        Table.OnBlack ->
+            "Table.OnBlack"
+
+        Table.Mobilefriendly ->
+            "Table.Mobilefriendly"
 
 
 viewIf : Bool -> Html msg -> Html msg

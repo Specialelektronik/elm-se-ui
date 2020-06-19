@@ -29,6 +29,7 @@
     "SE.UI.OuterClick",
     "SE.UI.Section",
     "SE.UI.Table",
+    "SE.UI.Table.V2",
     "SE.UI.Tabs",
     "SE.UI.Tag",
     "SE.UI.Title",
