@@ -178,7 +178,10 @@ content =
                                 ]
                             ]
                         ]
-                    , selector "tbody tr:last-child td, tbody tr:last-child th"
+                    , selector "tbody tr:last-child td"
+                        [ Css.borderBottomWidth zero
+                        ]
+                    , selector "tbody tr:last-child th"
                         [ Css.borderBottomWidth zero
                         ]
                     ]

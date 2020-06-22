@@ -360,7 +360,8 @@ view model =
         []
         [ Global.global
         , Navbar.view navbarConfig search model.navbar
-        , Html.article []
+        , Html.article
+            []
             [ viewLogo
             , viewColors
             , viewTypography
@@ -1226,28 +1227,27 @@ viewTable model =
             ]
         , styled Html.div
             [ Utils.block
-            , Colors.backgroundColor
-                (if List.member Table.OnBlack model.mods then
-                    Colors.black
-
-                 else
-                    Colors.lightBlue
-                )
+            , Colors.backgroundColor Colors.lightBlue
             , Css.padding (Css.px 16)
             ]
             []
             [ Table.body []
                 [ Html.tr []
-                    [ Html.td [] [ Html.text "This is text in a cell." ]
+                    [ Html.th [] [ Html.text "This is a header cell." ]
                     , Html.td [] [ Html.text "This is text in a cell." ]
                     , Html.td [] [ Html.text "This is text in a cell." ]
                     ]
                 , Html.tr []
-                    [ Html.td [] [ Html.text "This is text in a cell." ]
-                    , Html.td [] [ Html.text "This is text in a cell." ]
+                    [ Html.td [] [ Html.text "This is a header cell." ]
+                    , Html.th [] [ Html.text "This is text in a cell." ]
                     , Html.td [] [ Html.text "This is text in a cell." ]
                     ]
                 ]
+                |> Table.withHead
+                    [ Html.th [] [ Html.text "This is a header cell." ]
+                    , Html.th [] [ Html.text "This is a header cell." ]
+                    , Html.th [] [ Html.text "This is a header cell." ]
+                    ]
                 |> Table.withModifiers model.mods
                 |> Table.toHtml
             ]
@@ -1258,8 +1258,6 @@ viewTable model =
                     , Html.text ("[ " ++ (List.map tableModToString model.mods |> String.join ", ") ++ " ]")
                     , Html.text "\n            |> Table.toHtml"
                     ]
-
-                -- model.mods
                 ]
             ]
         ]
@@ -1273,39 +1271,19 @@ viewTableModifier activeMods ( mod, label ) =
 
 allTableModifiers : List ( Table.Modifier, String )
 allTableModifiers =
-    [ ( Table.Bordered, "Table.Bordered" )
-    , ( Table.Fullwidth, "Table.Fullwidth" )
+    [ ( Table.Fullwidth, "Table.Fullwidth" )
     , ( Table.Hoverable, "Table.Hoverable" )
-    , ( Table.Narrow, "Table.Narrow" )
-    , ( Table.Striped, "Table.Striped" )
-    , ( Table.OnBlack, "Table.OnBlack" )
-    , ( Table.Mobilefriendly, "Table.Mobilefriendly" )
     ]
 
 
 tableModToString : Table.Modifier -> String
 tableModToString mod =
     case mod of
-        Table.Bordered ->
-            "Table.Bordered"
-
         Table.Fullwidth ->
             "Table.Fullwidth"
 
         Table.Hoverable ->
             "Table.Hoverable"
-
-        Table.Narrow ->
-            "Table.Narrow"
-
-        Table.Striped ->
-            "Table.Striped"
-
-        Table.OnBlack ->
-            "Table.OnBlack"
-
-        Table.Mobilefriendly ->
-            "Table.Mobilefriendly"
 
 
 viewIf : Bool -> Html msg -> Html msg

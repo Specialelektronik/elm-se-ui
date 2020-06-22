@@ -1,4 +1,4 @@
-module SE.UI.Table.V2 exposing (Modifier(..), body, toHtml, withModifiers)
+module SE.UI.Table.V2 exposing (Modifier(..), body, toHtml, withFoot, withHead, withModifiers)
 
 {-| Bulmas table element
 see <https://bulma.io/documentation/elements/table/>
@@ -12,6 +12,7 @@ import Css.Global
 import Html.Styled as Html exposing (Attribute, Html, styled)
 import Html.Styled.Attributes as Attributes
 import SE.UI.Colors as Colors
+import SE.UI.Font as Font
 import SE.UI.Utils as Utils
 
 
@@ -21,20 +22,15 @@ type Table msg
 
 type alias Internals msg =
     { body : ( List (Attribute msg), List (Html msg) )
-    , head : ( List (Attribute msg), List (Html msg) )
-    , foot : ( List (Attribute msg), List (Html msg) )
+    , head : List (Html msg)
+    , foot : List (Html msg)
     , mods : List Modifier
     }
 
 
 type Modifier
-    = Bordered
-    | Fullwidth
+    = Fullwidth
     | Hoverable
-    | Narrow
-    | Striped
-    | OnBlack
-    | Mobilefriendly
 
 
 {-| Create a table without thead or tfoot element, even though the functions name is body, the attributes will be added to the table tag. To style the tbody, use
@@ -50,23 +46,27 @@ body : List (Attribute msg) -> List (Html msg) -> Table msg
 body attrs kids =
     Table
         { body = ( attrs, kids )
-        , head = ( [], [] )
-        , foot = ( [], [] )
+        , head = []
+        , foot = []
         , mods = []
         }
 
 
 toHtml : Table msg -> Html msg
 toHtml (Table internals) =
-    wrapper internals.mods
+    wrapper
         (styled Html.table
-            (tableStyles ++ tableModifierStyles internals.mods)
+            (tableStyles internals.mods)
             (Attributes.class "table"
                 :: Tuple.first internals.body
             )
-            [ thead (Tuple.first internals.head) (Tuple.second internals.head)
+            [ thead []
+                [ Html.tr [] internals.head
+                ]
             , Html.tbody [] (Tuple.second internals.body)
-            , Html.tfoot (Tuple.first internals.foot) (Tuple.second internals.foot)
+            , tfoot []
+                [ Html.tr [] internals.foot
+                ]
             ]
         )
 
@@ -99,53 +99,68 @@ withModifiers mods (Table internals) =
     Table { internals | mods = mods }
 
 
+withHead : List (Html msg) -> Table msg -> Table msg
+withHead rows (Table internals) =
+    Table { internals | head = rows }
+
+
+withFoot : List (Html msg) -> Table msg -> Table msg
+withFoot rows (Table internals) =
+    Table { internals | foot = rows }
+
+
 {-| Makes the table horizontal scrollable if wanted
 -}
-wrapper : List Modifier -> Html msg -> Html msg
-wrapper mods t =
-    if List.member Mobilefriendly mods then
-        styled Html.div
-            [ Utils.block
-            , Utils.overflowTouch
-            , Css.overflow Css.auto
-            , Css.overflowY Css.hidden
-            , Css.maxWidth (Css.pct 100)
-            ]
-            []
-            [ t ]
-
-    else
-        t
+wrapper : Html msg -> Html msg
+wrapper kids =
+    styled Html.div
+        []
+        -- [ Utils.block
+        -- , Utils.overflowTouch
+        -- , Css.overflow Css.auto
+        -- , Css.overflowY Css.hidden
+        -- , Css.maxWidth (Css.pct 100)
+        -- ]
+        []
+        [ kids ]
 
 
 
 -- STYLES
 
 
-tableStyles : List Style
-tableStyles =
-    [ Utils.block
-    , Colors.color Colors.darker
+tableStyles : List Modifier -> List Style
+tableStyles mods =
+    [ Css.batch (tableModifierStyles mods)
+    , Font.bodySizeRem -2
     , Css.Global.descendants
-        [ Css.Global.each [ Css.Global.typeSelector "td", Css.Global.typeSelector "th" ]
-            [ Css.border3 (Css.px 1) Css.solid (Colors.light |> Colors.toCss)
-            , Css.borderWidth3 Css.zero Css.zero (Css.px 1)
-            , Css.padding2 (Css.em 0.5) (Css.em 0.75)
+        [ Css.Global.each
+            [ Css.Global.typeSelector "td"
+            , Css.Global.typeSelector "th"
+            ]
+            [ Css.padding2 (Css.rem 0.7) (Css.px 16)
+            , Utils.desktop
+                [ Css.padding2 (Css.rem 0.5) (Css.px 16)
+                ]
+            , Css.border3 (Css.px 10) Css.solid (Colors.border |> Colors.toCss)
+            , Css.borderWidth2 (Css.px 1) Css.zero
+            , Css.pseudoClass "first-child"
+                [ Css.borderLeftWidth (Css.px 1)
+                ]
+            , Css.pseudoClass "last-child"
+                [ Css.borderRightWidth (Css.px 1)
+                ]
             , Css.verticalAlign Css.top
+            ]
+        , Css.Global.selector "tbody tr:not([selected]):nth-child(even)"
+            [ Colors.backgroundColor Colors.background
+            ]
+        , Css.Global.selector "thead th"
+            [ Colors.backgroundColor Colors.background
             ]
         , Css.Global.typeSelector "th"
             [ Css.textAlign Css.left
-            ]
-        , Css.Global.selector "thead th"
-            [ Css.borderWidth3 Css.zero Css.zero (Css.px 2)
-            , Colors.color Colors.darkest
-            ]
-        , Css.Global.selector "tfoot td"
-            [ Css.borderWidth3 (Css.px 2) Css.zero Css.zero
-            , Colors.color Colors.darkest
-            ]
-        , Css.Global.selector "tbody tr:last-child td"
-            [ Css.borderBottomWidth Css.zero
+            , Css.fontWeight Css.bold
             ]
         ]
     ]
@@ -153,24 +168,12 @@ tableStyles =
 
 tableModifierStyles : List Modifier -> List Style
 tableModifierStyles mods =
-    List.map (tableModifierStyle mods) mods
+    List.map tableModifierStyle mods
 
 
-tableModifierStyle : List Modifier -> Modifier -> Style
-tableModifierStyle allMods mod =
+tableModifierStyle : Modifier -> Style
+tableModifierStyle mod =
     case mod of
-        Bordered ->
-            Css.batch
-                [ Css.Global.descendants
-                    [ Css.Global.each [ Css.Global.selector "thead th", Css.Global.selector "tbody td", Css.Global.selector "tfoot td" ]
-                        [ Css.borderWidth (Css.px 1)
-                        ]
-                    , Css.Global.each [ Css.Global.selector "tr:last-child td", Css.Global.selector "tr:last-child th" ]
-                        [ Css.important (Css.borderBottomWidth (Css.px 1))
-                        ]
-                    ]
-                ]
-
         Fullwidth ->
             Css.batch
                 [ Css.width (Css.pct 100)
@@ -179,55 +182,12 @@ tableModifierStyle allMods mod =
         Hoverable ->
             Css.batch
                 [ Css.Global.descendants
-                    (Css.Global.selector "tbody tr:not([selected]):hover"
+                    [ Css.Global.selector
+                        "tbody tr:not([selected]):hover"
                         [ Colors.backgroundColor Colors.lighter
                         ]
-                        :: (if List.member Striped allMods then
-                                [ Css.Global.selector "tbody tr:not([selected]):hover:nth-child(even)"
-                                    [ Colors.backgroundColor Colors.light
-                                    ]
-                                ]
-
-                            else
-                                []
-                           )
-                    )
-                ]
-
-        Narrow ->
-            Css.batch
-                [ Css.Global.descendants
-                    [ Css.Global.each
-                        [ Css.Global.typeSelector "td"
-                        , Css.Global.typeSelector "th"
-                        ]
-                        [ Css.padding2 (Css.em 0.25) (Css.em 0.5)
+                    , Css.Global.selector "tbody tr:not([selected]):hover:nth-child(even)"
+                        [ Colors.backgroundColor Colors.light
                         ]
                     ]
                 ]
-
-        Striped ->
-            Css.batch
-                [ Css.Global.descendants
-                    [ Css.Global.selector "tbody tr:not([selected]):nth-child(even)"
-                        [ Colors.backgroundColor Colors.lighter
-                        ]
-                    ]
-                ]
-
-        OnBlack ->
-            Css.batch
-                [ Colors.color Colors.lighter
-                , Css.Global.descendants
-                    [ Css.Global.selector "thead th"
-                        [ Colors.color Colors.lightest
-                        ]
-                    , Css.Global.selector "tfoot td"
-                        [ Colors.color Colors.lightest
-                        ]
-                    ]
-                ]
-
-        -- Mobilefriendly only wraps the table, no additional styling
-        Mobilefriendly ->
-            Css.batch []
