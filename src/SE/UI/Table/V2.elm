@@ -1,9 +1,43 @@
-module SE.UI.Table.V2 exposing (Modifier(..), body, toHtml, withFoot, withHead, withModifiers)
+module SE.UI.Table.V2 exposing
+    ( body, toHtml
+    , withHead, withFoot, withModifiers, Modifier(..)
+    )
 
 {-| Bulmas table element
 see <https://bulma.io/documentation/elements/table/>
 
 The second try on the Table component. This time we go with the with Star pattern that we use on Input and Card.
+
+@docs body, toHtml
+
+
+# With\* pattern (pron. With start pattern)
+
+The inspiration to this module and its API comes from Brian Hicks talk about Robot Buttons from Mars (<https://youtu.be/PDyWP-0H4Zo?t=1467>). (Please view the entire talk).
+
+    Example:
+
+    Table.body []
+        [ Html.tr []
+            [ Html.th [] [ Html.text "This is a header cell." ]
+            , Html.td [] [ Html.text "This is text in a cell." ]
+            , Html.td [] [ Html.text "This is text in a cell." ]
+            ]
+        , Html.tr []
+            [ Html.td [] [ Html.text "This is a header cell." ]
+            , Html.th [] [ Html.text "This is text in a cell." ]
+            , Html.td [] [ Html.text "This is text in a cell." ]
+            ]
+        ]
+        |> Table.withHead
+            [ Html.th [] [ Html.text "This is a header cell." ]
+            , Html.th [] [ Html.text "This is a header cell." ]
+            , Html.th [] [ Html.text "This is a header cell." ]
+            ]
+        |> Table.withModifiers [ Table.Hoverable ]
+        |> Table.toHtml
+
+@docs withHead, withFoot, withModifiers, Modifier
 
 -}
 
@@ -28,6 +62,11 @@ type alias Internals msg =
     }
 
 
+{-| The following modifiers from Bulma are always added:
+
+Striped, Bordered
+
+-}
 type Modifier
     = Fullwidth
     | Hoverable
@@ -52,6 +91,8 @@ body attrs kids =
         }
 
 
+{-| Turn the table into Html
+-}
 toHtml : Table msg -> Html msg
 toHtml (Table internals) =
     wrapper
@@ -94,16 +135,22 @@ tfoot =
 -- WITH STAR
 
 
+{-| Add Modifiers to the Table
+-}
 withModifiers : List Modifier -> Table msg -> Table msg
 withModifiers mods (Table internals) =
     Table { internals | mods = mods }
 
 
+{-| Add a thead tag to the Table, the thead will also have a tr tag, your input should be a list of td tags.
+-}
 withHead : List (Html msg) -> Table msg -> Table msg
 withHead rows (Table internals) =
     Table { internals | head = rows }
 
 
+{-| Add a tfoot tag to the end of the Table, the tfoots will also have a tr tag, your input should be a list of td tags.
+-}
 withFoot : List (Html msg) -> Table msg -> Table msg
 withFoot rows (Table internals) =
     Table { internals | foot = rows }
