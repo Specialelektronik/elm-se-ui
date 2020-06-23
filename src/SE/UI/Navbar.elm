@@ -270,10 +270,15 @@ viewMobileSearch searchFn =
         [ searchFn ]
 
 
+mobileSearchHeight =
+    48
+
+
 mobileSearchStyles : List Style
 mobileSearchStyles =
     [ Css.padding Css.zero
     , Colors.backgroundColor Colors.white
+    , Css.height (Css.px mobileSearchHeight)
     ]
 
 
@@ -299,7 +304,7 @@ viewMobile config searchFn model =
         [ globalDropdownOverrideStyles
         , Css.displayFlex
         , Css.flexDirection Css.column
-        , Css.height (Css.px 118)
+        , Css.height (Css.px 126)
         , Utils.desktop
             [ Css.display Css.none
             ]
@@ -621,8 +626,9 @@ megaItemStyles =
 -- VIEW BRAND
 
 
+brandHeight : Float
 brandHeight =
-    Css.px 75
+    75
 
 
 viewBrand : Config msg -> Bool -> Html msg
@@ -712,7 +718,7 @@ brandStyles =
     [ Css.alignItems Css.stretch
     , Css.displayFlex
     , Css.flexShrink Css.zero
-    , Css.minHeight brandHeight
+    , Css.minHeight (Css.px brandHeight)
     , Css.justifyContent Css.spaceBetween
     , Css.alignItems Css.center
     , Colors.backgroundColor Colors.white
@@ -755,15 +761,16 @@ viewDropdownButton styles config isActive id label =
 -- VIEW LED
 
 
+ledHeight : Float
 ledHeight =
-    Css.px 3
+    3
 
 
 viewLED : Html msg
 viewLED =
     styled Html.div
         [ Colors.backgroundColor Colors.primary
-        , Css.height (Css.px 3)
+        , Css.height (Css.px ledHeight)
         , Css.flexShrink Css.zero
         ]
         []
@@ -833,7 +840,7 @@ global =
     Css.Global.global
         [ Css.Global.body
             [ Css.marginTop
-                (Css.calc brandHeight Css.plus ledHeight)
+                (Css.px (brandHeight + ledHeight + mobileSearchHeight))
             ]
 
         -- , Css.Global.html

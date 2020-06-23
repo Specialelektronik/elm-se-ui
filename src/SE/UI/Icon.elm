@@ -1,5 +1,5 @@
 module SE.UI.Icon exposing
-    ( angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+    ( angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
     , angleDownCssBackground, tick, circle
     )
 
@@ -12,7 +12,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, phone, satelliteDish, search, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+@docs angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
 
 
 # Css Backgrounds
@@ -66,7 +66,7 @@ internalIcon size vb paths =
     in
     styled Html.Styled.span
         (containerStyles size)
-        [ class "icon" ]
+        [ Attributes.class "icon" ]
         [ Svg.svg [ width s, height s, viewBoxtoHtml vb ] paths ]
 
 
@@ -330,6 +330,13 @@ pdf size =
     internalIcon size (viewBox 384 512) [ Svg.path [ d "M181.9 256.1c-5-16-4.9-46.9-2-46.9 8.4 0 7.6 36.9 2 46.9zm-1.7 47.2c-7.7 20.2-17.3 43.3-28.4 62.7 18.3-7 39-17.2 62.9-21.9-12.7-9.6-24.9-23.4-34.5-40.8zM86.1 428.1c0 .8 13.2-5.4 34.9-40.2-6.7 6.3-29.1 24.5-34.9 40.2zM248 160h136v328c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V24C0 10.7 10.7 0 24 0h200v136c0 13.2 10.8 24 24 24zm-8 171.8c-20-12.2-33.3-29-42.7-53.8 4.5-18.5 11.6-46.6 6.2-64.2-4.7-29.4-42.4-26.5-47.8-6.8-5 18.3-.4 44.1 8.1 77-11.6 27.6-28.7 64.6-40.8 85.8-.1 0-.1.1-.2.1-27.1 13.9-73.6 44.5-54.5 68 5.6 6.9 16 10 21.5 10 17.9 0 35.7-18 61.1-61.8 25.8-8.5 54.1-19.1 79-23.2 21.7 11.8 47.1 19.5 64 19.5 29.2 0 31.2-32 19.7-43.4-13.9-13.6-54.3-9.7-73.6-7.2zM377 105L279 7c-4.5-4.5-10.6-7-17-7h-6v128h128v-6.1c0-6.3-2.5-12.4-7-16.9zm-74.1 255.3c4.1-2.7-2.5-11.9-42.8-9 37.1 15.8 42.8 9 42.8 9z" ] [] ]
 
 
+{-| <https://fontawesome.com/icons/percentage?style=solid>
+-}
+percentage : Control.Size -> Html msg
+percentage size =
+    internalIcon size (viewBox 384 512) [ Svg.path [ d "M109.25 173.25c24.99-24.99 24.99-65.52 0-90.51-24.99-24.99-65.52-24.99-90.51 0-24.99 24.99-24.99 65.52 0 90.51 25 25 65.52 25 90.51 0zm256 165.49c-24.99-24.99-65.52-24.99-90.51 0-24.99 24.99-24.99 65.52 0 90.51 24.99 24.99 65.52 24.99 90.51 0 25-24.99 25-65.51 0-90.51zm-1.94-231.43l-22.62-22.62c-12.5-12.5-32.76-12.5-45.25 0L20.69 359.44c-12.5 12.5-12.5 32.76 0 45.25l22.62 22.62c12.5 12.5 32.76 12.5 45.25 0l274.75-274.75c12.5-12.49 12.5-32.75 0-45.25z" ] [] ]
+
+
 {-| <https://fontawesome.com/icons/phone?style=solid>
 -}
 phone : Control.Size -> Html msg
@@ -349,6 +356,20 @@ satelliteDish size =
 search : Control.Size -> Html msg
 search size =
     internalIcon size (viewBox 512 512) [ Svg.path [ d "M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/sliders-h?style=solid>
+-}
+slidersH : Control.Size -> Html msg
+slidersH size =
+    internalIcon size (viewBox 512 512) [ Svg.path [ d "M496 384H160v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h80v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h336c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160h-80v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h336v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h80c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160H288V48c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16C7.2 64 0 71.2 0 80v32c0 8.8 7.2 16 16 16h208v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h208c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/star?style=solid>
+-}
+star : Control.Size -> Html msg
+star size =
+    internalIcon size (viewBox 576 512) [ Svg.path [ d "M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z" ] [] ]
 
 
 {-| Custom icon to mediate a tight product view table
