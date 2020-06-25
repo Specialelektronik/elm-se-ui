@@ -1,5 +1,5 @@
 module SE.UI.Icon exposing
-    ( angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+    ( angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, checkCircle, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
     , angleDownCssBackground, tick, circle
     )
 
@@ -12,7 +12,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+@docs angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, checkCircle, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
 
 
 # Css Backgrounds
@@ -217,6 +217,13 @@ cart size =
 category : Control.Size -> Html msg
 category size =
     internalIcon size (viewBox 640 512) [ Svg.path [ d "M128 352H32c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32zm-24-80h192v48h48v-48h192v48h48v-57.59c0-21.17-17.23-38.41-38.41-38.41H344v-64h40c17.67 0 32-14.33 32-32V32c0-17.67-14.33-32-32-32H256c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h40v64H94.41C73.23 224 56 241.23 56 262.41V320h48v-48zm264 80h-96c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32zm240 0h-96c-17.67 0-32 14.33-32 32v96c0 17.67 14.33 32 32 32h96c17.67 0 32-14.33 32-32v-96c0-17.67-14.33-32-32-32z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/check-circle?style=regular>
+-}
+checkCircle : Control.Size -> Html msg
+checkCircle size =
+    internalIcon size (viewBox 512 512) [ Svg.path [ d "M256 8C119.033 8 8 119.033 8 256s111.033 248 248 248 248-111.033 248-248S392.967 8 256 8zm0 48c110.532 0 200 89.451 200 200 0 110.532-89.451 200-200 200-110.532 0-200-89.451-200-200 0-110.532 89.451-200 200-200m140.204 130.267l-22.536-22.718c-4.667-4.705-12.265-4.736-16.97-.068L215.346 303.697l-59.792-60.277c-4.667-4.705-12.265-4.736-16.97-.069l-22.719 22.536c-4.705 4.667-4.736 12.265-.068 16.971l90.781 91.516c4.667 4.705 12.265 4.736 16.97.068l172.589-171.204c4.704-4.668 4.734-12.266.067-16.971z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/clock?style=solid>

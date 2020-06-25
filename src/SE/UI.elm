@@ -1153,6 +1153,7 @@ allIcons =
     , ( "campaign", Icon.campaign )
     , ( "cart", Icon.cart )
     , ( "category", Icon.category )
+    , ( "checkCircle", Icon.checkCircle )
     , ( "clock", Icon.clock )
     , ( "dolly", Icon.dolly )
     , ( "ethernet", Icon.ethernet )
