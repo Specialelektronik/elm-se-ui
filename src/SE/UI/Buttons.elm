@@ -257,7 +257,6 @@ buttonModifier modifier =
             Css.batch
                 [ important (Css.color transparent)
                 , Css.pointerEvents none
-                , important (Css.position absolute)
                 , Css.after
                     [ loader
                     , centerEm 1 1
