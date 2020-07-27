@@ -340,7 +340,7 @@ viewMobileItem =
 mobileBasicItemStyles : Bool -> List Style
 mobileBasicItemStyles isActive =
     [ Colors.color Colors.text
-    , Css.fontWeight Css.bold
+    , Css.fontWeight (Css.int 600)
     , Font.bodySizeRem -1
     , Css.padding (Css.rem 1)
     , Css.displayFlex
@@ -504,7 +504,7 @@ mainNavStyles =
             [ Css.textTransform Css.uppercase
             , Colors.color Colors.text
             , Css.letterSpacing (Css.px 1)
-            , Css.fontWeight Css.bold
+            , Css.fontWeight (Css.int 600)
             , Css.hover
                 [ Colors.backgroundColor Colors.background
                 , Colors.color Colors.primary
@@ -614,7 +614,7 @@ megaItemStyles =
     , Css.textTransform Css.uppercase
     , Colors.color Colors.text
     , Css.letterSpacing (Css.px 1)
-    , Css.fontWeight Css.bold
+    , Css.fontWeight (Css.int 600)
     , Css.hover
         [ Colors.backgroundColor Colors.background
         , Colors.color Colors.primary

@@ -207,7 +207,7 @@ tableStyles mods =
             ]
         , Css.Global.typeSelector "th"
             [ Css.textAlign Css.left
-            , Css.fontWeight Css.bold
+            , Css.fontWeight (Css.int 600)
             ]
         ]
     ]

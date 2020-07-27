@@ -397,7 +397,7 @@ viewLoginIcon =
         [ Attributes.href "/login" ]
         [ Icon.user Control.Medium
         , styled Html.span
-            [ Css.fontWeight Css.bold
+            [ Css.fontWeight (Css.int 600)
             , Utils.desktop
                 [ Colors.color Colors.base
                 , Font.bodySizeRem -3
@@ -448,7 +448,7 @@ viewCartIcon =
         [ Attributes.href "/cart", Attributes.attribute "data-badge" "33" ]
         [ Icon.cart Control.Medium
         , styled Html.span
-            [ Css.fontWeight Css.bold
+            [ Css.fontWeight (Css.int 600)
             , Utils.desktop
                 [ Colors.color Colors.base
                 , Font.bodySizeRem -3

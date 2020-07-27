@@ -210,7 +210,7 @@ buttonModifier modifier =
                     hsla |> Colors.active
             in
             Css.batch
-                [ Css.fontWeight Css.bold
+                [ Css.fontWeight (Css.int 600)
                 , Colors.color (hsla |> Colors.invert)
                 , Colors.backgroundColor hsla
                 , Css.borderColor transparent

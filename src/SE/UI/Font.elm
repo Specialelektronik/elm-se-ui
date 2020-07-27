@@ -183,7 +183,7 @@ textButtonStyles =
     , Css.position Css.relative
     , Colors.color Colors.text
     , Css.textTransform Css.uppercase
-    , Css.fontWeight Css.bold
+    , Css.fontWeight (Css.int 600)
     , bodySizeEm -2
     , Css.letterSpacing (Css.px 1)
     , Css.paddingBottom (Css.px 2)
