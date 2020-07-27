@@ -330,6 +330,7 @@ inlineAndBlock =
                         ]
                     , Css.Global.th
                         [ Colors.color Colors.darkest
+                        , Css.fontWeight (Css.int 600)
                         ]
                     ]
                 ]

@@ -205,10 +205,6 @@ tableStyles mods =
         , Css.Global.selector "thead th"
             [ Colors.backgroundColor Colors.background
             ]
-        , Css.Global.typeSelector "th"
-            [ Css.textAlign Css.left
-            , Css.fontWeight (Css.int 600)
-            ]
         ]
     ]
 
