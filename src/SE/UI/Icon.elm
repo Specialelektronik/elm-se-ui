@@ -66,7 +66,7 @@ internalIcon size vb paths =
     in
     styled Html.Styled.span
         (containerStyles size)
-        [ Attributes.class "icon" ]
+        [ Html.Styled.Attributes.classList [ ( "icon", True ) ] ]
         [ Svg.svg [ width s, height s, viewBoxtoHtml vb ] paths ]
 
 
