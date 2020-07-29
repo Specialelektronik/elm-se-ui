@@ -163,10 +163,6 @@ update msg model =
             { model | isOpen = not model.isOpen }
 
         ClosedDropdown ->
-            let
-                _ =
-                    Debug.log "Close Dropdown" ""
-            in
             { model | activeDropdownId = "" }
 
         ToggledDropdown id ->
