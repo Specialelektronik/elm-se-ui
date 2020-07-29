@@ -21,6 +21,8 @@ import SE.UI.Form.Input as Input
 import SE.UI.Global as Global
 import SE.UI.Icon as Icon
 import SE.UI.Logo as Logo
+import SE.UI.Logos.Crestron as Crestron
+import SE.UI.Logos.Panasonic as Panasonic
 import SE.UI.Modal as Modal
 import SE.UI.Navbar as Navbar
 import SE.UI.Notification as Notification
@@ -46,6 +48,8 @@ type alias Model =
     , table : TableModel
     , isOpen : Bool
     , showMenuDropdown : Bool
+    , crestron : CrestronModel
+    , panasonic : PanasonicModel
     }
 
 
@@ -77,6 +81,35 @@ type alias TableModel =
     }
 
 
+type alias CrestronModel =
+    { color : CrestronColor
+    , variant : CrestronVariant
+    }
+
+
+type CrestronColor
+    = Blue
+    | Black
+    | White
+
+
+type CrestronVariant
+    = Standard
+    | Stack
+    | Swirl
+
+
+type alias PanasonicModel =
+    { color : PanasonicColor
+    , isMonochrome : Panasonic.IsMonochrome
+    }
+
+
+type PanasonicColor
+    = OnWhite
+    | OnBlack
+
+
 colorToNotification : NotificationColor -> ( String, Maybe msg -> List (Html msg) -> Html msg )
 colorToNotification color =
     case color of
@@ -106,6 +139,8 @@ initialModel =
     , table = defaultTableModel
     , isOpen = False
     , showMenuDropdown = False
+    , crestron = defaultCrestronLogo
+    , panasonic = defaultPanasonicLogo
     }
 
 
@@ -135,6 +170,22 @@ defaultTableModel =
 
 
 
+
+defaultCrestronLogo : CrestronModel
+defaultCrestronLogo =
+    { color = Blue
+    , variant = Standard
+    }
+
+
+defaultPanasonicLogo : PanasonicModel
+defaultPanasonicLogo =
+    { color = OnWhite
+    , isMonochrome = False
+    }
+
+
+
 -- UPDATE
 
 
@@ -147,6 +198,8 @@ type Msg
     | GotColumnsMsg ColumnsMsg
     | GotNavbarMsg Navbar.Msg
     | GotTableMsg TableMsg
+    | GotCrestronMsg CrestronMsg
+    | GotPanasonicMsg PanasonicMsg
     | ToggledMenu
     | ToggledModal
     | ToggledDropdown
@@ -169,6 +222,17 @@ type ColumnsMsg
 
 type TableMsg
     = ToggledTableModifier Table.Modifier
+
+
+
+type CrestronMsg
+    = ToggledColor CrestronColor
+    | ToggledVariant CrestronVariant
+
+
+type PanasonicMsg
+    = ToggledPanasonicColor PanasonicColor
+    | ToggledMonochrome
 
 
 update : Msg -> Model -> Model
@@ -197,6 +261,12 @@ update msg model =
 
         GotTableMsg subMsg ->
             { model | table = updateTable subMsg model.table }
+
+        GotCrestronMsg subMsg ->
+            { model | crestron = updateCrestron subMsg model.crestron }
+
+        GotPanasonicMsg subMsg ->
+            { model | panasonic = updatePanasonic subMsg model.panasonic }
 
         ToggledModal ->
             { model | showModal = not model.showModal }
@@ -259,6 +329,28 @@ updateTable msg model =
                         mod :: model.mods
             in
             { model | mods = newMods }
+
+
+
+
+updateCrestron : CrestronMsg -> CrestronModel -> CrestronModel
+updateCrestron msg model =
+    case msg of
+        ToggledColor color ->
+            { model | color = color }
+
+        ToggledVariant variant ->
+            { model | variant = variant }
+
+
+updatePanasonic : PanasonicMsg -> PanasonicModel -> PanasonicModel
+updatePanasonic msg model =
+    case msg of
+        ToggledPanasonicColor color ->
+            { model | color = color }
+
+        ToggledMonochrome ->
+            { model | isMonochrome = not model.isMonochrome }
 
 
 
@@ -363,6 +455,8 @@ view model =
         , Html.article
             []
             [ viewLogo
+            , viewCrestronLogo model.crestron
+            , viewPanasonicLogo model.panasonic
             , viewColors
             , viewTypography
             , viewColumns model.columns
@@ -620,6 +714,176 @@ viewLogo =
                 ]
             ]
         ]
+
+
+viewCrestronLogo : CrestronModel -> Html Msg
+viewCrestronLogo { color, variant } =
+    let
+        ( fn, code ) =
+            case ( color, variant ) of
+                ( Blue, Standard ) ->
+                    ( Crestron.blue, "SE.UI.Logos.Crestron.blue" )
+
+                ( Black, Standard ) ->
+                    ( Crestron.black, "SE.UI.Logos.Crestron.black" )
+
+                ( White, Standard ) ->
+                    ( Crestron.white, "SE.UI.Logos.Crestron.white" )
+
+                ( Blue, Swirl ) ->
+                    ( Crestron.blueSwirl, "SE.UI.Logos.Crestron.blueSwirl" )
+
+                ( Black, Swirl ) ->
+                    ( Crestron.blackSwirl, "SE.UI.Logos.Crestron.blackSwirl" )
+
+                ( White, Swirl ) ->
+                    ( Crestron.whiteSwirl, "SE.UI.Logos.Crestron.whiteSwirl" )
+
+                ( Blue, Stack ) ->
+                    ( Crestron.blueStack, "SE.UI.Logos.Crestron.blueStack" )
+
+                ( Black, Stack ) ->
+                    ( Crestron.blackStack, "SE.UI.Logos.Crestron.blackStack" )
+
+                ( White, Stack ) ->
+                    ( Crestron.whiteStack, "SE.UI.Logos.Crestron.whiteStack" )
+    in
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Crestron Logos"
+            , Content.content []
+                [ Html.p []
+                    [ Html.text "The Crestron logo comes in three color and three variants"
+                    ]
+                ]
+            , Form.field []
+                [ Form.label "Colors"
+                , Form.control False
+                    (List.map (viewCrestronColor color) allCrestronColors)
+                ]
+            , Form.field []
+                [ Form.label "Variants"
+                , Form.control False
+                    (List.map (viewCrestronVariant variant) allCrestronVariants)
+                ]
+            , Columns.columns
+                [ Columns.defaultColumn
+                    [ styled div
+                        [ Colors.backgroundColor Colors.lightest
+                        , Css.padding (Css.pct 20)
+                        ]
+                        []
+                        [ fn ]
+                    , Content.content []
+                        [ Html.code []
+                            [ Html.text code
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+
+allCrestronColors : List ( CrestronColor, String )
+allCrestronColors =
+    [ ( Blue, "Blue" )
+    , ( Black, "Black" )
+    , ( White, "White" )
+    ]
+
+
+allCrestronVariants : List ( CrestronVariant, String )
+allCrestronVariants =
+    [ ( Standard, "Standard" )
+    , ( Stack, "Stack" )
+    , ( Swirl, "Swirl" )
+    ]
+
+
+viewCrestronColor : CrestronColor -> ( CrestronColor, String ) -> Html Msg
+viewCrestronColor activeColor ( color, label ) =
+    Input.radio (GotCrestronMsg (ToggledColor color)) label (activeColor == color)
+        |> Input.toHtml
+
+
+viewCrestronVariant : CrestronVariant -> ( CrestronVariant, String ) -> Html Msg
+viewCrestronVariant activeVariant ( variant, label ) =
+    Input.radio (GotCrestronMsg (ToggledVariant variant)) label (activeVariant == variant)
+        |> Input.toHtml
+
+
+viewPanasonicLogo : PanasonicModel -> Html Msg
+viewPanasonicLogo { color, isMonochrome } =
+    let
+        ( fn, code ) =
+            case color of
+                OnBlack ->
+                    ( Panasonic.onBlack, "SE.UI.Logos.Panasonic.onBlack" )
+
+                OnWhite ->
+                    ( Panasonic.onWhite, "SE.UI.Logos.Panasonic.onWhite" )
+
+        isMonochromeCode =
+            if isMonochrome then
+                "True"
+
+            else
+                "False"
+    in
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Panasonic Logos"
+            , Content.content []
+                [ Html.p []
+                    [ Html.text "The Panasonic logo comes in a color mode and a monochrome mode and for black (dark) backgrounds and white (light) backgrounds."
+                    ]
+                ]
+            , Form.field []
+                [ Form.label "Colors"
+                , Form.control False
+                    (List.map (viewPanasonicColor color) allPanasonicColors)
+                ]
+            , Form.field []
+                [ Form.label "Monochrome"
+                , Form.control False
+                    [ Input.checkbox
+                        (GotPanasonicMsg ToggledMonochrome)
+                        "Monochrome"
+                        isMonochrome
+                        |> Input.toHtml
+                    ]
+                ]
+            , Columns.columns
+                [ Columns.defaultColumn
+                    [ styled div
+                        [ Colors.backgroundColor Colors.lightest
+                        , Css.padding (Css.pct 20)
+                        ]
+                        []
+                        [ fn isMonochrome ]
+                    , Content.content []
+                        [ Html.code []
+                            [ Html.text (code ++ " " ++ isMonochromeCode)
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+
+allPanasonicColors : List ( PanasonicColor, String )
+allPanasonicColors =
+    [ ( OnWhite, "OnWhite" )
+    , ( OnBlack, "OnBlack" )
+    ]
+
+
+viewPanasonicColor : PanasonicColor -> ( PanasonicColor, String ) -> Html Msg
+viewPanasonicColor activeColor ( color, label ) =
+    Input.radio (GotPanasonicMsg (ToggledPanasonicColor color)) label (activeColor == color)
+        |> Input.toHtml
 
 
 viewTypography : Html Msg
