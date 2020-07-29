@@ -1,8 +1,7 @@
 module SE.UI.Tabs.V2 exposing
-    ( tabs, toHtml
+    ( tabs, Tabs, toHtml
     , isSmall, isMedium, isLarge, isToggled, isBoxed, isCentered, isRight, isFullwidth
     , link, button
-    , Tabs
     )
 
 {-| Bulmas Tags component
@@ -11,7 +10,7 @@ see <https://bulma.io/documentation/components/tabs/>
 
 # Container
 
-@docs tabs, toHtml
+@docs tabs, Tabs, toHtml
 
 
 # With\* pattern (pron. With start pattern)
@@ -39,6 +38,8 @@ import SE.UI.Font as Font
 import SE.UI.Utils as Utils exposing (block, overflowTouch, unselectable)
 
 
+{-| This opaque type is only exposed to facilitate type annotations outside of the module
+-}
 type Tabs msg
     = Tabs Internals (List (LinkOrButton msg))
 
@@ -92,13 +93,15 @@ defaultInternals =
 -- TABS
 
 
-{-| Currently, only the Medium size modifier is supported, no boxed, fullwidth or anything else.
+{-| Create tabs with all of Bulmas modifiers
 -}
 tabs : List (LinkOrButton msg) -> Tabs msg
 tabs linkOrButtons =
     Tabs defaultInternals linkOrButtons
 
 
+{-| Turn the Tabs type into Html
+-}
 toHtml : Tabs msg -> Html msg
 toHtml (Tabs internals linkOrButtons) =
     styled Html.Styled.nav
@@ -169,7 +172,7 @@ alignmentToClass alignment =
 -- LINK
 
 
-{-| An active link is rendered as a blue link, non-active are rendered av dark text.
+{-| Create a anchor tag with a href attribute, will reroute the visitor when clicked.
 
     link False "https://example.com/" [ text "Go to example.com" ]
 
@@ -179,6 +182,11 @@ link =
     Link
 
 
+{-| Create a span tag with an onClick attribute, will trigger the provided message when clicked.
+
+    button False ShowSomething [ text "Go to example.com" ]
+
+-}
 button : IsActive -> msg -> List (Html msg) -> LinkOrButton msg
 button =
     Button
@@ -212,16 +220,22 @@ withSize size (Tabs internals links) =
     Tabs { internals | size = size } links
 
 
+{-| Add .is-small to ul
+-}
 isSmall : Tabs msg -> Tabs msg
 isSmall =
     withSize Small
 
 
+{-| Add .is-medium to ul
+-}
 isMedium : Tabs msg -> Tabs msg
 isMedium =
     withSize Medium
 
 
+{-| Add .is-large to ul
+-}
 isLarge : Tabs msg -> Tabs msg
 isLarge =
     withSize Large
@@ -232,11 +246,15 @@ withStyle style (Tabs internals links) =
     Tabs { internals | style = style } links
 
 
+{-| Add .is-toggle to ul
+-}
 isToggled : Tabs msg -> Tabs msg
 isToggled =
     withStyle Toggled
 
 
+{-| Add .is-boxed to ul
+-}
 isBoxed : Tabs msg -> Tabs msg
 isBoxed =
     withStyle Boxed
@@ -247,16 +265,22 @@ withAlignment alignment (Tabs internals links) =
     Tabs { internals | alignment = alignment } links
 
 
+{-| Add .is-centered to ul
+-}
 isCentered : Tabs msg -> Tabs msg
 isCentered =
     withAlignment Centered
 
 
+{-| Add .is-right to ul
+-}
 isRight : Tabs msg -> Tabs msg
 isRight =
     withAlignment Right
 
 
+{-| Add .is-fullwidth to ul
+-}
 isFullwidth : Tabs msg -> Tabs msg
 isFullwidth (Tabs internals links) =
     Tabs { internals | fullwidth = True } links
@@ -368,10 +392,7 @@ ulToggledStyles =
             -- li:firstchild
             , Css.firstChild
                 [ Css.Global.children
-                    [ Css.Global.each
-                        [ Css.Global.typeSelector "a"
-                        , Css.Global.typeSelector "span"
-                        ]
+                    [ Css.Global.class "link"
                         [ Css.borderTopLeftRadius Utils.radius
                         , Css.borderBottomLeftRadius Utils.radius
                         ]
@@ -379,20 +400,14 @@ ulToggledStyles =
                 ]
             , Css.lastChild
                 [ Css.Global.children
-                    [ Css.Global.each
-                        [ Css.Global.typeSelector "a"
-                        , Css.Global.typeSelector "span"
-                        ]
+                    [ Css.Global.class "link"
                         [ Css.borderTopRightRadius Utils.radius
                         , Css.borderBottomRightRadius Utils.radius
                         ]
                     ]
                 ]
             , Css.Global.children
-                [ Css.Global.each
-                    [ Css.Global.typeSelector "a"
-                    , Css.Global.typeSelector "span"
-                    ]
+                [ Css.Global.class "link"
                     [ Colors.borderColor Colors.border
                     , Css.borderStyle Css.solid
                     , Css.borderWidth (Css.px 1)
@@ -403,19 +418,11 @@ ulToggledStyles =
                         , Colors.borderColor (Colors.border |> Colors.hover)
                         , Css.zIndex (Css.int 2)
                         ]
-
-                    --       border-style: $tabs-toggle-link-border-style
-                    --       border-width: $tabs-toggle-link-border-width
-                    --       margin-bottom: 0
-                    --       position: relative
                     ]
                 ]
             , Css.Global.withClass "is-active"
                 [ Css.Global.children
-                    [ Css.Global.each
-                        [ Css.Global.typeSelector "a"
-                        , Css.Global.typeSelector "span"
-                        ]
+                    [ Css.Global.class "link"
                         [ Css.pseudoClass "not(:hover)"
                             [ Colors.backgroundColor Colors.link
                             , Colors.borderColor (Colors.link |> Colors.active)
@@ -440,6 +447,7 @@ ulBoxedStyles =
             , Css.borderBottomColor (Colors.border |> Colors.toCss)
             , Css.hover
                 [ Colors.backgroundColor (Colors.white |> Colors.hover)
+                , Css.important (Css.borderBottomColor ((Colors.white |> Colors.hover) |> Colors.toCss))
                 ]
             ]
 
@@ -448,14 +456,11 @@ ulBoxedStyles =
             [ Css.Global.withClass "is-active"
                 [ Css.Global.children
                     [ Css.Global.class "link"
-                        [ -- background-color: $tabs-boxed-link-active-background-color
-                          Colors.backgroundColor Colors.white
+                        [ Colors.backgroundColor Colors.white
                         , Colors.borderColor Colors.border
                         , Colors.color Colors.link
                         , Css.fontWeight (Css.int 600)
                         , Css.important (Css.borderBottomColor (Colors.white |> Colors.toCss))
-
-                        --           border-bottom-color: $tabs-boxed-link-active-border-bottom-color !important
                         ]
                     ]
                 ]
@@ -464,30 +469,11 @@ ulBoxedStyles =
     ]
 
 
-
--- a
---       border: 1px solid transparent
---       +ltr
---         border-radius: $tabs-boxed-link-radius $tabs-boxed-link-radius 0 0
---       &:hover
---         background-color: $tabs-boxed-link-hover-background-color
---         border-bottom-color: $tabs-boxed-link-hover-border-bottom-color
---     li
---       &.is-active
---         a
---           background-color: $tabs-boxed-link-active-background-color
---           border-color: $tabs-boxed-link-active-border-color
---           border-bottom-color: $tabs-boxed-link-active-border-bottom-color !important
-
-
 liStyles : List Css.Style
 liStyles =
     [ Css.display Css.block
     , Css.Global.children
-        [ Css.Global.each
-            [ Css.Global.typeSelector "a"
-            , Css.Global.typeSelector "span"
-            ]
+        [ Css.Global.class "link"
             linkStyles
         ]
     ]
@@ -496,10 +482,7 @@ liStyles =
 liActiveStyles : List Css.Style
 liActiveStyles =
     [ Css.Global.children
-        [ Css.Global.each
-            [ Css.Global.typeSelector "a"
-            , Css.Global.typeSelector "span"
-            ]
+        [ Css.Global.class "link"
             linkActiveStyles
         ]
     ]
@@ -513,6 +496,7 @@ linkStyles =
     , Css.borderBottomWidth (Css.px 1)
     , Colors.color Colors.text
     , Css.displayFlex
+    , Css.cursor Css.pointer
     , Css.justifyContent Css.center
     , Css.marginBottom (Css.px -1)
     , Css.padding2 (Css.em 0.5) (Css.em 1)

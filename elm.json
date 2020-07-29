@@ -3,7 +3,7 @@
   "name": "special-elektronik/special-elektronik-elm-ui",
   "summary": "Elm UI library for beautiful, coherent, SE flavored UI.",
   "license": "MIT",
-  "version": "6.3.2",
+  "version": "6.4.0",
   "exposed-modules": [
     "SE.UI.Breadcrumb",
     "SE.UI.Buttons",
@@ -23,6 +23,7 @@
     "SE.UI.Level",
     "SE.UI.Logo",
     "SE.UI.Logos.Crestron",
+    "SE.UI.Logos.Panasonic",
     "SE.UI.Modal",
     "SE.UI.Navbar",
     "SE.UI.Notification",
@@ -31,6 +32,7 @@
     "SE.UI.Table",
     "SE.UI.Table.V2",
     "SE.UI.Tabs",
+    "SE.UI.Tabs.V2",
     "SE.UI.Tag",
     "SE.UI.Title",
     "SE.UI.Utils"

@@ -781,34 +781,34 @@ viewLogo =
 viewCrestronLogo : CrestronModel -> Html Msg
 viewCrestronLogo { color, variant } =
     let
-        ( fn, code ) =
+        { fn, code, bg } =
             case ( color, variant ) of
                 ( Blue, Standard ) ->
-                    ( Crestron.blue, "SE.UI.Logos.Crestron.blue" )
+                    { fn = Crestron.blue, code = "SE.UI.Logos.Crestron.blue", bg = Colors.lightest }
 
                 ( Black, Standard ) ->
-                    ( Crestron.black, "SE.UI.Logos.Crestron.black" )
+                    { fn = Crestron.black, code = "SE.UI.Logos.Crestron.black", bg = Colors.lightest }
 
                 ( White, Standard ) ->
-                    ( Crestron.white, "SE.UI.Logos.Crestron.white" )
+                    { fn = Crestron.white, code = "SE.UI.Logos.Crestron.white", bg = Colors.darkest }
 
                 ( Blue, Swirl ) ->
-                    ( Crestron.blueSwirl, "SE.UI.Logos.Crestron.blueSwirl" )
+                    { fn = Crestron.blueSwirl, code = "SE.UI.Logos.Crestron.blueSwirl", bg = Colors.lightest }
 
                 ( Black, Swirl ) ->
-                    ( Crestron.blackSwirl, "SE.UI.Logos.Crestron.blackSwirl" )
+                    { fn = Crestron.blackSwirl, code = "SE.UI.Logos.Crestron.blackSwirl", bg = Colors.lightest }
 
                 ( White, Swirl ) ->
-                    ( Crestron.whiteSwirl, "SE.UI.Logos.Crestron.whiteSwirl" )
+                    { fn = Crestron.whiteSwirl, code = "SE.UI.Logos.Crestron.whiteSwirl", bg = Colors.darkest }
 
                 ( Blue, Stack ) ->
-                    ( Crestron.blueStack, "SE.UI.Logos.Crestron.blueStack" )
+                    { fn = Crestron.blueStack, code = "SE.UI.Logos.Crestron.blueStack", bg = Colors.lightest }
 
                 ( Black, Stack ) ->
-                    ( Crestron.blackStack, "SE.UI.Logos.Crestron.blackStack" )
+                    { fn = Crestron.blackStack, code = "SE.UI.Logos.Crestron.blackStack", bg = Colors.lightest }
 
                 ( White, Stack ) ->
-                    ( Crestron.whiteStack, "SE.UI.Logos.Crestron.whiteStack" )
+                    { fn = Crestron.whiteStack, code = "SE.UI.Logos.Crestron.whiteStack", bg = Colors.darkest }
     in
     Section.section []
         [ Container.container []
@@ -831,7 +831,7 @@ viewCrestronLogo { color, variant } =
             , Columns.columns
                 [ Columns.defaultColumn
                     [ styled div
-                        [ Colors.backgroundColor Colors.lightest
+                        [ Colors.backgroundColor bg
                         , Css.padding (Css.pct 20)
                         ]
                         []
@@ -878,13 +878,13 @@ viewCrestronVariant activeVariant ( variant, label ) =
 viewPanasonicLogo : PanasonicModel -> Html Msg
 viewPanasonicLogo { color, isMonochrome } =
     let
-        ( fn, code ) =
+        { fn, code, bg } =
             case color of
                 OnBlack ->
-                    ( Panasonic.onBlack, "SE.UI.Logos.Panasonic.onBlack" )
+                    { fn = Panasonic.onBlack, code = "SE.UI.Logos.Panasonic.onBlack", bg = Colors.darkest }
 
                 OnWhite ->
-                    ( Panasonic.onWhite, "SE.UI.Logos.Panasonic.onWhite" )
+                    { fn = Panasonic.onWhite, code = "SE.UI.Logos.Panasonic.onWhite", bg = Colors.lightest }
 
         isMonochromeCode =
             if isMonochrome then
@@ -919,7 +919,7 @@ viewPanasonicLogo { color, isMonochrome } =
             , Columns.columns
                 [ Columns.defaultColumn
                     [ styled div
-                        [ Colors.backgroundColor Colors.lightest
+                        [ Colors.backgroundColor bg
                         , Css.padding (Css.pct 20)
                         ]
                         []
@@ -1656,7 +1656,7 @@ viewTabs model =
             [ Tabs.tabs
                 [ Tabs.link True "#" [ Html.text "One" ]
                 , Tabs.link False "#" [ Html.text "Two" ]
-                , Tabs.link False "#" [ Html.text "Three" ]
+                , Tabs.button False NoOp [ Html.text "Three" ]
                 ]
                 |> tabsModifiersToCode model
                 |> Tabs.toHtml
