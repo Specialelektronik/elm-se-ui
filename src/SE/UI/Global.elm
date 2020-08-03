@@ -93,7 +93,7 @@ headings =
         , Css.Global.h6
         ]
         [ Css.fontSize (Css.pct 100)
-        , Css.fontWeight Css.bold
+        , Css.fontWeight (Css.int 600)
         ]
 
 
@@ -307,7 +307,7 @@ inlineAndBlock =
                 , Css.fontWeight Css.inherit
                 ]
             , Css.Global.strong
-                [ Css.fontWeight Css.bold
+                [ Css.fontWeight (Css.int 600)
                 ]
             , Css.Global.fieldset
                 [ Css.border Css.zero
@@ -338,6 +338,7 @@ inlineAndBlock =
                         ]
                     , Css.Global.th
                         [ Colors.color Colors.darkest
+                        , Css.fontWeight (Css.int 600)
                         ]
                     ]
                 ]

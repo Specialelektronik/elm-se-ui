@@ -3,7 +3,9 @@ module SE.UI.Tabs exposing
     , link, Modifier(..)
     )
 
-{-| Bulmas Tags component
+{-| DEPRECATED! Use SE.UI.Tabs.V2 instead.
+
+Bulmas Tags component
 see <https://bulma.io/documentation/components/tabs/>
 
 

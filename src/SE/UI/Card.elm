@@ -134,7 +134,8 @@ withBoxShadow (Card internals) =
 
 cardStyles : Bool -> List Style
 cardStyles hasBoxShadow =
-    [ Colors.backgroundColor Colors.white
+    [ Utils.block
+    , Colors.backgroundColor Colors.white
 
     --   box-shadow: $card-shadow
     , Css.maxWidth (Css.pct 100)
@@ -165,7 +166,7 @@ headerStyles =
     , Css.borderBottomWidth (Css.px 1)
     , Css.borderBottomStyle Css.solid
     , Colors.borderColor Colors.border
-    , Css.padding (Css.rem 0.88888888)
+    , Css.padding (Css.rem 0.55555555)
     , Utils.desktop
         [ Css.flexDirection Css.row
         ]

@@ -26,7 +26,7 @@ see <https://bulma.io/documentation/form/>
 
 -}
 
-import Css exposing (Style, absolute, block, bold, borderBox, em, flexStart, important, int, left, pseudoClass, px, relative, rem, top, zero)
+import Css exposing (Style, absolute, block, borderBox, em, flexStart, important, int, left, pseudoClass, px, relative, rem, top, zero)
 import Css.Global exposing (descendants, each, typeSelector)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes exposing (class)
@@ -85,7 +85,7 @@ labelHelper required s =
         , Css.display block
         , Font.bodySizeRem -2
         , Css.textTransform Css.uppercase
-        , Css.fontWeight bold
+        , Css.fontWeight (Css.int 600)
         , pseudoClass "not(:last-child)"
             [ Css.marginBottom (em 0.5)
             ]

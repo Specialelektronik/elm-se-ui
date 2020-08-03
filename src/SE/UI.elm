@@ -21,11 +21,14 @@ import SE.UI.Form.Input as Input
 import SE.UI.Global as Global
 import SE.UI.Icon as Icon
 import SE.UI.Logo as Logo
+import SE.UI.Logos.Crestron as Crestron
+import SE.UI.Logos.Panasonic as Panasonic
 import SE.UI.Modal as Modal
 import SE.UI.Navbar as Navbar
 import SE.UI.Notification as Notification
 import SE.UI.Section as Section
 import SE.UI.Table.V2 as Table
+import SE.UI.Tabs.V2 as Tabs exposing (Tabs)
 import SE.UI.Title as Title
 import SE.UI.Utils as Utils
 
@@ -44,8 +47,11 @@ type alias Model =
     , showDropdown : Bool
     , navbar : Navbar.Model
     , table : TableModel
+    , tabs : TabsModel
     , isOpen : Bool
     , showMenuDropdown : Bool
+    , crestron : CrestronModel
+    , panasonic : PanasonicModel
     }
 
 
@@ -77,6 +83,62 @@ type alias TableModel =
     }
 
 
+type alias TabsModel =
+    { size : TabsSize
+    , style : TabsStyle
+    , alignment : TabsAlignment
+    , isFullwidth : Bool
+    }
+
+
+type TabsSize
+    = Normal
+    | Small
+    | Medium
+    | Large
+
+
+type TabsStyle
+    = Unstyled
+    | Boxed
+    | Toggled
+
+
+type TabsAlignment
+    = Left
+    | Centered
+    | Right
+
+
+type alias CrestronModel =
+    { color : CrestronColor
+    , variant : CrestronVariant
+    }
+
+
+type CrestronColor
+    = Blue
+    | Black
+    | White
+
+
+type CrestronVariant
+    = Standard
+    | Stack
+    | Swirl
+
+
+type alias PanasonicModel =
+    { color : PanasonicColor
+    , isMonochrome : Panasonic.IsMonochrome
+    }
+
+
+type PanasonicColor
+    = OnWhite
+    | OnBlack
+
+
 colorToNotification : NotificationColor -> ( String, Maybe msg -> List (Html msg) -> Html msg )
 colorToNotification color =
     case color of
@@ -104,8 +166,11 @@ initialModel =
     , showDropdown = False
     , navbar = Navbar.defaultModel
     , table = defaultTableModel
+    , tabs = defaultTabsModel
     , isOpen = False
     , showMenuDropdown = False
+    , crestron = defaultCrestronLogo
+    , panasonic = defaultPanasonicLogo
     }
 
 
@@ -134,6 +199,29 @@ defaultTableModel =
     }
 
 
+defaultTabsModel : TabsModel
+defaultTabsModel =
+    { size = Normal
+    , style = Unstyled
+    , alignment = Left
+    , isFullwidth = False
+    }
+
+
+defaultCrestronLogo : CrestronModel
+defaultCrestronLogo =
+    { color = Blue
+    , variant = Standard
+    }
+
+
+defaultPanasonicLogo : PanasonicModel
+defaultPanasonicLogo =
+    { color = OnWhite
+    , isMonochrome = False
+    }
+
+
 
 -- UPDATE
 
@@ -147,6 +235,9 @@ type Msg
     | GotColumnsMsg ColumnsMsg
     | GotNavbarMsg Navbar.Msg
     | GotTableMsg TableMsg
+    | GotTabsMsg TabsMsg
+    | GotCrestronMsg CrestronMsg
+    | GotPanasonicMsg PanasonicMsg
     | ToggledMenu
     | ToggledModal
     | ToggledDropdown
@@ -169,6 +260,23 @@ type ColumnsMsg
 
 type TableMsg
     = ToggledTableModifier Table.Modifier
+
+
+type TabsMsg
+    = ToggledTabsSize TabsSize
+    | ToggledTabsStyle TabsStyle
+    | ToggledTabsAlignment TabsAlignment
+    | ToggledTabsFullwidth
+
+
+type CrestronMsg
+    = ToggledColor CrestronColor
+    | ToggledVariant CrestronVariant
+
+
+type PanasonicMsg
+    = ToggledPanasonicColor PanasonicColor
+    | ToggledMonochrome
 
 
 update : Msg -> Model -> Model
@@ -197,6 +305,15 @@ update msg model =
 
         GotTableMsg subMsg ->
             { model | table = updateTable subMsg model.table }
+
+        GotTabsMsg subMsg ->
+            { model | tabs = updateTabs subMsg model.tabs }
+
+        GotCrestronMsg subMsg ->
+            { model | crestron = updateCrestron subMsg model.crestron }
+
+        GotPanasonicMsg subMsg ->
+            { model | panasonic = updatePanasonic subMsg model.panasonic }
 
         ToggledModal ->
             { model | showModal = not model.showModal }
@@ -259,6 +376,42 @@ updateTable msg model =
                         mod :: model.mods
             in
             { model | mods = newMods }
+
+
+updateTabs : TabsMsg -> TabsModel -> TabsModel
+updateTabs msg model =
+    case msg of
+        ToggledTabsSize size ->
+            { model | size = size }
+
+        ToggledTabsStyle style ->
+            { model | style = style }
+
+        ToggledTabsAlignment alignment ->
+            { model | alignment = alignment }
+
+        ToggledTabsFullwidth ->
+            { model | isFullwidth = not model.isFullwidth }
+
+
+updateCrestron : CrestronMsg -> CrestronModel -> CrestronModel
+updateCrestron msg model =
+    case msg of
+        ToggledColor color ->
+            { model | color = color }
+
+        ToggledVariant variant ->
+            { model | variant = variant }
+
+
+updatePanasonic : PanasonicMsg -> PanasonicModel -> PanasonicModel
+updatePanasonic msg model =
+    case msg of
+        ToggledPanasonicColor color ->
+            { model | color = color }
+
+        ToggledMonochrome ->
+            { model | isMonochrome = not model.isMonochrome }
 
 
 
@@ -363,6 +516,8 @@ view model =
         , Html.article
             []
             [ viewLogo
+            , viewCrestronLogo model.crestron
+            , viewPanasonicLogo model.panasonic
             , viewColors
             , viewTypography
             , viewColumns model.columns
@@ -375,6 +530,7 @@ view model =
             , viewIcons
             , viewCard
             , viewTable model.table
+            , viewTabs model.tabs
             ]
 
         -- , Navbar.backdrop navbarConfig model.navbar
@@ -397,7 +553,7 @@ viewLoginIcon =
         [ Attributes.href "/login" ]
         [ Icon.user Control.Medium
         , styled Html.span
-            [ Css.fontWeight Css.bold
+            [ Css.fontWeight (Css.int 600)
             , Utils.desktop
                 [ Colors.color Colors.base
                 , Font.bodySizeRem -3
@@ -448,7 +604,7 @@ viewCartIcon =
         [ Attributes.href "/cart", Attributes.attribute "data-badge" "33" ]
         [ Icon.cart Control.Medium
         , styled Html.span
-            [ Css.fontWeight Css.bold
+            [ Css.fontWeight (Css.int 600)
             , Utils.desktop
                 [ Colors.color Colors.base
                 , Font.bodySizeRem -3
@@ -620,6 +776,176 @@ viewLogo =
                 ]
             ]
         ]
+
+
+viewCrestronLogo : CrestronModel -> Html Msg
+viewCrestronLogo { color, variant } =
+    let
+        { fn, code, bg } =
+            case ( color, variant ) of
+                ( Blue, Standard ) ->
+                    { fn = Crestron.blue, code = "SE.UI.Logos.Crestron.blue", bg = Colors.lightest }
+
+                ( Black, Standard ) ->
+                    { fn = Crestron.black, code = "SE.UI.Logos.Crestron.black", bg = Colors.lightest }
+
+                ( White, Standard ) ->
+                    { fn = Crestron.white, code = "SE.UI.Logos.Crestron.white", bg = Colors.darkest }
+
+                ( Blue, Swirl ) ->
+                    { fn = Crestron.blueSwirl, code = "SE.UI.Logos.Crestron.blueSwirl", bg = Colors.lightest }
+
+                ( Black, Swirl ) ->
+                    { fn = Crestron.blackSwirl, code = "SE.UI.Logos.Crestron.blackSwirl", bg = Colors.lightest }
+
+                ( White, Swirl ) ->
+                    { fn = Crestron.whiteSwirl, code = "SE.UI.Logos.Crestron.whiteSwirl", bg = Colors.darkest }
+
+                ( Blue, Stack ) ->
+                    { fn = Crestron.blueStack, code = "SE.UI.Logos.Crestron.blueStack", bg = Colors.lightest }
+
+                ( Black, Stack ) ->
+                    { fn = Crestron.blackStack, code = "SE.UI.Logos.Crestron.blackStack", bg = Colors.lightest }
+
+                ( White, Stack ) ->
+                    { fn = Crestron.whiteStack, code = "SE.UI.Logos.Crestron.whiteStack", bg = Colors.darkest }
+    in
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Crestron Logos"
+            , Content.content []
+                [ Html.p []
+                    [ Html.text "The Crestron logo comes in three color and three variants"
+                    ]
+                ]
+            , Form.field []
+                [ Form.label "Colors"
+                , Form.control False
+                    (List.map (viewCrestronColor color) allCrestronColors)
+                ]
+            , Form.field []
+                [ Form.label "Variants"
+                , Form.control False
+                    (List.map (viewCrestronVariant variant) allCrestronVariants)
+                ]
+            , Columns.columns
+                [ Columns.defaultColumn
+                    [ styled div
+                        [ Colors.backgroundColor bg
+                        , Css.padding (Css.pct 20)
+                        ]
+                        []
+                        [ fn ]
+                    , Content.content []
+                        [ Html.code []
+                            [ Html.text code
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+
+allCrestronColors : List ( CrestronColor, String )
+allCrestronColors =
+    [ ( Blue, "Blue" )
+    , ( Black, "Black" )
+    , ( White, "White" )
+    ]
+
+
+allCrestronVariants : List ( CrestronVariant, String )
+allCrestronVariants =
+    [ ( Standard, "Standard" )
+    , ( Stack, "Stack" )
+    , ( Swirl, "Swirl" )
+    ]
+
+
+viewCrestronColor : CrestronColor -> ( CrestronColor, String ) -> Html Msg
+viewCrestronColor activeColor ( color, label ) =
+    Input.radio (GotCrestronMsg (ToggledColor color)) label (activeColor == color)
+        |> Input.toHtml
+
+
+viewCrestronVariant : CrestronVariant -> ( CrestronVariant, String ) -> Html Msg
+viewCrestronVariant activeVariant ( variant, label ) =
+    Input.radio (GotCrestronMsg (ToggledVariant variant)) label (activeVariant == variant)
+        |> Input.toHtml
+
+
+viewPanasonicLogo : PanasonicModel -> Html Msg
+viewPanasonicLogo { color, isMonochrome } =
+    let
+        { fn, code, bg } =
+            case color of
+                OnBlack ->
+                    { fn = Panasonic.onBlack, code = "SE.UI.Logos.Panasonic.onBlack", bg = Colors.darkest }
+
+                OnWhite ->
+                    { fn = Panasonic.onWhite, code = "SE.UI.Logos.Panasonic.onWhite", bg = Colors.lightest }
+
+        isMonochromeCode =
+            if isMonochrome then
+                "True"
+
+            else
+                "False"
+    in
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Panasonic Logos"
+            , Content.content []
+                [ Html.p []
+                    [ Html.text "The Panasonic logo comes in a color mode and a monochrome mode and for black (dark) backgrounds and white (light) backgrounds."
+                    ]
+                ]
+            , Form.field []
+                [ Form.label "Colors"
+                , Form.control False
+                    (List.map (viewPanasonicColor color) allPanasonicColors)
+                ]
+            , Form.field []
+                [ Form.label "Monochrome"
+                , Form.control False
+                    [ Input.checkbox
+                        (GotPanasonicMsg ToggledMonochrome)
+                        "Monochrome"
+                        isMonochrome
+                        |> Input.toHtml
+                    ]
+                ]
+            , Columns.columns
+                [ Columns.defaultColumn
+                    [ styled div
+                        [ Colors.backgroundColor bg
+                        , Css.padding (Css.pct 20)
+                        ]
+                        []
+                        [ fn isMonochrome ]
+                    , Content.content []
+                        [ Html.code []
+                            [ Html.text (code ++ " " ++ isMonochromeCode)
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+
+allPanasonicColors : List ( PanasonicColor, String )
+allPanasonicColors =
+    [ ( OnWhite, "OnWhite" )
+    , ( OnBlack, "OnBlack" )
+    ]
+
+
+viewPanasonicColor : PanasonicColor -> ( PanasonicColor, String ) -> Html Msg
+viewPanasonicColor activeColor ( color, label ) =
+    Input.radio (GotPanasonicMsg (ToggledPanasonicColor color)) label (activeColor == color)
+        |> Input.toHtml
 
 
 viewTypography : Html Msg
@@ -1153,6 +1479,7 @@ allIcons =
     , ( "campaign", Icon.campaign )
     , ( "cart", Icon.cart )
     , ( "category", Icon.category )
+    , ( "checkCircle", Icon.checkCircle )
     , ( "clock", Icon.clock )
     , ( "dolly", Icon.dolly )
     , ( "ethernet", Icon.ethernet )
@@ -1287,6 +1614,225 @@ tableModToString mod =
 
         Table.Hoverable ->
             "Table.Hoverable"
+
+
+viewTabs : TabsModel -> Html Msg
+viewTabs model =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Tabs V2"
+            , Form.field []
+                [ Form.label "Sizes"
+                , Form.control False (List.map (viewTabsSize model.size) allTabsSizes)
+                ]
+            , Form.field []
+                [ Form.label "Styles"
+                , Form.control False (List.map (viewTabsStyle model.style) allTabsStyles)
+                ]
+            , Form.field []
+                [ Form.label "Alignment"
+                , Form.control False (List.map (viewTabsAlignment model.alignment) allTabsAlignments)
+                ]
+            , Form.field []
+                [ Form.label "Fullwidth"
+                , Form.control False
+                    [ Input.checkbox
+                        (GotTabsMsg ToggledTabsFullwidth)
+                        "Fullwidth"
+                        model.isFullwidth
+                        |> Input.toHtml
+                    ]
+                ]
+            , Content.content []
+                [ Html.p [] [ Html.text "The tabs component originates from Bulmas equivalent. The first version of Tabs is deprecated and should not be used." ]
+                ]
+            ]
+        , styled Html.div
+            [ Utils.block
+            , Css.padding (Css.px 16)
+            , Colors.backgroundColor Colors.lightBlue
+            ]
+            []
+            [ Tabs.tabs
+                [ Tabs.link True "#" [ Html.text "One" ]
+                , Tabs.link False "#" [ Html.text "Two" ]
+                , Tabs.button False NoOp [ Html.text "Three" ]
+                ]
+                |> tabsModifiersToCode model
+                |> Tabs.toHtml
+            ]
+        , Content.content []
+            [ Html.pre []
+                [ Html.code []
+                    [ Html.text ""
+                    , Html.text """
+    SE.UI.Tabs.V2.tabs [
+        Tabs.link True "#" [ Html.text "One" ]
+        , Tabs.link False "#" [ Html.text "Two" ]
+        , Tabs.link False "#" [ Html.text "Three" ]
+        ]
+        """
+                    , Html.text (tabsModifiersToCodeString model)
+                    , Html.text """
+        |> Tabs.toHtml
+        """
+                    ]
+                ]
+            ]
+        ]
+
+
+allTabsSizes : List ( TabsSize, String )
+allTabsSizes =
+    [ ( Normal, "Normal" )
+    , ( Small, "Small" )
+    , ( Medium, "Medium" )
+    , ( Large, "Large" )
+    ]
+
+
+viewTabsSize : TabsSize -> ( TabsSize, String ) -> Html Msg
+viewTabsSize =
+    viewTabsOption (GotTabsMsg << ToggledTabsSize)
+
+
+allTabsStyles : List ( TabsStyle, String )
+allTabsStyles =
+    [ ( Unstyled, "Unstyled" )
+    , ( Toggled, "Toggled" )
+    , ( Boxed, "Boxed" )
+    ]
+
+
+viewTabsStyle : TabsStyle -> ( TabsStyle, String ) -> Html Msg
+viewTabsStyle =
+    viewTabsOption (GotTabsMsg << ToggledTabsStyle)
+
+
+allTabsAlignments : List ( TabsAlignment, String )
+allTabsAlignments =
+    [ ( Left, "Left" )
+    , ( Centered, "Centered" )
+    , ( Right, "Right" )
+    ]
+
+
+viewTabsAlignment : TabsAlignment -> ( TabsAlignment, String ) -> Html Msg
+viewTabsAlignment =
+    viewTabsOption (GotTabsMsg << ToggledTabsAlignment)
+
+
+viewTabsOption : (a -> Msg) -> a -> ( a, String ) -> Html Msg
+viewTabsOption msg activeValue ( value, label ) =
+    Input.radio (msg value) label (activeValue == value)
+        |> Input.toHtml
+
+
+tabsModifiersToCodeString : TabsModel -> String
+tabsModifiersToCodeString model =
+    [ tabsSizeToFuncCall model.size
+    , tabsStyleToFuncCall model.style
+    , tabsAlignmentToFuncCall model.alignment
+    , if model.isFullwidth then
+        "isFullwidth"
+
+      else
+        ""
+    ]
+        |> List.filter (not << String.isEmpty)
+        |> List.foldl (\v acc -> acc ++ "|> SE.UI.Tabs.V2." ++ v ++ "\n") ""
+
+
+tabsSizeToFuncCall : TabsSize -> String
+tabsSizeToFuncCall size =
+    case size of
+        Normal ->
+            ""
+
+        Small ->
+            "isSmall"
+
+        Medium ->
+            "isMedium"
+
+        Large ->
+            "isLarge"
+
+
+tabsStyleToFuncCall : TabsStyle -> String
+tabsStyleToFuncCall style =
+    case style of
+        Unstyled ->
+            ""
+
+        Toggled ->
+            "isToggled"
+
+        Boxed ->
+            "isBoxed"
+
+
+tabsAlignmentToFuncCall : TabsAlignment -> String
+tabsAlignmentToFuncCall alignment =
+    case alignment of
+        Left ->
+            ""
+
+        Centered ->
+            "isCentered"
+
+        Right ->
+            "isRight"
+
+
+tabsModifiersToCode : TabsModel -> Tabs msg -> Tabs msg
+tabsModifiersToCode model tabs =
+    tabs
+        |> (case model.size of
+                Small ->
+                    Tabs.isSmall
+
+                Medium ->
+                    Tabs.isMedium
+
+                Large ->
+                    Tabs.isLarge
+
+                _ ->
+                    identity
+           )
+        |> (case model.style of
+                Toggled ->
+                    Tabs.isToggled
+
+                Boxed ->
+                    Tabs.isBoxed
+
+                _ ->
+                    identity
+           )
+        |> (case model.alignment of
+                Centered ->
+                    Tabs.isCentered
+
+                Right ->
+                    Tabs.isRight
+
+                _ ->
+                    identity
+           )
+        |> (if model.isFullwidth then
+                Tabs.isFullwidth
+
+            else
+                identity
+           )
+
+
+
+-- Html.text "Table.body []\n            [ Html.tr []\n                [ Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                ]\n            , Html.tr []\n                [ Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                ]\n            ]\n            |> Table.withModifiers "
+--                     , Html.text ("[ " ++ (List.map tableModToString model.mods |> String.join ", ") ++ " ]")
+--                     , Html.text "\n            |> Table.toHtml"
 
 
 viewIf : Bool -> Html msg -> Html msg
