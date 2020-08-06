@@ -4,6 +4,7 @@ module SE.UI.Form.Input exposing
     , withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword
     , withModifier, withModifiers, Modifier(..)
     , inputStyle
+    , withName
     )
 
 {-| Essentially all input elements except buttons
@@ -93,6 +94,7 @@ type alias InputRecord msg =
     , required : Bool
     , disabled : Bool
     , readonly : Bool
+    , name : String
     }
 
 
@@ -148,6 +150,7 @@ type alias SelectRecord msg =
     , required : Bool
     , disabled : Bool
     , readonly : Bool
+    , name : String
     }
 
 
@@ -167,6 +170,7 @@ type alias CheckboxRecord msg =
     , required : Bool
     , disabled : Bool
     , readonly : Bool
+    , name : String
     }
 
 
@@ -201,6 +205,7 @@ text msg value =
         , required = False
         , disabled = False
         , readonly = False
+        , name = ""
         }
 
 
@@ -222,6 +227,7 @@ textarea msg value =
         , required = False
         , disabled = False
         , readonly = False
+        , name = ""
         }
 
 
@@ -229,7 +235,7 @@ textarea msg value =
 -- SELECT
 
 
-{-| `div.select > select`
+{-| `select` with input styling
 
 `is-multiple` and `is-rounded` not supported
 
@@ -245,6 +251,7 @@ select msg options value =
         , required = False
         , disabled = False
         , readonly = False
+        , name = ""
         }
 
 
@@ -274,6 +281,7 @@ checkbox msg label checked =
         , required = False
         , disabled = False
         , readonly = False
+        , name = ""
         }
 
 
@@ -293,6 +301,7 @@ radio msg label checked =
         , required = False
         , disabled = False
         , readonly = False
+        , name = ""
         }
 
 
@@ -314,6 +323,7 @@ number msg value =
         , required = False
         , disabled = False
         , readonly = False
+        , name = ""
         }
 
 
@@ -332,6 +342,7 @@ date msg value =
         , required = False
         , disabled = False
         , readonly = False
+        , name = ""
         }
 
 
@@ -348,6 +359,7 @@ email msg value =
         , required = False
         , disabled = False
         , readonly = False
+        , name = ""
         }
 
 
@@ -364,6 +376,7 @@ tel msg value =
         , required = False
         , disabled = False
         , readonly = False
+        , name = ""
         }
 
 
@@ -381,6 +394,7 @@ password msg value =
         , required = False
         , disabled = False
         , readonly = False
+        , name = ""
         }
 
 
@@ -526,9 +540,10 @@ selectToHtml rec =
         (selectStyle rec.modifiers)
         ([ Utils.onChange rec.msg
          ]
-            |> boolAttribute (always rec.required) Attributes.required rec.required
-            |> boolAttribute (always rec.disabled) Attributes.disabled rec.disabled
-            |> boolAttribute (always rec.readonly) Attributes.readonly rec.readonly
+            |> boolAttribute Attributes.required rec.required
+            |> boolAttribute Attributes.disabled rec.disabled
+            |> boolAttribute Attributes.readonly rec.readonly
+            |> noneEmptyAttribute Attributes.name rec.name
         )
         (option rec.value { label = rec.placeholder, value = "" } :: List.map (option rec.value) rec.options)
 
@@ -612,10 +627,11 @@ buttonToHtml buttonType rec =
                    ]
             )
             ([ Attributes.type_ type_, Utils.onChange (always rec.msg) ]
-                |> boolAttribute (always rec.checked) Attributes.checked rec.checked
-                |> boolAttribute (always rec.required) Attributes.required rec.required
-                |> boolAttribute (always rec.disabled) Attributes.disabled rec.disabled
-                |> boolAttribute (always rec.readonly) Attributes.readonly rec.readonly
+                |> boolAttribute Attributes.checked rec.checked
+                |> boolAttribute Attributes.required rec.required
+                |> boolAttribute Attributes.disabled rec.disabled
+                |> boolAttribute Attributes.readonly rec.readonly
+                |> noneEmptyAttribute Attributes.name rec.name
             )
             []
         , styled Html.span
@@ -646,6 +662,39 @@ buttonColor mods =
 
 
 -- WITH STAR
+
+
+{-| Add the name attribute to the input
+-}
+withName : String -> Input msg -> Input msg
+withName name_ input =
+    case input of
+        Text rec ->
+            Text { rec | name = name_ }
+
+        Number rec ->
+            Number { rec | name = name_ }
+
+        Textarea rec ->
+            Textarea { rec | name = name_ }
+
+        Date rec ->
+            Date { rec | name = name_ }
+
+        Password rec ->
+            Password { rec | name = name_ }
+
+        Select rec ->
+            Select { rec | name = name_ }
+
+        Email rec ->
+            Email { rec | name = name_ }
+
+        Tel rec ->
+            Tel { rec | name = name_ }
+
+        Button type_ rec ->
+            Button type_ { rec | name = name_ }
 
 
 {-| Add placeholder to the input
@@ -998,17 +1047,17 @@ maybeAttribute attrFn maybeAttr attrs =
 
 
 noneEmptyAttribute : (String -> Attribute msg) -> String -> List (Attribute msg) -> List (Attribute msg)
-noneEmptyAttribute =
-    boolAttribute (String.isEmpty >> not)
-
-
-boolAttribute : (a -> Bool) -> (a -> Attribute msg) -> a -> List (Attribute msg) -> List (Attribute msg)
-boolAttribute predicateFn attrFn val attrs =
-    if predicateFn val then
+noneEmptyAttribute attrFn val attrs =
+    if val /= "" then
         attrFn val :: attrs
 
     else
         attrs
+
+
+boolAttribute : (Bool -> Attribute msg) -> Bool -> List (Attribute msg) -> List (Attribute msg)
+boolAttribute attrFn val attrs =
+    attrFn val :: attrs
 
 
 initAttributes :
@@ -1019,15 +1068,17 @@ initAttributes :
         , required : Bool
         , disabled : Bool
         , readonly : Bool
+        , name : String
     }
     -> List (Attribute msg)
-initAttributes { trigger, msg, value, required, disabled, readonly } =
+initAttributes { trigger, msg, value, required, disabled, readonly, name } =
     [ triggerToAttribute trigger msg
     , Attributes.value value
     ]
-        |> boolAttribute (always required) Attributes.required required
-        |> boolAttribute (always disabled) Attributes.disabled disabled
-        |> boolAttribute (always readonly) Attributes.readonly readonly
+        |> boolAttribute Attributes.required required
+        |> boolAttribute Attributes.disabled disabled
+        |> boolAttribute Attributes.readonly readonly
+        |> noneEmptyAttribute Attributes.name name
 
 
 
@@ -1119,10 +1170,10 @@ selectStyle mods =
            , Css.cursor pointer
            , Css.outline none
            , Colors.backgroundColor Colors.white
-           , Css.backgroundImage (Css.url ("\"" ++ Icon.angleDownCssBackground ++ "\""))
-           , Css.backgroundRepeat Css.noRepeat
-           , Css.property "background-position" "right 0.75em top 50%"
-           , Css.backgroundSize2 (Css.em 0.75) Css.auto
+           , Css.property "background-image" ("url(\"" ++ Icon.angleDownCssBackground ++ "\"), linear-gradient(to bottom, hsla(0, 0%, 96%, 1) 0%,hsla(0, 0%, 96%, 1) 100%)")
+           , Css.property "background-repeat" "no-repeat, repeat"
+           , Css.property "background-position" "right 0.75em top 50%, 0, 0"
+           , Css.property "background-size" "0.75em auto, 100%"
            , Css.property "box-shadow" "none"
            , pseudoElement "ms-expand" [ Css.display none ]
 
