@@ -196,7 +196,7 @@ view config searchFn model =
     styled Html.header
         (navContainerStyles model.activeDropdownId)
         []
-        [ global
+        [ global config
         , backdrop config model
         , viewMobile config searchFn model
         , viewDesktop config searchFn model
@@ -831,12 +831,32 @@ viewLinkHelper styles link =
 -- GLOBAL
 
 
-global : Html msg
-global =
+global : Config msg -> Html msg
+global config =
+    let
+        ribbonHeight =
+            case config.ribbon of
+                [] ->
+                    0
+
+                _ ->
+                    32
+
+        megaHeight =
+            case config.megaNav of
+                [] ->
+                    0
+
+                _ ->
+                    50
+    in
     Css.Global.global
         [ Css.Global.body
             [ Css.marginTop
                 (Css.px (brandHeight + ledHeight + mobileSearchHeight))
+            , Utils.tablet
+                [ Css.marginTop (Css.px (ribbonHeight + brandHeight + ledHeight + megaHeight))
+                ]
             ]
 
         -- , Css.Global.html
