@@ -1,10 +1,9 @@
 module SE.UI.Form.Input exposing
     ( text, textarea, select, Option, checkbox, radio, number, date, email, password, tel, toHtml
     , withTrigger, Trigger(..)
-    , withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword
+    , withPlaceholder, withName, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword
     , withModifier, withModifiers, Modifier(..)
     , inputStyle
-    , withName
     )
 
 {-| Essentially all input elements except buttons
@@ -35,7 +34,7 @@ To allow the programmer to specify _when_ a message should trigger, the inputs h
 
 # With\*
 
-@docs withPlaceholder, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword
+@docs withPlaceholder, withName, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword
 
 
 ## Modifiers
