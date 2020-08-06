@@ -1315,6 +1315,7 @@ viewForm model =
                     , Form.control False
                         [ Input.text GotInput model.input
                             |> Input.withPlaceholder "Placeholder"
+                            |> Input.withName "small"
                             |> Input.toHtml
                         ]
                     ]
