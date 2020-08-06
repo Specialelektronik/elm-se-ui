@@ -1,5 +1,5 @@
 module SE.UI.Icon exposing
-    ( angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, checkCircle, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+    ( angleDown, angleUp, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
     , angleDownCssBackground, tick, circle
     )
 
@@ -12,7 +12,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs angleDown, angleUp, ban, bargain, bid, box, boxes, campaign, cart, category, checkCircle, clock, dolly, ethernet, eye, facebook, file, history, home, images, instagram, lightbulb, linkedin, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+@docs angleDown, angleUp, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
 
 
 # Css Backgrounds
@@ -198,6 +198,13 @@ boxes size =
     internalIcon size (viewBox 576 512) [ Svg.path [ d "M560 288h-80v96l-32-21.3-32 21.3v-96h-80c-8.8 0-16 7.2-16 16v192c0 8.8 7.2 16 16 16h224c8.8 0 16-7.2 16-16V304c0-8.8-7.2-16-16-16zm-384-64h224c8.8 0 16-7.2 16-16V16c0-8.8-7.2-16-16-16h-80v96l-32-21.3L256 96V0h-80c-8.8 0-16 7.2-16 16v192c0 8.8 7.2 16 16 16zm64 64h-80v96l-32-21.3L96 384v-96H16c-8.8 0-16 7.2-16 16v192c0 8.8 7.2 16 16 16h224c8.8 0 16-7.2 16-16V304c0-8.8-7.2-16-16-16z" ] [] ]
 
 
+{-| <https://fontawesome.com/icons/calendar-alt?style=regular>
+-}
+calendar : Control.Size -> Html msg
+calendar size =
+    internalIcon size (viewBox 448 512) [ Svg.path [ d "M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z" ] [] ]
+
+
 {-| <https://fontawesome.com/icons/tag?style=solid>
 -}
 campaign : Control.Size -> Html msg
@@ -238,6 +245,13 @@ clock size =
 dolly : Control.Size -> Html msg
 dolly size =
     internalIcon size (viewBox 576 512) [ Svg.path [ d "M294.2 277.7c18 5 34.7 13.4 49.5 24.7l161.5-53.8c8.4-2.8 12.9-11.9 10.1-20.2L454.9 47.2c-2.8-8.4-11.9-12.9-20.2-10.1l-61.1 20.4 33.1 99.4L346 177l-33.1-99.4-61.6 20.5c-8.4 2.8-12.9 11.9-10.1 20.2l53 159.4zm281 48.7L565 296c-2.8-8.4-11.9-12.9-20.2-10.1l-213.5 71.2c-17.2-22-43.6-36.4-73.5-37L158.4 21.9C154 8.8 141.8 0 128 0H16C7.2 0 0 7.2 0 16v32c0 8.8 7.2 16 16 16h88.9l92.2 276.7c-26.1 20.4-41.7 53.6-36 90.5 6.1 39.4 37.9 72.3 77.3 79.2 60.2 10.7 112.3-34.8 113.4-92.6l213.3-71.2c8.3-2.8 12.9-11.8 10.1-20.2zM256 464c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/envelope?style=regular>
+-}
+envelope : Control.Size -> Html msg
+envelope size =
+    internalIcon size (viewBox 512 512) [ Svg.path [ d "M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/ethernet?style=solid>
@@ -302,6 +316,13 @@ instagram size =
         ]
 
 
+{-| <https://fontawesome.com/icons/laptop?style=solid>
+-}
+laptop : Control.Size -> Html msg
+laptop size =
+    internalIcon size (viewBox 640 512) [ Svg.path [ d "M624 416H381.54c-.74 19.81-14.71 32-32.74 32H288c-18.69 0-33.02-17.47-32.77-32H16c-8.8 0-16 7.2-16 16v16c0 35.2 28.8 64 64 64h512c35.2 0 64-28.8 64-64v-16c0-8.8-7.2-16-16-16zM576 48c0-26.4-21.6-48-48-48H112C85.6 0 64 21.6 64 48v336h512V48zm-64 272H128V64h384v256z" ] [] ]
+
+
 {-| <https://fontawesome.com/icons/lightbulb?style=solid>
 -}
 lightbulb : Control.Size -> Html msg
@@ -314,6 +335,13 @@ lightbulb size =
 linkedin : Control.Size -> Html msg
 linkedin size =
     internalIcon size (viewBox 35 40) [ Svg.path [ d "M33.64 9.11L18.32.26a2 2 0 00-2 0L1 9.11a2 2 0 00-1 1.73v17.69a2 2 0 001 1.73l15.32 8.85a2 2 0 002 0l15.32-8.85a2 2 0 001-1.73V10.84a2 2 0 00-1-1.73zM12.96 27.54H9.69V17.03h3.27zm-1.64-11.92a1.91 1.91 0 01-1.88-1.93 1.89 1.89 0 013.77 0 1.92 1.92 0 01-1.89 1.93zm13.87 11.92h-3.26v-5.09c0-1.24 0-2.78-1.73-2.78s-1.88 1.3-1.88 2.67v5.2H15V17.03h3.13v1.44a3.52 3.52 0 013.1-1.69c3.3 0 3.93 2.18 3.93 5z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/map-marker-alt?style=solid>
+-}
+mapMarker : Control.Size -> Html msg
+mapMarker size =
+    internalIcon size (viewBox 384 512) [ Svg.path [ d "M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/notification?style=solid>

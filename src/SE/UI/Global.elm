@@ -46,6 +46,7 @@ reset =
     , audio
     , iframe
     , table
+    , misc
     ]
 
 
@@ -175,6 +176,13 @@ table =
                 , Css.textAlign Css.left
                 ]
             ]
+        ]
+
+
+misc : Css.Global.Snippet
+misc =
+    Css.Global.typeSelector "address"
+        [ Css.fontStyle Css.normal
         ]
 
 
