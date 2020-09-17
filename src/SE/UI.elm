@@ -71,6 +71,7 @@ type NotificationColor
     | Primary
     | Link
     | Danger
+    | Custom Colors.Color
 
 
 type alias ColumnsModel =
@@ -153,6 +154,9 @@ colorToNotification color =
 
         Danger ->
             ( "danger", Notification.danger )
+
+        Custom color_ ->
+            ( "custom SE.UI.Colors." ++ Debug.toString color_, Notification.custom color_ )
 
 
 initialModel : Model
@@ -250,6 +254,7 @@ type ButtonMsg
 
 type NotificationMsg
     = ClickedColor NotificationColor
+    | ClickedCustomColor Colors.Color
     | ToggledDeleteable
 
 
@@ -348,6 +353,9 @@ updateNotification msg model =
     case msg of
         ClickedColor color ->
             { model | color = color }
+
+        ClickedCustomColor color ->
+            { model | color = Custom color }
 
         ToggledDeleteable ->
             { model | deleteable = not model.deleteable }
@@ -1055,31 +1063,32 @@ viewColumn index =
         ]
 
 
+greys =
+    [ ( Colors.White, "White" )
+    , ( Colors.Lightest, "Lightest" )
+    , ( Colors.Lighter, "Lighter" )
+    , ( Colors.Light, "Light" )
+    , ( Colors.Base, "Base" )
+    , ( Colors.Dark, "Dark" )
+    , ( Colors.Darker, "Darker" )
+    , ( Colors.Darkest, "Darkest" )
+    , ( Colors.Black, "Black" )
+    ]
+
+
+colors =
+    [ ( Colors.Primary, "Primary" )
+    , ( Colors.Link, "Link" )
+    , ( Colors.Buy, "Buy" )
+    , ( Colors.Danger, "Danger" )
+    , ( Colors.Bargain, "Bargain" )
+    , ( Colors.DarkGreen, "DarkGreen" )
+    , ( Colors.LightBlue, "LightBlue" )
+    ]
+
+
 viewColors : Html Msg
 viewColors =
-    let
-        greys =
-            [ ( Colors.White, "White" )
-            , ( Colors.Lightest, "Lightest" )
-            , ( Colors.Lighter, "Lighter" )
-            , ( Colors.Light, "Light" )
-            , ( Colors.Base, "Base" )
-            , ( Colors.Dark, "Dark" )
-            , ( Colors.Darker, "Darker" )
-            , ( Colors.Darkest, "Darkest" )
-            , ( Colors.Black, "Black" )
-            ]
-
-        colors =
-            [ ( Colors.Primary, "Primary" )
-            , ( Colors.Link, "Link" )
-            , ( Colors.Buy, "Buy" )
-            , ( Colors.Danger, "Danger" )
-            , ( Colors.Bargain, "Bargain" )
-            , ( Colors.DarkGreen, "DarkGreen" )
-            , ( Colors.LightBlue, "LightBlue" )
-            ]
-    in
     Section.section []
         [ Container.container []
             [ Title.title1 "Colors"
@@ -1364,9 +1373,18 @@ viewNotification model =
         fn =
             colorToNotification model.color
 
+        ( isCustom, customColor ) =
+            case model.color of
+                Custom color_ ->
+                    ( True, color_ )
+
+                _ ->
+                    -- Lightest = Fallback color that will never be used.
+                    ( False, Colors.Lightest )
+
         maybeMsg =
             if model.deleteable then
-                ( "Just (GotNotificationMsg Delete)", Just NoOp )
+                ( "(Just (GotNotificationMsg Delete))", Just NoOp )
 
             else
                 ( "Nothing", Nothing )
@@ -1376,8 +1394,15 @@ viewNotification model =
             [ Title.title1 "Notification"
             , Form.field []
                 [ Form.label "Modifiers"
-                , Form.control False (List.map (viewNotificationColor model.color) allNotificationColors)
+                , Form.control False (List.map (viewNotificationColor model.color) (allNotificationColors Colors.Lightest))
                 ]
+            , viewIf isCustom
+                (Form.field
+                    []
+                    [ Form.label "Custom color"
+                    , Form.control False (List.map (viewNotificationCustomColor customColor) (greys ++ colors))
+                    ]
+                )
             , Form.field []
                 [ Form.control False
                     [ Input.checkbox (GotNotificationMsg ToggledDeleteable) "Deleteable?" model.deleteable
@@ -1394,16 +1419,32 @@ viewNotification model =
 
 viewNotificationColor : NotificationColor -> ( NotificationColor, String ) -> Html Msg
 viewNotificationColor activeColor ( color, label ) =
-    Input.radio (GotNotificationMsg (ClickedColor color)) label (activeColor == color)
+    let
+        isSame =
+            case ( activeColor, color ) of
+                ( Custom _, Custom _ ) ->
+                    True
+
+                _ ->
+                    activeColor == color
+    in
+    Input.radio (GotNotificationMsg (ClickedColor color)) label isSame
         |> Input.toHtml
 
 
-allNotificationColors : List ( NotificationColor, String )
-allNotificationColors =
+viewNotificationCustomColor : Colors.Color -> ( Colors.Color, String ) -> Html Msg
+viewNotificationCustomColor activeColor ( color, label ) =
+    Input.radio (GotNotificationMsg (ClickedCustomColor color)) label (activeColor == color)
+        |> Input.toHtml
+
+
+allNotificationColors : Colors.Color -> List ( NotificationColor, String )
+allNotificationColors customColor =
     [ ( Regular, "Regular" )
     , ( Primary, "Primary" )
     , ( Link, "Link" )
     , ( Danger, "Danger" )
+    , ( Custom customColor, "Custom" )
     ]
 
 

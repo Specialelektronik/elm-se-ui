@@ -1,4 +1,4 @@
-module SE.UI.Notification exposing (notification, primary, link, danger)
+module SE.UI.Notification exposing (notification, primary, link, danger, custom)
 
 {-| Bulmas notification element
 see <https://bulma.io/documentation/elements/notification/>
@@ -8,7 +8,7 @@ see <https://bulma.io/documentation/elements/notification/>
 
 This module exposes one function for each color. If you supply a message it will be triggered if the user clicks the delete button. If no message is supplied, no delete button will be displayed.
 
-@docs notification, primary, link, danger
+@docs notification, primary, link, danger, custom
 
 -}
 
@@ -51,6 +51,14 @@ link =
 danger : Maybe msg -> List (Html msg) -> Html msg
 danger =
     internalNotification Colors.danger
+
+
+{-| Notification with custom color
+Please use sparingly
+-}
+custom : Colors.Color -> Maybe msg -> List (Html msg) -> Html msg
+custom color =
+    internalNotification (Colors.toHsla color)
 
 
 internalNotification : Colors.Hsla -> Maybe msg -> List (Html msg) -> Html msg
