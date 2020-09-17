@@ -12,17 +12,17 @@ This module exposes one function for each color. If you supply a message it will
 
 -}
 
-import Css exposing (Style, absolute, block, currentColor, relative, rem, transparent)
-import Css.Global exposing (descendants, each, selector, typeSelector)
-import Html.Styled exposing (Html, styled, text)
+import Css exposing (Style)
+import Css.Global
+import Html.Styled as Html exposing (Html, styled)
 import SE.UI.Colors as Colors
 import SE.UI.Delete as Delete
-import SE.UI.Utils as Utils exposing (radius)
+import SE.UI.Utils as Utils
 
 
 padding : Style
 padding =
-    Css.padding4 (rem 1.25) (rem 2.5) (rem 1.25) (rem 1.5)
+    Css.padding4 (Css.rem 1.25) (Css.rem 2.5) (Css.rem 1.25) (Css.rem 1.5)
 
 
 {-| Grey notification
@@ -66,24 +66,31 @@ internalNotification color maybeMsg content =
     let
         button =
             Maybe.map delete maybeMsg
-                |> Maybe.withDefault (text "")
+                |> Maybe.withDefault (Html.text "")
     in
-    styled Html.Styled.div
+    styled Html.div
         [ Utils.block
         , Colors.backgroundColor color
         , Colors.color (color |> Colors.invert)
-        , Css.borderRadius radius
+        , Css.borderRadius Utils.radius
         , padding
-        , Css.position relative
-        , descendants
-            [ typeSelector "strong"
-                [ Css.color currentColor
+        , Css.position Css.relative
+        , Css.Global.descendants
+            [ Css.Global.strong
+                [ Css.color Css.currentColor
                 ]
-            , each [ typeSelector "code", typeSelector "pre" ]
+            , Css.Global.a
+                [ Css.color Css.currentColor
+                , Css.textDecoration Css.underline
+                , Css.hover
+                    [ Colors.color (color |> Colors.invert |> Colors.hover)
+                    ]
+                ]
+            , Css.Global.each [ Css.Global.code, Css.Global.pre ]
                 [ Colors.backgroundColor Colors.white
                 ]
-            , selector "pre code"
-                [ Css.backgroundColor transparent
+            , Css.Global.selector "pre code"
+                [ Css.backgroundColor Css.transparent
                 ]
             ]
         ]
@@ -94,8 +101,8 @@ internalNotification color maybeMsg content =
 delete : msg -> Html msg
 delete msg =
     Delete.regular
-        [ Css.position absolute
-        , Css.right (rem 0.5)
-        , Css.top (rem 0.5)
+        [ Css.position Css.absolute
+        , Css.right (Css.rem 0.5)
+        , Css.top (Css.rem 0.5)
         ]
         msg
