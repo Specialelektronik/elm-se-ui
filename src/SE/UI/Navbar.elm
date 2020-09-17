@@ -501,6 +501,7 @@ mainNavStyles =
             , Colors.color Colors.text
             , Css.letterSpacing (Css.px 1)
             , Css.fontWeight (Css.int 600)
+            , Css.cursor Css.pointer
             , Css.hover
                 [ Colors.backgroundColor Colors.background
                 , Colors.color Colors.primary
@@ -512,7 +513,13 @@ mainNavStyles =
     , Css.Global.children
         [ Css.Global.typeSelector "a" linkStyles
         , Css.Global.selector ".dropdown"
-            [ Css.Global.children [ Css.Global.typeSelector "a" linkStyles ]
+            [ Css.Global.children
+                [ Css.Global.each
+                    [ Css.Global.a
+                    , Css.Global.selector "div[role='button']"
+                    ]
+                    linkStyles
+                ]
             ]
         ]
     ]
@@ -747,9 +754,9 @@ viewDropdownButton styles config isActive id label =
             else
                 Icon.angleDown
     in
-    styled Html.a
+    styled Html.div
         styles
-        [ Events.onClick (config.transform (ToggledDropdown id)) ]
+        [ Events.onClick (config.transform (ToggledDropdown id)), Attributes.attribute "role" "button" ]
         [ Html.span [] [ Html.text label ], icon Control.Small ]
 
 
