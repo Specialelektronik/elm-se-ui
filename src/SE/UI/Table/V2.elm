@@ -1,5 +1,5 @@
 module SE.UI.Table.V2 exposing
-    ( body, toHtml
+    ( body, keyedBody, toHtml
     , withHead, withFoot, withModifiers, Modifier(..)
     )
 
@@ -8,7 +8,7 @@ see <https://bulma.io/documentation/elements/table/>
 
 The second try on the Table component. This time we go with the with Star pattern that we use on Input and Card.
 
-@docs body, toHtml
+@docs body, keyedBody, toHtml
 
 
 # With\* pattern (pron. With start pattern)
@@ -45,6 +45,7 @@ import Css exposing (Style)
 import Css.Global
 import Html.Styled as Html exposing (Attribute, Html, styled)
 import Html.Styled.Attributes as Attributes
+import Html.Styled.Keyed as Keyed
 import SE.UI.Colors as Colors
 import SE.UI.Font as Font
 import SE.UI.Utils as Utils
@@ -55,11 +56,16 @@ type Table msg
 
 
 type alias Internals msg =
-    { body : ( List (Attribute msg), List (Html msg) )
+    { body : Body msg
     , head : List (Html msg)
     , foot : List (Html msg)
     , mods : List Modifier
     }
+
+
+type Body msg
+    = Body ( List (Attribute msg), List (Html msg) )
+    | KeyedBody ( List (Attribute msg), List ( String, Html msg ) )
 
 
 {-| The following modifiers from Bulma are always added:
@@ -84,7 +90,19 @@ type Modifier
 body : List (Attribute msg) -> List (Html msg) -> Table msg
 body attrs kids =
     Table
-        { body = ( attrs, kids )
+        { body = Body ( attrs, kids )
+        , head = []
+        , foot = []
+        , mods = []
+        }
+
+
+{-| Same as `body` but is [keyed](https://guide.elm-lang.org/optimization/keyed.html)
+-}
+keyedBody : List (Attribute msg) -> List ( String, Html msg ) -> Table msg
+keyedBody attrs kids =
+    Table
+        { body = KeyedBody ( attrs, kids )
         , head = []
         , foot = []
         , mods = []
@@ -99,17 +117,37 @@ toHtml (Table internals) =
         (styled Html.table
             (tableStyles internals.mods)
             (Attributes.class "table"
-                :: Tuple.first internals.body
+                :: bodyAttributes internals.body
             )
             [ thead []
                 [ Html.tr [] internals.head
                 ]
-            , Html.tbody [] (Tuple.second internals.body)
+            , bodyToHtml internals.body
             , tfoot []
                 [ Html.tr [] internals.foot
                 ]
             ]
         )
+
+
+bodyAttributes : Body msg -> List (Attribute msg)
+bodyAttributes body_ =
+    case body_ of
+        Body ( attrs, _ ) ->
+            attrs
+
+        KeyedBody ( attrs, _ ) ->
+            attrs
+
+
+bodyToHtml : Body msg -> Html msg
+bodyToHtml body_ =
+    case body_ of
+        Body ( _, kids ) ->
+            Html.tbody [] kids
+
+        KeyedBody ( _, kids ) ->
+            Keyed.node "tbody" [] kids
 
 
 helper : (List (Attribute msg) -> List (Html msg) -> Html msg) -> List (Attribute msg) -> List (Html msg) -> Html msg

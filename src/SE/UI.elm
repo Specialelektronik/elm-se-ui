@@ -1636,6 +1636,14 @@ viewTable model =
                     ]
                 ]
             ]
+        , Notification.link Nothing
+            [ Html.strong [] [ Html.text "Note" ]
+            , Html.text ": There is also a "
+            , Html.code [] [ Html.text "keyedBody" ]
+            , Html.text " function if you need the rows to be "
+            , Html.a [ Attributes.href "https://guide.elm-lang.org/optimization/keyed.html" ] [ Html.text "keyed" ]
+            , Html.text "."
+            ]
         ]
 
 
