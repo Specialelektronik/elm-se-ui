@@ -13,6 +13,7 @@ see <https://bulma.io/documentation/components/modal/>
 import Css exposing (Style, absolute, auto, calc, center, column, fixed, hidden, int, minus, none, pct, px, relative, rgba, vh, zero)
 import Html.Styled exposing (Html, styled)
 import Html.Styled.Events exposing (onClick)
+import SE.UI.Colors as Colors
 import SE.UI.Delete as Delete
 import SE.UI.Utils exposing (tablet)
 
@@ -110,6 +111,22 @@ closeStyles =
     , Css.right (px 20)
     , Css.top (px 20)
     , Css.width (px 40)
+    , Colors.backgroundColor Colors.white
+    , Css.hover
+        [ Colors.backgroundColor (Colors.white |> Colors.hover)
+        ]
+    , Css.focus
+        [ Colors.backgroundColor (Colors.white |> Colors.hover)
+        ]
+    , Css.active
+        [ Colors.backgroundColor (Colors.white |> Colors.active)
+        ]
+    , Css.before
+        [ Colors.backgroundColor Colors.black
+        ]
+    , Css.after
+        [ Colors.backgroundColor Colors.black
+        ]
     ]
 
 
