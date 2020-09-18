@@ -861,7 +861,7 @@ global config =
         [ Css.Global.body
             [ Css.marginTop
                 (Css.px (brandHeight + ledHeight + mobileSearchHeight))
-            , Utils.tablet
+            , Utils.desktop
                 [ Css.marginTop (Css.px (ribbonHeight + brandHeight + ledHeight + megaHeight))
                 ]
             ]
