@@ -20,6 +20,7 @@ import SE.UI.Form as Form
 import SE.UI.Form.Input as Input
 import SE.UI.Global as Global
 import SE.UI.Icon as Icon
+import SE.UI.Level as Level
 import SE.UI.Logo as Logo
 import SE.UI.Logos.Crestron as Crestron
 import SE.UI.Logos.Panasonic as Panasonic
@@ -46,6 +47,7 @@ type alias Model =
     , showModal : Bool
     , showDropdown : Bool
     , navbar : Navbar.Model
+    , navbarBrand : Navbar.Brand
     , table : TableModel
     , tabs : TabsModel
     , isOpen : Bool
@@ -169,6 +171,7 @@ initialModel =
     , showModal = False
     , showDropdown = False
     , navbar = Navbar.defaultModel
+    , navbarBrand = Navbar.DefaultBrand
     , table = defaultTableModel
     , tabs = defaultTabsModel
     , isOpen = False
@@ -238,6 +241,7 @@ type Msg
     | GotNotificationMsg NotificationMsg
     | GotColumnsMsg ColumnsMsg
     | GotNavbarMsg Navbar.Msg
+    | ToggleNavbarBrand
     | GotTableMsg TableMsg
     | GotTabsMsg TabsMsg
     | GotCrestronMsg CrestronMsg
@@ -307,6 +311,19 @@ update msg model =
 
         GotNavbarMsg subMsg ->
             { model | navbar = Navbar.update subMsg model.navbar }
+
+        ToggleNavbarBrand ->
+            { model
+                | navbarBrand =
+                    if model.navbarBrand == Navbar.DefaultBrand then
+                        Navbar.CustomBrand
+                            { onWhite = "https://www.facebook.com/images/fb_icon_325x325.png"
+                            , onBlack = "https://www.facebook.com/images/fb_icon_325x325.png"
+                            }
+
+                    else
+                        Navbar.DefaultBrand
+            }
 
         GotTableMsg subMsg ->
             { model | table = updateTable subMsg model.table }
@@ -424,11 +441,13 @@ updatePanasonic msg model =
 
 
 -- VIEW
+--
 
 
-navbarConfig : Navbar.Config Msg
-navbarConfig =
-    { transform = GotNavbarMsg
+navbarConfig : Navbar.Brand -> Navbar.Config Msg
+navbarConfig brand =
+    { brand = brand
+    , transform = GotNavbarMsg
     , ribbon =
         [ { href = Attributes.href "/"
           , label = "Tjänster"
@@ -520,10 +539,11 @@ view model =
     div
         []
         [ Global.global
-        , Navbar.view navbarConfig search model.navbar
+        , Navbar.view (navbarConfig model.navbarBrand) search model.navbar
         , Html.article
             []
-            [ viewLogo
+            [ viewNavbar model.navbarBrand
+            , viewLogo
             , viewCrestronLogo model.crestron
             , viewPanasonicLogo model.panasonic
             , viewColors
@@ -532,6 +552,7 @@ view model =
             , viewButtons model.button
             , viewSection
             , viewContainer
+            , viewLevel model
             , viewForm model
             , viewNotification model.notification
             , viewModal model.showModal
@@ -737,6 +758,24 @@ searchInput styles attrs =
         styles
         attrs
         []
+
+
+viewNavbar : Navbar.Brand -> Html Msg
+viewNavbar brand =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Navbar"
+            , Content.content []
+                [ Html.p []
+                    [ Html.text "The Navbar is a pretty complicated component with its own state. The module's documentation explains how to use it."
+                    ]
+                ]
+            , Form.field []
+                [ Buttons.button [ Buttons.Color Colors.DarkGreen ] (Just ToggleNavbarBrand) [ Html.text "Toggle brand" ]
+                ]
+            , Html.code [] [ Html.text (Debug.toString brand) ]
+            ]
+        ]
 
 
 
@@ -1063,6 +1102,7 @@ viewColumn index =
         ]
 
 
+greys : List ( Colors.Color, String )
 greys =
     [ ( Colors.White, "White" )
     , ( Colors.Lightest, "Lightest" )
@@ -1076,6 +1116,7 @@ greys =
     ]
 
 
+colors : List ( Colors.Color, String )
 colors =
     [ ( Colors.Primary, "Primary" )
     , ( Colors.Link, "Link" )
@@ -1308,6 +1349,48 @@ viewContainer =
             , Html.p [] [ Html.text "Bulmas container tag, but max-width is set to 1680px for all devices\nsee ", Html.a [ Attributes.href "https://bulma.io/documentation/layout/container" ] [ Html.text "https://bulma.io/documentation/layout/container" ], Html.text "." ]
             , Html.code []
                 [ Html.text "section [] [ Html.text \"I'm the text inside the container!\" ]"
+                ]
+            ]
+        ]
+
+
+viewLevel : Model -> Html Msg
+viewLevel model =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Level"
+            , Level.level
+                [ Level.item
+                    [ Form.field []
+                        [ Form.label "Select element"
+                        , Form.control False
+                            [ Input.select GotInput
+                                [ { label = "Option 1", value = "option 1" }
+                                , { label = "Option 2", value = "option 2" }
+                                , { label = "Option 3", value = "option 3" }
+                                ]
+                                model.input
+                                |> Input.withPlaceholder "Placeholder"
+                                |> Input.toHtml
+                            ]
+                        ]
+                    ]
+                ]
+                [ Level.item
+                    [ Form.field []
+                        [ Form.label "Select element"
+                        , Form.control False
+                            [ Input.select GotInput
+                                [ { label = "Option 1", value = "option 1" }
+                                , { label = "Option 2", value = "option 2" }
+                                , { label = "Option 3", value = "option 3" }
+                                ]
+                                model.input
+                                |> Input.withPlaceholder "Placeholder"
+                                |> Input.toHtml
+                            ]
+                        ]
+                    ]
                 ]
             ]
         ]

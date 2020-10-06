@@ -1,5 +1,5 @@
 module SE.UI.Navbar exposing
-    ( Config, Model, defaultModel, Msg, update
+    ( Config, Brand(..), Model, defaultModel, Msg, update
     , view
     , Item(..), Link, MegaItem
     )
@@ -26,7 +26,7 @@ How to use:
             GotNavbarMsg subMsg ->
                 { model | navbar = Navbar.update subMsg model.navbar }
 
-@docs Config, Model, defaultModel, Msg, update
+@docs Config, Brand, Model, defaultModel, Msg, update
 
 
 # View
@@ -70,7 +70,8 @@ transform : The parent message, see example at the top.
 
 -}
 type alias Config msg =
-    { ribbon : List (Link msg)
+    { brand : Brand
+    , ribbon : List (Link msg)
     , mainNav : List (Item msg)
     , megaNav : List (MegaItem msg)
     , socialMedia : List (SocialMedia msg)
@@ -93,6 +94,13 @@ defaultModel =
     { isOpen = False
     , activeDropdownId = ""
     }
+
+
+{-| The default logo adapts to the black or white background, if you want to use a custom logo, provide 2 image urls for white and black background, it could be the same. The image height will be 48px.
+-}
+type Brand
+    = DefaultBrand
+    | CustomBrand { onWhite : String, onBlack : String }
 
 
 {-| The 3 different link options available:
@@ -629,27 +637,52 @@ megaItemStyles =
 -- VIEW BRAND
 
 
+{-| In pixels
+-}
 brandHeight : Float
 brandHeight =
     75
 
 
+{-| In pixels
+-}
+brandImageHeight : Float
+brandImageHeight =
+    48
+
+
 viewBrand : Config msg -> Bool -> Html msg
 viewBrand config isOpen =
+    let
+        logo =
+            case ( config.brand, isOpen ) of
+                ( DefaultBrand, True ) ->
+                    Logo.onBlack
+
+                ( DefaultBrand, False ) ->
+                    Logo.onWhite
+
+                ( CustomBrand { onBlack }, True ) ->
+                    viewCustomLogo onBlack
+
+                ( CustomBrand { onWhite }, False ) ->
+                    viewCustomLogo onWhite
+    in
     styled Html.div
         brandStyles
         [ Attributes.classList [ ( "navbar-brand", True ), ( "is-open", isOpen ) ] ]
         [ styled Html.a
-            []
+            [ Css.lineHeight Css.zero ]
             [ Attributes.href "/" ]
-            [ if isOpen then
-                Logo.onBlack
-
-              else
-                Logo.onWhite
+            [ logo
             ]
         , navbarBurger (config.transform ToggledMenu) isOpen
         ]
+
+
+viewCustomLogo : String -> Html msg
+viewCustomLogo url =
+    Html.img [ Attributes.src url, Attributes.height (round brandImageHeight) ] []
 
 
 navbarBurger : msg -> Bool -> Html msg
@@ -732,9 +765,9 @@ brandStyles =
         [ Colors.backgroundColor Colors.darker
         ]
     , Css.Global.descendants
-        [ Css.Global.typeSelector "svg"
-            [ Css.height (Css.px 40)
-            , Css.margin2 (Css.px 12) (Css.px 12)
+        [ Css.Global.each [ Css.Global.typeSelector "svg", Css.Global.typeSelector "img" ]
+            [ Css.height (Css.px brandImageHeight)
+            , Css.margin2 Css.zero (Css.px 12)
             ]
         ]
     ]

@@ -1175,6 +1175,7 @@ selectStyle mods =
            , Css.property "background-size" "0.75em auto, 100%"
            , Css.property "box-shadow" "none"
            , pseudoElement "ms-expand" [ Css.display none ]
+           , Css.important (Css.property "padding-right" "calc(2.25em - 1px)")
 
            --border: 1px solid #aaa;
            -- box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
