@@ -88,7 +88,7 @@ internalPagination : Alignment -> PaginationRecord msg -> Html msg
 internalPagination alignment rec =
     styled Html.Styled.nav
         (navStyles alignment)
-        []
+        [ Attributes.classList [ ( "pagination", True ) ], Attributes.attribute "role" "navigation", Attributes.attribute "aria-label" "pagination" ]
         [ previous rec.msg rec.previousPageLabel rec.currentPage
         , next rec.msg rec.nextPageLabel rec.currentPage rec.lastPage
         , list rec.msg rec.lastPage rec.currentPage
@@ -195,7 +195,7 @@ next msg label currentPage lastPage =
             else
                 [ onClick (msg (currentPage + 1)) ]
     in
-    styled button (itemStyles False) attrs [ text label ]
+    styled button (itemStyles False) (Attributes.classList [ ( "pagination-next", True ) ] :: attrs) [ text label ]
 
 
 
@@ -208,7 +208,7 @@ previous msg label currentPage =
         isDisabled =
             currentPage == 1
     in
-    styled button (itemStyles False) [ onClick (msg (currentPage - 1)), Attributes.disabled isDisabled ] [ text label ]
+    styled button (itemStyles False) [ onClick (msg (currentPage - 1)), Attributes.classList [ ( "pagination-previous", True ) ], Attributes.disabled isDisabled ] [ text label ]
 
 
 
@@ -312,7 +312,7 @@ itemAndEllipsisStyles =
     Css.batch
         [ controlStyle Control.Regular
         , unselectable
-        , Css.backgroundColor Colors.white
+        , Colors.backgroundColor Colors.white
         , Css.fontSize (em 1)
         , Css.paddingLeft (em 0.5)
         , Css.paddingRight (em 0.5)
@@ -325,30 +325,30 @@ itemAndEllipsisStyles =
 itemStyles : Bool -> List Style
 itemStyles isCurrent =
     [ itemAndEllipsisStyles
-    , Css.borderColor Colors.border
-    , Css.color Colors.text
+    , Colors.borderColor Colors.border
+    , Colors.color Colors.text
     , Css.minWidth controlHeight
     , hover
-        [ Css.borderColor Colors.dark
+        [ Colors.borderColor Colors.dark
         ]
     , focus
-        [ Css.borderColor Colors.dark
+        [ Colors.borderColor Colors.dark
         ]
     , active
-        [ Css.borderColor Colors.dark
+        [ Colors.borderColor Colors.dark
         ]
     , disabled
-        [ Css.backgroundColor Colors.lighter
-        , Css.borderColor Colors.lighter
+        [ Colors.backgroundColor Colors.lighter
+        , Colors.borderColor Colors.lighter
         , Css.boxShadow none
-        , Css.color Colors.base
+        , Colors.color Colors.base
         , Css.opacity (num 0.5)
         ]
     , Css.batch <|
         if isCurrent then
-            [ Css.backgroundColor Colors.link
-            , Css.important (Css.borderColor Colors.link)
-            , Css.important (Css.color Colors.white)
+            [ Colors.backgroundColor Colors.link
+            , Css.important (Colors.borderColor Colors.link)
+            , Css.important (Colors.color Colors.white)
             , Css.pointerEvents none
             , Css.cursor default
             ]
@@ -366,6 +366,6 @@ listEllipsis =
 ellipsisStyle : List Style
 ellipsisStyle =
     [ itemAndEllipsisStyles
-    , Css.color Colors.light
+    , Colors.color Colors.light
     , Css.pointerEvents none
     ]

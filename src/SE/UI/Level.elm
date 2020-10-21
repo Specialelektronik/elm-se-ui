@@ -20,11 +20,11 @@ This module is divided levels and items.
 
 -}
 
-import Css exposing (Style, auto, center, flexEnd, flexStart, inlineBlock, int, pseudoClass, rem, spaceBetween, top, zero)
-import Css.Global exposing (adjacentSiblings, descendants, selector, typeSelector)
+import Css exposing (Style)
+import Css.Global
 import Html.Styled exposing (Html, styled)
-import Html.Styled.Attributes exposing (class)
-import SE.UI.Utils exposing (block, mobile, radius, tablet)
+import Html.Styled.Attributes as Attributes
+import SE.UI.Utils as Utils
 
 
 {-| Use the `item` function to create a level item
@@ -65,27 +65,27 @@ internalLevel : Bool -> List (Item msg) -> List (Item msg) -> Html msg
 internalLevel isMobile lfts rgts =
     styled Html.Styled.nav
         (levelStyles isMobile)
-        []
-        [ styled Html.Styled.div leftStyles [ class "left" ] (List.map (itemToHtml False) lfts)
-        , styled Html.Styled.div rightStyles [ class "right" ] (List.map (itemToHtml False) rgts)
+        [ Attributes.classList [ ( "level", True ) ] ]
+        [ styled Html.Styled.div leftStyles [ Attributes.classList [ ( "left", True ) ] ] (List.map (itemToHtml False) lfts)
+        , styled Html.Styled.div rightStyles [ Attributes.classList [ ( "right", True ) ] ] (List.map (itemToHtml False) rgts)
         ]
 
 
 levelStyles : Bool -> List Style
 levelStyles isMobile =
-    [ block
-    , Css.alignItems center
-    , Css.justifyContent spaceBetween
-    , descendants
-        [ typeSelector "code"
-            [ Css.borderRadius radius
+    [ Utils.block
+    , Css.alignItems Css.center
+    , Css.justifyContent Css.spaceBetween
+    , Css.Global.descendants
+        [ Css.Global.typeSelector "code"
+            [ Css.borderRadius Utils.radius
             ]
-        , typeSelector "img"
-            [ Css.display inlineBlock
-            , Css.verticalAlign top
+        , Css.Global.typeSelector "img"
+            [ Css.display Css.inlineBlock
+            , Css.verticalAlign Css.top
             ]
         ]
-    , tablet
+    , Utils.tablet
         [ Css.displayFlex
         ]
     , Css.batch
@@ -95,10 +95,10 @@ levelStyles isMobile =
                 -- .level-left, .level-right
                 [ Css.Global.selector ".left, .right"
                     [ Css.displayFlex
-                    , adjacentSiblings
+                    , Css.Global.adjacentSiblings
                         -- .level-left + .level-right
                         [ Css.Global.class ".right"
-                            [ Css.marginTop zero
+                            [ Css.marginTop Css.zero
                             ]
                         ]
                     ]
@@ -106,8 +106,8 @@ levelStyles isMobile =
                 --.level-item
                 , Css.Global.selector
                     ".item:not(:last-child)"
-                    [ Css.marginBottom zero
-                    , Css.marginRight (rem 0.75)
+                    [ Css.marginBottom Css.zero
+                    , Css.marginRight (Css.rem 0.75)
                     ]
                 ]
             ]
@@ -121,13 +121,13 @@ levelStyles isMobile =
 leftStyles : List Style
 leftStyles =
     [ leftAndRightStyles
-    , Css.justifyContent flexStart
+    , Css.justifyContent Css.flexStart
 
     -- When stacked, make sure "level-right" has margin
-    , mobile
-        [ adjacentSiblings
-            [ typeSelector "div"
-                [ Css.marginTop (rem 1.5)
+    , Utils.mobile
+        [ Css.Global.adjacentSiblings
+            [ Css.Global.typeSelector "div"
+                [ Css.marginTop (Css.rem 1.5)
                 ]
             ]
         ]
@@ -137,18 +137,18 @@ leftStyles =
 rightStyles : List Style
 rightStyles =
     [ leftAndRightStyles
-    , Css.justifyContent flexEnd
+    , Css.justifyContent Css.flexEnd
     ]
 
 
 leftAndRightStyles : Style
 leftAndRightStyles =
     Css.batch
-        [ Css.flexBasis auto
-        , Css.flexGrow zero
-        , Css.flexShrink zero
-        , Css.alignItems center
-        , tablet
+        [ Css.flexBasis Css.auto
+        , Css.flexGrow Css.zero
+        , Css.flexShrink Css.zero
+        , Css.alignItems Css.center
+        , Utils.tablet
             [ Css.displayFlex
             ]
         ]
@@ -175,23 +175,23 @@ itemStyles isCentered =
     let
         modsStyle =
             if isCentered then
-                [ Css.textAlign center, Css.flexGrow (int 1) ]
+                [ Css.textAlign Css.center, Css.flexGrow (Css.int 1) ]
 
             else
                 []
     in
-    [ Css.alignItems center
+    [ Css.alignItems Css.center
     , Css.displayFlex
-    , Css.flexBasis auto
-    , Css.flexGrow zero
-    , Css.flexShrink zero
-    , Css.justifyContent center
-    , tablet
-        [ Css.marginRight (rem 0.75)
+    , Css.flexBasis Css.auto
+    , Css.flexGrow Css.zero
+    , Css.flexShrink Css.zero
+    , Css.justifyContent Css.center
+    , Utils.tablet
+        [ Css.marginRight (Css.rem 0.75)
         ]
-    , mobile
-        [ pseudoClass "not(:last-child)"
-            [ Css.marginBottom (rem 0.75)
+    , Utils.mobile
+        [ Css.pseudoClass "not(:last-child)"
+            [ Css.marginBottom (Css.rem 0.75)
             ]
         ]
     , Css.batch modsStyle

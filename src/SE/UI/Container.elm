@@ -12,6 +12,7 @@ see <https://bulma.io/documentation/layout/container/>
 
 import Css exposing (Style, auto, none, px, relative, zero)
 import Html.Styled exposing (Html, styled)
+import Html.Styled.Attributes as Attributes
 
 
 {-| For now, only Fluid modifier is supported
@@ -37,7 +38,7 @@ container modifiers =
         , Css.maxWidth (Css.calc (Css.px 1920) Css.minus (Css.rem (2 * 2.66666667)))
         , modStyle
         ]
-        []
+        [ Attributes.classList [ ( "container", True ) ] ]
 
 
 modifier : Modifier -> Style

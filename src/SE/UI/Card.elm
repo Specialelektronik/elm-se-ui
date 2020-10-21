@@ -29,6 +29,7 @@ Like the [Input](SE.UI.Form.Input) components, Card uses the withStar-pattern.
 import Css exposing (Style)
 import Css.Global
 import Html.Styled as Html exposing (Html, styled)
+import Html.Styled.Attributes as Attributes
 import SE.UI.Colors as Colors
 import SE.UI.Font as Font
 import SE.UI.Title as Title
@@ -58,9 +59,9 @@ toHtml : Card msg -> Html msg
 toHtml (Card internals) =
     styled Html.div
         (cardStyles internals.boxShadow)
-        []
+        [ Attributes.classList [ ( "card", True ) ] ]
         [ titleToHtml internals
-        , styled Html.div contentStyles [] internals.content
+        , styled Html.div contentStyles [ Attributes.classList [ ( "card-content", True ) ] ] internals.content
         ]
 
 
@@ -72,7 +73,7 @@ titleToHtml { title, subTitle } =
     else
         styled Html.div
             headerStyles
-            []
+            [ Attributes.classList [ ( "card-header", True ) ] ]
             [ Title.title5 title
             , subTitleToHtml subTitle
             ]

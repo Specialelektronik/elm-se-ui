@@ -15,6 +15,7 @@ This module exposes one function for each color. If you supply a message it will
 import Css exposing (Style)
 import Css.Global
 import Html.Styled as Html exposing (Html, styled)
+import Html.Styled.Attributes as Attributes
 import SE.UI.Colors as Colors
 import SE.UI.Delete as Delete
 import SE.UI.Utils as Utils
@@ -94,7 +95,7 @@ internalNotification color maybeMsg content =
                 ]
             ]
         ]
-        []
+        [ Attributes.classList [ ( "notification", True ) ] ]
         (button :: content)
 
 

@@ -10,12 +10,13 @@ see <https://bulma.io/documentation/components/modal/>
 
 -}
 
-import Css exposing (Style, absolute, auto, calc, center, column, fixed, hidden, int, minus, none, pct, px, relative, rgba, vh, zero)
+import Css exposing (Style)
 import Html.Styled exposing (Html, styled)
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Attributes as Attributes
+import Html.Styled.Events as Events
 import SE.UI.Colors as Colors
 import SE.UI.Delete as Delete
-import SE.UI.Utils exposing (tablet)
+import SE.UI.Utils as Utils
 
 
 {-| The modal does not have an active state, to close the modal, simple don't render it.
@@ -24,8 +25,8 @@ modal : msg -> List (Html msg) -> Html msg
 modal closeMsg c =
     styled Html.Styled.div
         modalStyles
-        []
-        [ styled Html.Styled.div modalBackgroundStyles [ onClick closeMsg ] []
+        [ Attributes.classList [ ( "modal", True ) ] ]
+        [ styled Html.Styled.div modalBackgroundStyles [ Events.onClick closeMsg ] []
         , styled Html.Styled.div modalContentStyles [] c
         , Delete.large closeStyles closeMsg
         ]
@@ -38,7 +39,7 @@ fullWidthModal closeMsg c =
     styled Html.Styled.div
         modalStyles
         []
-        [ styled Html.Styled.div modalBackgroundStyles [ onClick closeMsg ] []
+        [ styled Html.Styled.div modalBackgroundStyles [ Events.onClick closeMsg ] []
         , styled Html.Styled.div fullWidthModalContentStyles [] c
         , Delete.large closeStyles closeMsg
         ]
@@ -47,70 +48,70 @@ fullWidthModal closeMsg c =
 modalStyles : List Style
 modalStyles =
     [ overlay 0
-    , Css.alignItems center
-    , Css.flexDirection column
+    , Css.alignItems Css.center
+    , Css.flexDirection Css.column
     , Css.displayFlex
-    , Css.justifyContent center
-    , Css.overflow hidden
-    , Css.position fixed
-    , Css.zIndex (int 40)
+    , Css.justifyContent Css.center
+    , Css.overflow Css.hidden
+    , Css.position Css.fixed
+    , Css.zIndex (Css.int 40)
     ]
 
 
 modalBackgroundStyles : List Style
 modalBackgroundStyles =
     [ overlay 0
-    , Css.backgroundColor (rgba 0 0 0 0.7)
+    , Css.backgroundColor (Css.rgba 0 0 0 0.7)
     ]
 
 
 modalContentStyles : List Style
 modalContentStyles =
-    [ Css.margin2 zero (px 20)
-    , Css.maxHeight (calc (vh 100) minus (px 160))
-    , Css.overflow auto
-    , Css.position relative
-    , Css.width (pct 100)
-    , tablet
-        [ Css.margin2 zero auto
-        , Css.maxHeight (calc (vh 100) minus (px 40))
-        , Css.width (px 640)
+    [ Css.margin2 Css.zero (Css.px 20)
+    , Css.maxHeight (Css.calc (Css.vh 100) Css.minus (Css.px 160))
+    , Css.overflow Css.auto
+    , Css.position Css.relative
+    , Css.width (Css.pct 100)
+    , Utils.tablet
+        [ Css.margin2 Css.zero Css.auto
+        , Css.maxHeight (Css.calc (Css.vh 100) Css.minus (Css.px 40))
+        , Css.width (Css.px 640)
         ]
     ]
 
 
 fullWidthModalContentStyles : List Style
 fullWidthModalContentStyles =
-    -- [ Css.margin zero
-    -- , Css.overflow auto
-    -- , Css.position absolute
-    -- , Css.top zero
-    -- , Css.right zero
-    -- , Css.bottom zero
-    -- , Css.left zero
+    -- [ Css.margin Css.zero
+    -- , Css.overflow Css.auto
+    -- , Css.position Css.absolute
+    -- , Css.top Css.zero
+    -- , Css.right Css.zero
+    -- , Css.bottom Css.zero
+    -- , Css.left Css.zero
     -- ]
-    [ Css.margin zero
-    , Css.maxHeight (calc (vh 100) minus (px 160))
-    , Css.overflow auto
-    , Css.position relative
-    , Css.width (pct 100)
-    , tablet
-        [ Css.margin2 zero auto
-        , Css.maxHeight (calc (vh 100) minus (px 40))
+    [ Css.margin Css.zero
+    , Css.maxHeight (Css.calc (Css.vh 100) Css.minus (Css.px 160))
+    , Css.overflow Css.auto
+    , Css.position Css.relative
+    , Css.width (Css.pct 100)
+    , Utils.tablet
+        [ Css.margin2 Css.zero Css.auto
+        , Css.maxHeight (Css.calc (Css.vh 100) Css.minus (Css.px 40))
 
-        -- , Css.width (px 640)
+        -- , Css.width (Css.px 640)
         ]
     ]
 
 
 closeStyles : List Style
 closeStyles =
-    [ Css.backgroundImage none
-    , Css.height (px 40)
-    , Css.position fixed
-    , Css.right (px 20)
-    , Css.top (px 20)
-    , Css.width (px 40)
+    [ Css.backgroundImage Css.none
+    , Css.height (Css.px 40)
+    , Css.position Css.fixed
+    , Css.right (Css.px 20)
+    , Css.top (Css.px 20)
+    , Css.width (Css.px 40)
     , Colors.backgroundColor Colors.white
     , Css.hover
         [ Colors.backgroundColor (Colors.white |> Colors.hover)
@@ -133,11 +134,11 @@ closeStyles =
 overlay : Float -> Style
 overlay offset =
     Css.batch
-        [ Css.bottom (px offset)
-        , Css.left (px offset)
-        , Css.position absolute
-        , Css.right (px offset)
-        , Css.top (px offset)
+        [ Css.bottom (Css.px offset)
+        , Css.left (Css.px offset)
+        , Css.position Css.absolute
+        , Css.right (Css.px offset)
+        , Css.top (Css.px offset)
         ]
 
 
@@ -147,9 +148,9 @@ overlay offset =
 --     [ Css.backgroundColor white
 --     , Css.property "content" "\"\""
 --     , Css.display Css.block
---     , Css.left (pct 50)
---     , Css.position absolute
---     , Css.top (pct 50)
---     , Css.transforms [ translateX (pct -50), translateY (pct -50), rotate (deg 45) ]
+--     , Css.left (Css.pct 50)
+--     , Css.position Css.absolute
+--     , Css.top (Css.pct 50)
+--     , Css.transforms [ translateX (Css.pct -50), translateY (Css.pct -50), rotate (deg 45) ]
 --     , Css.Transitions.transition [ Css.Transitions.transformOrigin 50 ]
 --     ]

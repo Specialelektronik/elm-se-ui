@@ -13,6 +13,7 @@ see <https://bulma.io/documentation/elements/delete/>
 import Css exposing (Style, absolute, active, after, before, block, deg, focus, hover, inlineBlock, none, pct, pointer, px, relative, rgba, rotate, top, translateX, translateY, zero)
 import Css.Transitions
 import Html.Styled exposing (Html, styled)
+import Html.Styled.Attributes as Attributes
 import Html.Styled.Events exposing (onClick)
 import SE.UI.Colors as Colors
 import SE.UI.Utils as Utils
@@ -78,7 +79,7 @@ helper : Size -> List Style -> msg -> Html msg
 helper size styles msg =
     styled Html.Styled.button
         (deleteStyles size ++ styles)
-        [ onClick msg ]
+        [ onClick msg, Attributes.classList [ ( "delete", True ) ] ]
         [ Utils.visuallyHidden Html.Styled.span [] [ Html.Styled.text "Stäng" ] ]
 
 

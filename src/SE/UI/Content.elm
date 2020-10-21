@@ -13,6 +13,7 @@ see <https://bulma.io/documentation/elements/content/>
 import Css exposing (auto, center, circle, decimal, disc, em, inlineBlock, italic, left, outside, pct, pseudoClass, px, solid, square, top, zero)
 import Css.Global exposing (blockquote, dd, descendants, dl, each, h1, h2, h3, h4, h5, h6, img, ol, p, pre, selector, table, td, tfoot, th, thead, typeSelector, ul)
 import Html.Styled exposing (Html, styled)
+import Html.Styled.Attributes as Attributes
 import SE.UI.Colors as Colors
 import SE.UI.Font as Font
 import SE.UI.Utils exposing (block)
@@ -36,7 +37,7 @@ Works like a normal Html.Styled.div:
 
 -}
 content : List (Html.Styled.Attribute msg) -> List (Html msg) -> Html msg
-content =
+content attrs =
     styled Html.Styled.div
         [ block
         , descendants
@@ -188,3 +189,4 @@ content =
                 ]
             ]
         ]
+        (Attributes.classList [ ( "content", True ) ] :: attrs)
