@@ -87,14 +87,14 @@ dropdown id closeMsg isOpen btn items =
     in
     styled Html.div
         dropdownStyles
-        (Attributes.class "dropdown" :: outerClickAttributes)
+        (Attributes.classList [ ( "dropdown", True ) ] :: outerClickAttributes)
         [ buttonToHtml btn
         , styled Html.div
             (menuStyles isOpen)
-            []
+            [ Attributes.classList [ ( "dropdown-menu", True ) ] ]
             [ styled Html.div
                 contentStyles
-                []
+                [ Attributes.classList [ ( "dropdown-content", True ) ] ]
                 (List.map itemToHtml items)
             ]
         ]
