@@ -28,6 +28,7 @@ import SE.UI.Modal as Modal
 import SE.UI.Navbar as Navbar
 import SE.UI.Notification as Notification
 import SE.UI.Section as Section
+import SE.UI.Snackbar as Snackbar
 import SE.UI.Table.V2 as Table
 import SE.UI.Tabs.V2 as Tabs exposing (Tabs)
 import SE.UI.Title as Title
@@ -54,6 +55,7 @@ type alias Model =
     , showMenuDropdown : Bool
     , crestron : CrestronModel
     , panasonic : PanasonicModel
+    , snackbar : Snackbar.Model
     }
 
 
@@ -161,24 +163,27 @@ colorToNotification color =
             ( "custom SE.UI.Colors." ++ Debug.toString color_, Notification.custom color_ )
 
 
-initialModel : Model
+initialModel : ( Model, Cmd Msg )
 initialModel =
-    { count = 1
-    , button = defaultButton
-    , notification = defaultNotification
-    , columns = defaultColumns
-    , input = ""
-    , showModal = False
-    , showDropdown = False
-    , navbar = Navbar.defaultModel
-    , navbarBrand = Navbar.DefaultBrand
-    , table = defaultTableModel
-    , tabs = defaultTabsModel
-    , isOpen = False
-    , showMenuDropdown = False
-    , crestron = defaultCrestronLogo
-    , panasonic = defaultPanasonicLogo
-    }
+    ( { count = 1
+      , button = defaultButton
+      , notification = defaultNotification
+      , columns = defaultColumns
+      , input = ""
+      , showModal = False
+      , showDropdown = False
+      , navbar = Navbar.defaultModel
+      , navbarBrand = Navbar.DefaultBrand
+      , table = defaultTableModel
+      , tabs = defaultTabsModel
+      , isOpen = False
+      , showMenuDropdown = False
+      , crestron = defaultCrestronLogo
+      , panasonic = defaultPanasonicLogo
+      , snackbar = Snackbar.init
+      }
+    , Cmd.none
+    )
 
 
 defaultButton : ButtonModel
@@ -241,6 +246,8 @@ type Msg
     | GotNotificationMsg NotificationMsg
     | GotColumnsMsg ColumnsMsg
     | GotNavbarMsg Navbar.Msg
+    | GotSnackbarMsg Snackbar.Msg
+    | AddSnackbar
     | ToggleNavbarBrand
     | GotTableMsg TableMsg
     | GotTabsMsg TabsMsg
@@ -288,32 +295,56 @@ type PanasonicMsg
     | ToggledMonochrome
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         NoOp ->
-            model
+            ( model, Cmd.none )
 
         ClickedButton ->
-            model
+            ( model, Cmd.none )
 
         GotInput str ->
-            { model | input = str }
+            ( { model | input = str }, Cmd.none )
 
         GotButtonsMsg subMsg ->
-            { model | button = updateButton subMsg model.button }
+            ( { model | button = updateButton subMsg model.button }, Cmd.none )
 
         GotNotificationMsg subMsg ->
-            { model | notification = updateNotification subMsg model.notification }
+            ( { model | notification = updateNotification subMsg model.notification }, Cmd.none )
 
         GotColumnsMsg subMsg ->
-            { model | columns = updateColumns subMsg model.columns }
+            ( { model | columns = updateColumns subMsg model.columns }, Cmd.none )
+
+        GotSnackbarMsg subMsg ->
+            let
+                ( newSnackbar, cmds ) =
+                    Snackbar.update snackbarConfig subMsg model.snackbar
+            in
+            ( { model | snackbar = newSnackbar }, cmds )
+
+        AddSnackbar ->
+            let
+                ( newSnackbar, cmds ) =
+                    Snackbar.add snackbarConfig
+                        model.snackbar
+                        (Snackbar.create
+                            { label = "Ett produkt har lagts i varukorgen"
+                            , message =
+                                Html.span []
+                                    [ styled Html.span [ Colors.color Colors.primary ] [] [ Html.text "CP3" ]
+                                    , styled Html.span [ Colors.color Colors.base ] [] [ Html.text " - Kontrollprocessor 3-serie, LAN, 1HE/19tum" ]
+                                    ]
+                            }
+                        )
+            in
+            ( { model | snackbar = newSnackbar }, cmds )
 
         GotNavbarMsg subMsg ->
-            { model | navbar = Navbar.update subMsg model.navbar }
+            ( { model | navbar = Navbar.update subMsg model.navbar }, Cmd.none )
 
         ToggleNavbarBrand ->
-            { model
+            ( { model
                 | navbarBrand =
                     if model.navbarBrand == Navbar.DefaultBrand then
                         Navbar.CustomBrand
@@ -323,31 +354,33 @@ update msg model =
 
                     else
                         Navbar.DefaultBrand
-            }
+              }
+            , Cmd.none
+            )
 
         GotTableMsg subMsg ->
-            { model | table = updateTable subMsg model.table }
+            ( { model | table = updateTable subMsg model.table }, Cmd.none )
 
         GotTabsMsg subMsg ->
-            { model | tabs = updateTabs subMsg model.tabs }
+            ( { model | tabs = updateTabs subMsg model.tabs }, Cmd.none )
 
         GotCrestronMsg subMsg ->
-            { model | crestron = updateCrestron subMsg model.crestron }
+            ( { model | crestron = updateCrestron subMsg model.crestron }, Cmd.none )
 
         GotPanasonicMsg subMsg ->
-            { model | panasonic = updatePanasonic subMsg model.panasonic }
+            ( { model | panasonic = updatePanasonic subMsg model.panasonic }, Cmd.none )
 
         ToggledModal ->
-            { model | showModal = not model.showModal }
+            ( { model | showModal = not model.showModal }, Cmd.none )
 
         ToggledDropdown ->
-            { model | showDropdown = not model.showDropdown }
+            ( { model | showDropdown = not model.showDropdown }, Cmd.none )
 
         ToggledMenu ->
-            { model | isOpen = not model.isOpen }
+            ( { model | isOpen = not model.isOpen }, Cmd.none )
 
         ClosedDropdown ->
-            { model | showDropdown = False }
+            ( { model | showDropdown = False }, Cmd.none )
 
 
 updateButton : ButtonMsg -> ButtonModel -> ButtonModel
@@ -534,6 +567,12 @@ navbarConfig brand =
     }
 
 
+snackbarConfig : Snackbar.Config Msg
+snackbarConfig =
+    { transform = GotSnackbarMsg
+    }
+
+
 view : Model -> Html Msg
 view model =
     div
@@ -543,6 +582,7 @@ view model =
         , Html.article
             []
             [ viewNavbar model.navbarBrand
+            , viewSnackbarInfo
             , viewLogo
             , viewCrestronLogo model.crestron
             , viewPanasonicLogo model.panasonic
@@ -561,8 +601,7 @@ view model =
             , viewTable model.table
             , viewTabs model.tabs
             ]
-
-        -- , Navbar.backdrop navbarConfig model.navbar
+        , Snackbar.view snackbarConfig model.snackbar
         ]
 
 
@@ -780,6 +819,33 @@ viewNavbar brand =
                 [ Buttons.button [ Buttons.Color Colors.DarkGreen ] (Just ToggleNavbarBrand) [ Html.text "Toggle brand" ]
                 ]
             , Html.code [] [ Html.text (Debug.toString brand) ]
+            ]
+        ]
+
+
+
+-- SNACKBAR
+
+
+viewSnackbarInfo : Html Msg
+viewSnackbarInfo =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Snackbar"
+            , Content.content []
+                [ Html.p []
+                    [ Html.text "From: "
+                    , Html.a [ Attributes.href "https://material.io/components/snackbars#usage" ] [ Html.text "Material Design - Snackbars" ]
+                    ]
+                , Html.blockquote []
+                    [ Html.text "Snackbars inform users of a process that an app has performed or will perform. They appear temporarily, towards the bottom of the screen. They shouldn’t interrupt the user experience, and they don’t require user input to disappear."
+                    ]
+                ]
+            , Form.field []
+                [ Form.label "Add snackbar"
+                , Form.control False
+                    [ Buttons.button [ Buttons.Color Colors.Primary ] (Just AddSnackbar) [ Html.text "Add snackbar" ] ]
+                ]
             ]
         ]
 
@@ -1993,8 +2059,9 @@ viewIf predicate html =
 
 main : Program () Model Msg
 main =
-    Browser.sandbox
+    Browser.element
         { view = view >> toUnstyled
         , update = update
-        , init = initialModel
+        , init = always initialModel
+        , subscriptions = always Sub.none
         }

@@ -3,7 +3,7 @@
   "name": "special-elektronik/special-elektronik-elm-ui",
   "summary": "Elm UI library for beautiful, coherent, SE flavored UI.",
   "license": "MIT",
-  "version": "7.0.1",
+  "version": "7.1.0",
   "exposed-modules": [
     "SE.UI.Breadcrumb",
     "SE.UI.Buttons",
@@ -29,6 +29,7 @@
     "SE.UI.Notification",
     "SE.UI.OuterClick",
     "SE.UI.Section",
+    "SE.UI.Snackbar",
     "SE.UI.Table",
     "SE.UI.Table.V2",
     "SE.UI.Tabs",
