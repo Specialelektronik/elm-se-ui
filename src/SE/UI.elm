@@ -571,9 +571,12 @@ viewLoginIcon =
     styled Html.a
         [ Colors.color Colors.text
         , Css.displayFlex
+        , Css.padding (Css.rem 1)
+        , Css.width (Css.pct 100)
         , Utils.desktop
             [ Css.flexDirection Css.column
             , Css.alignItems Css.center
+            , Css.padding Css.zero
             ]
         , Css.hover
             [ Colors.color Colors.primary
@@ -601,9 +604,12 @@ viewCartIcon =
         [ Colors.color Colors.text
         , Css.position Css.relative
         , Css.displayFlex
+        , Css.padding (Css.rem 1)
+        , Css.width (Css.pct 100)
         , Utils.desktop
             [ Css.flexDirection Css.column
             , Css.alignItems Css.center
+            , Css.padding Css.zero
             ]
         , Css.hover
             [ Colors.color Colors.primary

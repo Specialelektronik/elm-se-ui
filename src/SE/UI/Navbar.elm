@@ -204,7 +204,7 @@ view config searchFn model =
     styled Html.header
         (navContainerStyles model.activeDropdownId)
         []
-        [ global config
+        [ global config model.isOpen
         , backdrop config model
         , viewMobile config searchFn model
         , viewDesktop config searchFn model
@@ -309,11 +309,16 @@ viewMobile config searchFn model =
         , Css.displayFlex
         , Css.flexDirection Css.column
         , Css.height (Css.px 126)
-        , Utils.desktop
+        , Css.Global.withClass "is-open"
+            [ Css.height (Css.vh 100)
+            , Css.position Css.fixed
+            , Css.width (Css.pct 100)
+            ]
+        , Utils.widescreen
             [ Css.display Css.none
             ]
         ]
-        [ Attributes.class "navbar-mobile" ]
+        [ Attributes.classList [ ( "navbar-mobile", True ), ( "is-open", model.isOpen ) ] ]
         [ viewBrand config model.isOpen
         , viewLED
         , viewMobileSearch searchFn
@@ -326,11 +331,18 @@ viewMobileNav config model =
     -- 1. Merge all item to one list
     List.map megaItemToItem config.megaNav
         ++ config.mainNav
+        ++ List.map LinkItem config.ribbon
         -- 2. Turn each item into Html
         |> List.indexedMap (viewMobileItem config model.activeDropdownId)
         |> (\htmls -> htmls ++ [ viewSocialMedia config.socialMedia ])
         -- 3. Insert into list item
-        |> List.map (List.singleton >> Html.li [])
+        |> List.map
+            (List.singleton
+                >> styled Html.li
+                    [ Css.borderBottom3 (Css.px 1) Css.solid (Colors.border |> Colors.toCss)
+                    ]
+                    []
+            )
         |> Html.ul []
         |> List.singleton
         |> styled Html.nav mobileNavStyles [ Attributes.classList [ ( "is-open", model.isOpen ) ] ]
@@ -349,7 +361,6 @@ mobileBasicItemStyles isActive =
     , Css.padding (Css.rem 1)
     , Css.displayFlex
     , Css.justifyContent Css.spaceBetween
-    , Css.borderBottom3 (Css.px 1) Css.solid (Colors.border |> Colors.toCss)
     , Css.position Css.relative
     ]
 
@@ -366,6 +377,8 @@ mobileNavStyles =
     , Css.Global.withClass "is-open"
         [ Css.transform (Css.translateX Css.zero)
         , Css.opacity (Css.int 1)
+        , Css.height (Css.calc (Css.vh 100) Css.plus (Css.px (brandHeight + ledHeight)))
+        , Css.overflowY Css.scroll
         ]
     , Css.marginTop (Css.px -48)
     , Css.boxShadow5 Css.zero Css.zero (Css.px 10) (Css.px 0) (Colors.black |> Colors.mapAlpha (always 0.15) |> Colors.toCss)
@@ -375,12 +388,12 @@ mobileNavStyles =
             [ Css.displayFlex
             , Css.flexDirection Css.column
             , Css.Global.children
-                [ Css.Global.typeSelector "a"
+                [ Css.Global.a
                     [ Css.width (Css.pct 100)
                     ]
 
                 -- dropdown content
-                , Css.Global.typeSelector "div"
+                , Css.Global.class "dropdown-menu"
                     [ Css.position Css.relative
                     , Css.paddingTop Css.zero
                     , Css.important (Colors.backgroundColor Colors.background)
@@ -429,7 +442,7 @@ viewDesktop config searchFn model =
         [ Css.display Css.none
         , Colors.backgroundColor Colors.white
         , Css.position Css.relative
-        , Utils.desktop
+        , Utils.widescreen
             [ Css.display Css.block
             ]
         ]
@@ -738,7 +751,7 @@ navbarBurger toggledMenuMsg isOpen =
                     )
                 ]
             ]
-        , Utils.desktop
+        , Utils.widescreen
             [ Css.display Css.none
             ]
         ]
@@ -809,7 +822,7 @@ viewLED =
         , Css.height (Css.px ledHeight)
         , Css.flexShrink Css.zero
         ]
-        []
+        [ Attributes.classList [ ( "navbar-led", True ) ] ]
         []
 
 
@@ -871,8 +884,8 @@ viewLinkHelper styles link =
 -- GLOBAL
 
 
-global : Config msg -> Html msg
-global config =
+global : Config msg -> Bool -> Html msg
+global config isOpen =
     let
         ribbonHeight =
             case config.ribbon of
@@ -894,22 +907,23 @@ global config =
         [ Css.Global.body
             [ Css.marginTop
                 (Css.px (brandHeight + ledHeight + mobileSearchHeight))
-            , Utils.desktop
+            , Utils.widescreen
                 [ Css.marginTop (Css.px (ribbonHeight + brandHeight + ledHeight + megaHeight))
                 ]
             ]
+        , Css.Global.html
+            [ if isOpen then
+                Css.important (Css.position Css.fixed)
 
-        -- , Css.Global.html
-        --     [ if model.isOpen then
-        --         Css.important (Css.overflow Css.hidden)
-        --       else
-        --         Css.batch []
-        --     ]
+              else
+                Css.batch []
+            ]
         ]
 
 
 globalDropdownOverrideStyles : Style
 globalDropdownOverrideStyles =
+    -- Css.batch []
     Utils.tablet
         [ Css.Global.descendants
             -- Override regular dropdown styles
@@ -917,18 +931,18 @@ globalDropdownOverrideStyles =
                 [ Css.displayFlex
                 , Css.flexDirection Css.column
                 , Css.Global.children
-                    [ Css.Global.typeSelector "a"
+                    [ Css.Global.a
                         [ Css.width (Css.pct 100)
                         ]
 
                     -- dropdown content
-                    , Css.Global.typeSelector "div"
+                    , Css.Global.div
                         [ Css.position Css.relative
                         , Css.paddingTop Css.zero
                         , Css.important (Colors.backgroundColor Colors.background)
                         , Css.Global.children
                             -- dropdown row
-                            [ Css.Global.typeSelector "div"
+                            [ Css.Global.div
                                 [ Colors.backgroundColor Colors.background
                                 , Css.boxShadow Css.none
                                 ]
