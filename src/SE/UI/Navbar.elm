@@ -99,8 +99,8 @@ defaultModel =
 {-| The default logo adapts to the black or white background, if you want to use a custom logo, provide 2 image urls for white and black background, it could be the same. The image height will be 48px.
 -}
 type Brand
-    = DefaultBrand
-    | CustomBrand { onWhite : String, onBlack : String }
+    = DefaultBrand Url
+    | CustomBrand { onWhite : String, onBlack : String } Url
 
 
 {-| The 3 different link options available:
@@ -145,9 +145,13 @@ type alias MegaItem msg =
 {-| An icon and url
 -}
 type alias SocialMedia msg =
-    { url : String
+    { url : Url
     , icon : Control.Size -> Html msg
     }
+
+
+type alias Url =
+    String
 
 
 
@@ -667,26 +671,26 @@ brandImageHeight =
 viewBrand : Config msg -> Bool -> Html msg
 viewBrand config isOpen =
     let
-        logo =
+        ( logo, url ) =
             case ( config.brand, isOpen ) of
-                ( DefaultBrand, True ) ->
-                    Logo.onBlack
+                ( DefaultBrand url_, True ) ->
+                    ( Logo.onBlack, url_ )
 
-                ( DefaultBrand, False ) ->
-                    Logo.onWhite
+                ( DefaultBrand url_, False ) ->
+                    ( Logo.onWhite, url_ )
 
-                ( CustomBrand { onBlack }, True ) ->
-                    viewCustomLogo onBlack
+                ( CustomBrand { onBlack } url_, True ) ->
+                    ( viewCustomLogo onBlack, url_ )
 
-                ( CustomBrand { onWhite }, False ) ->
-                    viewCustomLogo onWhite
+                ( CustomBrand { onWhite } url_, False ) ->
+                    ( viewCustomLogo onWhite, url_ )
     in
     styled Html.div
         brandStyles
         [ Attributes.classList [ ( "navbar-brand", True ), ( "is-open", isOpen ) ] ]
         [ styled Html.a
             [ Css.lineHeight Css.zero ]
-            [ Attributes.href "/" ]
+            [ Attributes.href url ]
             [ logo
             ]
         , navbarBurger (config.transform ToggledMenu) isOpen

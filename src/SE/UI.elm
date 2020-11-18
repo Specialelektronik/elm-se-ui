@@ -173,7 +173,7 @@ initialModel =
       , showModal = False
       , showDropdown = False
       , navbar = Navbar.defaultModel
-      , navbarBrand = Navbar.DefaultBrand
+      , navbarBrand = Navbar.DefaultBrand "/"
       , table = defaultTableModel
       , tabs = defaultTabsModel
       , isOpen = False
@@ -346,14 +346,16 @@ update msg model =
         ToggleNavbarBrand ->
             ( { model
                 | navbarBrand =
-                    if model.navbarBrand == Navbar.DefaultBrand then
-                        Navbar.CustomBrand
-                            { onWhite = "https://www.facebook.com/images/fb_icon_325x325.png"
-                            , onBlack = "https://www.facebook.com/images/fb_icon_325x325.png"
-                            }
+                    case model.navbarBrand of
+                        Navbar.DefaultBrand _ ->
+                            Navbar.CustomBrand
+                                { onWhite = "https://www.facebook.com/images/fb_icon_325x325.png"
+                                , onBlack = "https://www.facebook.com/images/fb_icon_325x325.png"
+                                }
+                                "/"
 
-                    else
-                        Navbar.DefaultBrand
+                        _ ->
+                            Navbar.DefaultBrand "/"
               }
             , Cmd.none
             )
