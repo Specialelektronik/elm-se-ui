@@ -27,6 +27,7 @@ import SE.UI.Logos.Panasonic as Panasonic
 import SE.UI.Modal as Modal
 import SE.UI.Navbar as Navbar
 import SE.UI.Notification as Notification
+import SE.UI.Pagination.V2 as Pagination
 import SE.UI.Section as Section
 import SE.UI.Snackbar as Snackbar
 import SE.UI.Table.V2 as Table
@@ -602,6 +603,7 @@ view model =
             , viewCard
             , viewTable model.table
             , viewTabs model.tabs
+            , viewPagination
             ]
         , Snackbar.view snackbarConfig model.snackbar
         ]
@@ -1300,10 +1302,16 @@ viewButtons model =
                     (List.map (viewButtonModifier model.mods) allOtherMods)
                 ]
             , Buttons.buttons []
-                [ Buttons.button model.mods (Just ClickedButton) [ Icon.cart Control.Medium, Html.span [] [ Html.text "Save changes" ] ]
+                [ Buttons.button model.mods (Just ClickedButton) [ Icon.cart Control.Medium, Html.span [] [ Html.text "Add to cart" ] ]
                 ]
-            , Html.code []
-                [ Html.text ("SE.UI.Buttons.button [ " ++ (List.map modToString model.mods |> String.join ", ") ++ " ] (Just ClickedButton) [ Html.text \"Save changes\" ]")
+            , Html.pre []
+                [ Html.code []
+                    [ Html.text ("""SE.UI.Buttons.button
+    [ """ ++ (List.map modToString model.mods |> String.join "\n    , ") ++ """
+    ]
+    (Just ClickedButton)
+    [ Icon.cart Control.Regular, Html.text "Add to cart" ]""")
+                    ]
                 ]
             , Title.title1 "Button Groups"
             , Buttons.buttons [ Buttons.Attached, Buttons.Centered ]
@@ -2040,10 +2048,68 @@ tabsModifiersToCode model tabs =
            )
 
 
+viewPagination : Html Msg
+viewPagination =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Pagination V2"
 
--- Html.text "Table.body []\n            [ Html.tr []\n                [ Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                ]\n            , Html.tr []\n                [ Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                , Html.td [] [ Html.text \"This is text in a cell.\" ]\n                ]\n            ]\n            |> Table.withModifiers "
---                     , Html.text ("[ " ++ (List.map tableModToString model.mods |> String.join ", ") ++ " ]")
---                     , Html.text "\n            |> Table.toHtml"
+            -- , Form.field []
+            --     [ Form.label "Sizes"
+            --     , Form.control False (List.map (viewTabsSize model.size) allTabsSizes)
+            --     ]
+            -- , Form.field []
+            --     [ Form.label "Styles"
+            --     , Form.control False (List.map (viewTabsStyle model.style) allTabsStyles)
+            --     ]
+            -- , Form.field []
+            --     [ Form.label "Alignment"
+            --     , Form.control False (List.map (viewTabsAlignment model.alignment) allTabsAlignments)
+            --     ]
+            -- , Form.field []
+            --     [ Form.label "Fullwidth"
+            --     , Form.control False
+            --         [ Input.checkbox
+            --             (GotTabsMsg ToggledTabsFullwidth)
+            --             "Fullwidth"
+            --             model.isFullwidth
+            --             |> Input.toHtml
+            --         ]
+            --     ]
+            , Content.content []
+                [ Html.p [] [ Html.text "The Pagionation component originates from Bulmas equivalent. The first version of Pagination is deprecated and should not be used." ]
+                ]
+            ]
+        , styled Html.div
+            [ Utils.block
+            , Css.padding (Css.px 16)
+            , Colors.backgroundColor Colors.lightBlue
+            ]
+            []
+            [ Pagination.pagination
+                { lastPage = 8
+                , currentPage = 5
+                , nextPageLabel = "Next"
+                , previousPageLabel = "Previous"
+                , msg = always NoOp
+                }
+            ]
+        , Content.content []
+            [ Html.pre []
+                [ Html.code []
+                    [ Html.text """
+    Pagination.pagination
+        { lastPage = 8
+        , currentPage = 5
+        , nextPageLabel = "Next"
+        , previousPageLabel = "Previous"
+        , msg = always NoOp
+        }
+        """
+                    ]
+                ]
+            ]
+        ]
 
 
 viewIf : Bool -> Html msg -> Html msg
