@@ -1,6 +1,6 @@
 module SE.UI.Pagination.V2 exposing
-    ( pagination, centeredPagination, rightPagination
-    , PaginationRecord
+    ( create
+    , toHtml
     )
 
 {-| Bulmas Pagination component
@@ -22,6 +22,7 @@ import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import SE.UI.Colors as Colors
 import SE.UI.Control as Control
+import SE.UI.Font as Font
 import SE.UI.Utils as Utils
 
 
@@ -34,9 +35,27 @@ import SE.UI.Utils as Utils
   - msg : A function that takes an Int and returns a msg, when the message is triggered it will be loaded will the appropriate page to load. (Example: Current page is 4, the next button will trigger `msg 5`)
 
 -}
-type alias PaginationRecord msg =
-    { lastPage : Int
+
+
+
+-- type alias PaginationRecord msg =
+--     { lastPage : Int
+--     , currentPage : Int
+--     , nextPageLabel : String
+--     , previousPageLabel : String
+--     , msg : Int -> msg
+--     }
+
+
+type Pagination msg
+    = Pagination (Internals msg)
+
+
+type alias Internals msg =
+    { alignment : Alignment
+    , size : Control.Size
     , currentPage : Int
+    , lastPage : Int
     , nextPageLabel : String
     , previousPageLabel : String
     , msg : Int -> msg
@@ -65,117 +84,143 @@ type Alignment
         == "1 ... 4 5 6 ... 9"
 
 -}
-pagination : PaginationRecord msg -> Html msg
-pagination rec =
-    internalPagination Left rec
+create :
+    { currentPage : Int
+    , lastPage : Int
+    , nextPageLabel : String
+    , previousPageLabel : String
+    , msg : Int -> msg
+    }
+    -> Pagination msg
+create { currentPage, lastPage, nextPageLabel, previousPageLabel, msg } =
+    Pagination
+        { alignment = Left
+        , size = Control.Regular
+        , currentPage = currentPage
+        , lastPage = lastPage
+        , nextPageLabel = nextPageLabel
+        , previousPageLabel = previousPageLabel
+        , msg = msg
+        }
 
 
-{-| Centered pagination
--}
-centeredPagination : PaginationRecord msg -> Html msg
-centeredPagination rec =
-    internalPagination Center rec
-
-
-{-| Right aligned pagination
--}
-rightPagination : PaginationRecord msg -> Html msg
-rightPagination rec =
-    internalPagination Right rec
-
-
-internalPagination : Alignment -> PaginationRecord msg -> Html msg
-internalPagination alignment rec =
+toHtml : Pagination msg -> Html msg
+toHtml (Pagination internals) =
     styled Html.nav
-        (navStyles alignment)
-        [ Attributes.classList [ ( "pagination", True ) ], Attributes.attribute "role" "navigation", Attributes.attribute "aria-label" "pagination" ]
-        [ previous rec.msg rec.previousPageLabel rec.currentPage
-        , next rec.msg rec.nextPageLabel rec.currentPage rec.lastPage
-        , list rec.msg rec.lastPage rec.currentPage
+        navStyles
+        [ Attributes.classList
+            [ ( "pagination", True )
+            , alignmentToClass internals.alignment
+            , sizeToClass internals.size
+            ]
+        , Attributes.attribute "role" "navigation"
+        , Attributes.attribute "aria-label" "pagination"
+        ]
+        [ previous internals.msg internals.previousPageLabel internals.currentPage
+        , next internals.msg internals.nextPageLabel internals.currentPage internals.lastPage
+        , list internals.msg internals.lastPage internals.currentPage
         ]
 
 
-navStyles : Alignment -> List Style
-navStyles alignment =
+alignmentToClass : Alignment -> ( String, Bool )
+alignmentToClass alignment =
+    ( case alignment of
+        Left ->
+            "is-left"
+
+        Center ->
+            "is-centered"
+
+        Right ->
+            "is-right"
+    , True
+    )
+
+
+sizeToClass : Control.Size -> ( String, Bool )
+sizeToClass size =
+    ( case size of
+        Control.Regular ->
+            ""
+
+        Control.Small ->
+            "is-small"
+
+        Control.Medium ->
+            "is-medium"
+
+        Control.Large ->
+            "is-large"
+    , True
+    )
+
+
+navStyles : List Style
+navStyles =
     [ Css.batch navAndListStyles
-    , Css.fontSize (Css.rem 1)
     , Css.margin (Css.rem -0.25)
     , Utils.tablet
         [ Css.justifyContent Css.spaceBetween
-        , case alignment of
-            Left ->
-                leftNavStyles
-
-            Center ->
-                centerNavStyles
-
-            Right ->
-                rightNavStyles
+        , Css.Global.withClass "is-left" leftNavStyles
+        , Css.Global.withClass "is-centered" centerNavStyles
+        , Css.Global.withClass "is-right" rightNavStyles
         ]
+    , Css.fontSize (Css.px 16)
+    , Css.Global.withClass "is-small" [ Css.fontSize (Css.px 12) ]
+    , Css.Global.withClass "is-medium" [ Css.fontSize (Css.px 20) ]
+    , Css.Global.withClass "is-large" [ Css.fontSize (Css.px 24) ]
     ]
 
 
-leftNavStyles : Style
+leftNavStyles : List Style
 leftNavStyles =
-    Css.Global.children
+    [ Css.Global.children
         [ Css.Global.typeSelector "ul"
             [ Css.justifyContent Css.flexStart
             , Css.order (Css.int 1)
             ]
 
         -- previous
-        , Css.Global.typeSelector "button"
-            [ Css.order (Css.int 2)
-            , Css.Global.adjacentSiblings
-                --next
-                [ Css.Global.typeSelector "button"
-                    [ Css.order (Css.int 3)
-                    ]
-                ]
-            ]
+        , Css.Global.class "pagination-previous" [ Css.order (Css.int 2) ]
+
+        --next
+        , Css.Global.class "pagination-next" [ Css.order (Css.int 3) ]
         ]
+    ]
 
 
-centerNavStyles : Style
+centerNavStyles : List Style
 centerNavStyles =
-    Css.Global.children
+    [ Css.Global.children
         [ Css.Global.typeSelector "ul"
             [ Css.justifyContent Css.center
             , Css.order (Css.int 2)
             ]
 
         -- previous
-        , Css.Global.typeSelector "button"
-            [ Css.order (Css.int 1)
-            , Css.Global.adjacentSiblings
-                --next
-                [ Css.Global.typeSelector "button"
-                    [ Css.order (Css.int 3)
-                    ]
-                ]
-            ]
+        , Css.Global.class "pagination-previous" [ Css.order (Css.int 1) ]
+
+        --next
+        , Css.Global.class "pagination-next" [ Css.order (Css.int 3) ]
         ]
+    ]
 
 
-rightNavStyles : Style
+rightNavStyles : List Style
 rightNavStyles =
-    Css.Global.children
+    [ Css.Global.children
         [ Css.Global.typeSelector "ul"
             [ Css.justifyContent Css.flexEnd
             , Css.order (Css.int 3)
             ]
 
         -- previous
-        , Css.Global.typeSelector "button"
-            [ Css.order (Css.int 1)
-            , Css.Global.adjacentSiblings
-                --next
-                [ Css.Global.typeSelector "button"
-                    [ Css.order (Css.int 2)
-                    ]
-                ]
-            ]
+        , Css.Global.class "pagination-previous" [ Css.order (Css.int 1) ]
+
+        --next
+        , Css.Global.class "pagination-next" [ Css.order (Css.int 2) ]
         ]
+    ]
 
 
 
@@ -195,7 +240,7 @@ next msg label currentPage lastPage =
             else
                 [ Events.onClick (msg (currentPage + 1)) ]
     in
-    styled Html.button (itemStyles False) (Attributes.classList [ ( "pagination-next", True ) ] :: attrs) [ Html.text label ]
+    styled Html.a itemStyles (Attributes.classList [ ( "pagination-next", True ) ] :: attrs) [ Html.text label ]
 
 
 
@@ -208,7 +253,7 @@ previous msg label currentPage =
         isDisabled =
             currentPage == 1
     in
-    styled Html.button (itemStyles False) [ Events.onClick (msg (currentPage - 1)), Attributes.classList [ ( "pagination-previous", True ) ], Attributes.disabled isDisabled ] [ Html.text label ]
+    styled Html.a itemStyles [ Events.onClick (msg (currentPage - 1)), Attributes.classList [ ( "pagination-previous", True ) ], Attributes.disabled isDisabled ] [ Html.text label ]
 
 
 
@@ -303,7 +348,7 @@ navAndListStyles =
 listItem : (Int -> msg) -> Bool -> Int -> Html msg
 listItem message isCurrent page =
     Html.li []
-        [ styled Html.a (itemStyles isCurrent) [ Events.onClick (message page) ] [ Html.text (String.fromInt page) ]
+        [ styled Html.a itemStyles [ Events.onClick (message page), Attributes.classList [ ( "pagination-link", True ), ( "is-current", isCurrent ) ] ] [ Html.text (String.fromInt page) ]
         ]
 
 
@@ -319,23 +364,26 @@ itemAndEllipsisStyles =
         , Css.justifyContent Css.center
         , Css.margin (Css.rem 0.25)
         , Css.textAlign Css.center
+        , Css.minWidth (Css.em 3)
         ]
 
 
-itemStyles : Bool -> List Style
-itemStyles isCurrent =
+itemStyles : List Style
+itemStyles =
     [ itemAndEllipsisStyles
     , Colors.borderColor Colors.border
     , Colors.color Colors.text
-    , Css.minWidth Control.controlHeight
     , Css.hover
-        [ Colors.borderColor Colors.dark
+        [ Colors.borderColor (Colors.border |> Colors.hover)
+        , Colors.color (Colors.text |> Colors.hover)
         ]
     , Css.focus
-        [ Colors.borderColor Colors.dark
+        [ Colors.borderColor (Colors.border |> Colors.hover)
+        , Colors.color (Colors.text |> Colors.hover)
         ]
     , Css.active
-        [ Colors.borderColor Colors.dark
+        [ Colors.borderColor (Colors.border |> Colors.active)
+        , Colors.color (Colors.text |> Colors.active)
         ]
     , Css.disabled
         [ Colors.backgroundColor Colors.lighter
@@ -344,17 +392,13 @@ itemStyles isCurrent =
         , Colors.color Colors.base
         , Css.opacity (Css.num 0.5)
         ]
-    , Css.batch <|
-        if isCurrent then
-            [ Colors.backgroundColor Colors.link
-            , Css.important (Colors.borderColor Colors.link)
-            , Css.important (Colors.color Colors.white)
-            , Css.pointerEvents Css.none
-            , Css.cursor Css.default
-            ]
-
-        else
-            []
+    , Css.Global.withClass "is-current"
+        [ Colors.backgroundColor Colors.link
+        , Css.important (Colors.borderColor Colors.link)
+        , Css.important (Colors.color Colors.white)
+        , Css.pointerEvents Css.none
+        , Css.cursor Css.default
+        ]
     ]
 
 

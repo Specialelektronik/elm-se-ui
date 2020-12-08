@@ -2086,25 +2086,27 @@ viewPagination =
             , Colors.backgroundColor Colors.lightBlue
             ]
             []
-            [ Pagination.pagination
+            [ Pagination.create
                 { lastPage = 8
                 , currentPage = 5
                 , nextPageLabel = "Next"
                 , previousPageLabel = "Previous"
                 , msg = always NoOp
                 }
+                |> Pagination.toHtml
             ]
         , Content.content []
             [ Html.pre []
                 [ Html.code []
                     [ Html.text """
-    Pagination.pagination
+    SE.UI.Pagination.create
         { lastPage = 8
         , currentPage = 5
         , nextPageLabel = "Next"
         , previousPageLabel = "Previous"
         , msg = always NoOp
         }
+        |> SE.UI.Pagination.toHtml
         """
                     ]
                 ]
