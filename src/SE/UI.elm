@@ -7,6 +7,7 @@ import Css.Transitions
 import Html.Styled as Html exposing (Html, div, styled, toUnstyled)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
+import SE.UI.Alignment as Alignment exposing (Alignment)
 import SE.UI.Buttons as Buttons
 import SE.UI.Card as Card
 import SE.UI.Colors as Colors
@@ -27,7 +28,7 @@ import SE.UI.Logos.Panasonic as Panasonic
 import SE.UI.Modal as Modal
 import SE.UI.Navbar as Navbar
 import SE.UI.Notification as Notification
-import SE.UI.Pagination.V2 as Pagination
+import SE.UI.Pagination.V2 as Pagination exposing (Pagination)
 import SE.UI.Section as Section
 import SE.UI.Snackbar as Snackbar
 import SE.UI.Table.V2 as Table
@@ -57,6 +58,7 @@ type alias Model =
     , crestron : CrestronModel
     , panasonic : PanasonicModel
     , snackbar : Snackbar.Model
+    , pagination : PaginationModel
     }
 
 
@@ -145,6 +147,14 @@ type PanasonicColor
     | OnBlack
 
 
+type alias PaginationModel =
+    { size : Control.Size
+    , alignment : Alignment
+    , currentPage : Int
+    , lastPage : Int
+    }
+
+
 colorToNotification : NotificationColor -> ( String, Maybe msg -> List (Html msg) -> Html msg )
 colorToNotification color =
     case color of
@@ -182,6 +192,7 @@ initialModel =
       , crestron = defaultCrestronLogo
       , panasonic = defaultPanasonicLogo
       , snackbar = Snackbar.init
+      , pagination = defaultPaginationModel
       }
     , Cmd.none
     )
@@ -235,6 +246,15 @@ defaultPanasonicLogo =
     }
 
 
+defaultPaginationModel : PaginationModel
+defaultPaginationModel =
+    { size = Control.Regular
+    , alignment = Alignment.Left
+    , currentPage = 5
+    , lastPage = 8
+    }
+
+
 
 -- UPDATE
 
@@ -254,6 +274,7 @@ type Msg
     | GotTabsMsg TabsMsg
     | GotCrestronMsg CrestronMsg
     | GotPanasonicMsg PanasonicMsg
+    | GotPaginationMsg PaginationMsg
     | ToggledMenu
     | ToggledModal
     | ToggledDropdown
@@ -294,6 +315,12 @@ type CrestronMsg
 type PanasonicMsg
     = ToggledPanasonicColor PanasonicColor
     | ToggledMonochrome
+
+
+type PaginationMsg
+    = ToggledPaginationSize Control.Size
+    | ToggledPaginationAlignment Alignment
+    | ChangedPage Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -372,6 +399,9 @@ update msg model =
 
         GotPanasonicMsg subMsg ->
             ( { model | panasonic = updatePanasonic subMsg model.panasonic }, Cmd.none )
+
+        GotPaginationMsg subMsg ->
+            ( { model | pagination = updatePagination subMsg model.pagination }, Cmd.none )
 
         ToggledModal ->
             ( { model | showModal = not model.showModal }, Cmd.none )
@@ -473,6 +503,19 @@ updatePanasonic msg model =
 
         ToggledMonochrome ->
             { model | isMonochrome = not model.isMonochrome }
+
+
+updatePagination : PaginationMsg -> PaginationModel -> PaginationModel
+updatePagination msg model =
+    case msg of
+        ToggledPaginationSize size ->
+            { model | size = size }
+
+        ToggledPaginationAlignment alignment ->
+            { model | alignment = alignment }
+
+        ChangedPage page ->
+            { model | currentPage = page }
 
 
 
@@ -603,7 +646,7 @@ view model =
             , viewCard
             , viewTable model.table
             , viewTabs model.tabs
-            , viewPagination
+            , viewPagination model.pagination
             ]
         , Snackbar.view snackbarConfig model.snackbar
         ]
@@ -2048,34 +2091,19 @@ tabsModifiersToCode model tabs =
            )
 
 
-viewPagination : Html Msg
-viewPagination =
+viewPagination : PaginationModel -> Html Msg
+viewPagination model =
     Section.section []
         [ Container.container []
             [ Title.title1 "Pagination V2"
-
-            -- , Form.field []
-            --     [ Form.label "Sizes"
-            --     , Form.control False (List.map (viewTabsSize model.size) allTabsSizes)
-            --     ]
-            -- , Form.field []
-            --     [ Form.label "Styles"
-            --     , Form.control False (List.map (viewTabsStyle model.style) allTabsStyles)
-            --     ]
-            -- , Form.field []
-            --     [ Form.label "Alignment"
-            --     , Form.control False (List.map (viewTabsAlignment model.alignment) allTabsAlignments)
-            --     ]
-            -- , Form.field []
-            --     [ Form.label "Fullwidth"
-            --     , Form.control False
-            --         [ Input.checkbox
-            --             (GotTabsMsg ToggledTabsFullwidth)
-            --             "Fullwidth"
-            --             model.isFullwidth
-            --             |> Input.toHtml
-            --         ]
-            --     ]
+            , Form.field []
+                [ Form.label "Sizes"
+                , Form.control False (List.map (viewPaginationSize model.size) allControlSizes)
+                ]
+            , Form.field []
+                [ Form.label "Alignment"
+                , Form.control False (List.map (viewPaginationAlignment model.alignment) allAlignments)
+                ]
             , Content.content []
                 [ Html.p [] [ Html.text "The Pagionation component originates from Bulmas equivalent. The first version of Pagination is deprecated and should not be used." ]
                 ]
@@ -2087,31 +2115,135 @@ viewPagination =
             ]
             []
             [ Pagination.create
-                { lastPage = 8
-                , currentPage = 5
+                { lastPage = model.lastPage
+                , currentPage = model.currentPage
                 , nextPageLabel = "Next"
                 , previousPageLabel = "Previous"
-                , msg = always NoOp
+                , msg = GotPaginationMsg << ChangedPage
                 }
+                |> paginationModifiersToCode model
                 |> Pagination.toHtml
             ]
         , Content.content []
             [ Html.pre []
                 [ Html.code []
-                    [ Html.text """
+                    [ Html.text
+                        ("""
     SE.UI.Pagination.create
-        { lastPage = 8
-        , currentPage = 5
+        { lastPage = """ ++ String.fromInt model.lastPage ++ """
+        , currentPage = """ ++ String.fromInt model.currentPage ++ """
         , nextPageLabel = "Next"
         , previousPageLabel = "Previous"
-        , msg = always NoOp
+        , msg = ChangedPage
         }
+        """)
+                    , Html.text (paginationModifiersToCodeString model)
+                    , Html.text """
         |> SE.UI.Pagination.toHtml
         """
                     ]
                 ]
             ]
         ]
+
+
+allControlSizes : List ( Control.Size, String )
+allControlSizes =
+    [ ( Control.Regular, "Regular" )
+    , ( Control.Small, "Small" )
+    , ( Control.Medium, "Medium" )
+    , ( Control.Large, "Large" )
+    ]
+
+
+viewPaginationSize : Control.Size -> ( Control.Size, String ) -> Html Msg
+viewPaginationSize =
+    viewTabsOption (GotPaginationMsg << ToggledPaginationSize)
+
+
+allAlignments : List ( Alignment, String )
+allAlignments =
+    [ ( Alignment.Left, "Left" )
+    , ( Alignment.Centered, "Centered" )
+    , ( Alignment.Right, "Right" )
+    ]
+
+
+viewPaginationAlignment : Alignment -> ( Alignment, String ) -> Html Msg
+viewPaginationAlignment =
+    viewOption (GotPaginationMsg << ToggledPaginationAlignment)
+
+
+viewOption : (a -> Msg) -> a -> ( a, String ) -> Html Msg
+viewOption msg activeValue ( value, label ) =
+    Input.radio (msg value) label (activeValue == value)
+        |> Input.toHtml
+
+
+paginationModifiersToCodeString : PaginationModel -> String
+paginationModifiersToCodeString model =
+    [ controlSizeToFuncCall model.size
+    , alignmentToFuncCall model.alignment
+    ]
+        |> List.filter (not << String.isEmpty)
+        |> List.foldl (\v acc -> acc ++ "|> SE.UI.Pagination.V2." ++ v ++ "\n") ""
+
+
+controlSizeToFuncCall : Control.Size -> String
+controlSizeToFuncCall size =
+    case size of
+        Control.Regular ->
+            ""
+
+        Control.Small ->
+            "isSmall"
+
+        Control.Medium ->
+            "isMedium"
+
+        Control.Large ->
+            "isLarge"
+
+
+alignmentToFuncCall : Alignment -> String
+alignmentToFuncCall alignment =
+    case alignment of
+        Alignment.Left ->
+            ""
+
+        Alignment.Centered ->
+            "isCentered"
+
+        Alignment.Right ->
+            "isRight"
+
+
+paginationModifiersToCode : PaginationModel -> Pagination msg -> Pagination msg
+paginationModifiersToCode model pagination =
+    pagination
+        |> (case model.size of
+                Control.Small ->
+                    Pagination.isSmall
+
+                Control.Medium ->
+                    Pagination.isMedium
+
+                Control.Large ->
+                    Pagination.isLarge
+
+                _ ->
+                    identity
+           )
+        |> (case model.alignment of
+                Alignment.Centered ->
+                    Pagination.isCentered
+
+                Alignment.Right ->
+                    Pagination.isRight
+
+                _ ->
+                    identity
+           )
 
 
 viewIf : Bool -> Html msg -> Html msg
