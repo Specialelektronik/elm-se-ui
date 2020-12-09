@@ -184,7 +184,6 @@ staticButtonStyles : List Modifier -> List Style
 staticButtonStyles mods =
     buttonStyles mods False
         ++ [ important (Css.backgroundColor (Colors.lightest |> Colors.toCss))
-           , important (Css.borderColor (Colors.base |> Colors.toCss))
            , important (Css.color (Colors.dark |> Colors.toCss))
            , important (Css.pointerEvents none)
            ]

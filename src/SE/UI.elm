@@ -1552,6 +1552,13 @@ viewForm model =
                 ]
             , Title.title3 "Dropdown"
             , viewDropdown model.showDropdown
+            , Title.title3 "Inputs in level"
+            , Level.level
+                [ Level.item [ styled Html.p [ Font.bodySizeRem -1 ] [] [ Html.text "Visa: " ] ]
+                , Level.item [ Buttons.button [ Buttons.Text ] (Just NoOp) [ Html.text "Mina ordrar" ] ]
+                , Level.item [ Buttons.button [ Buttons.Color Colors.Primary ] (Just NoOp) [ Html.text "Alla ordrar" ] ]
+                ]
+                []
             ]
         ]
 
