@@ -3,7 +3,9 @@ module SE.UI.Pagination exposing
     , PaginationRecord
     )
 
-{-| Bulmas Pagination component
+{-| DEPRECATED! Use SE.UI.Pagination.V2 instead.
+
+Bulmas Pagination component
 see <https://bulma.io/documentation/components/pagination/>
 
 @docs pagination, centeredPagination, rightPagination

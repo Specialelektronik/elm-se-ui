@@ -1,5 +1,5 @@
 module SE.UI.Tabs.V2 exposing
-    ( tabs, Tabs, toHtml
+    ( create, Tabs, toHtml
     , isSmall, isMedium, isLarge, isToggled, isBoxed, isCentered, isRight, isFullwidth
     , link, button
     )
@@ -10,7 +10,7 @@ see <https://bulma.io/documentation/components/tabs/>
 
 # Container
 
-@docs tabs, Tabs, toHtml
+@docs create, Tabs, toHtml
 
 
 # With\* pattern (pron. With start pattern)
@@ -33,7 +33,9 @@ import Css.Global
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
+import SE.UI.Alignment as Alignment exposing (Alignment)
 import SE.UI.Colors as Colors
+import SE.UI.Control as Control exposing (Size)
 import SE.UI.Font as Font
 import SE.UI.Utils as Utils exposing (block, overflowTouch, unselectable)
 
@@ -54,18 +56,11 @@ type alias IsActive =
 
 
 type alias Internals =
-    { size : Size
+    { size : Control.Size
     , style : Style
     , alignment : Alignment
     , fullwidth : Bool
     }
-
-
-type Size
-    = Normal
-    | Small
-    | Medium
-    | Large
 
 
 type Style
@@ -74,17 +69,11 @@ type Style
     | Toggled
 
 
-type Alignment
-    = Left
-    | Centered
-    | Right
-
-
 defaultInternals : Internals
 defaultInternals =
-    { size = Normal
+    { size = Control.Regular
     , style = Unstyled
-    , alignment = Left
+    , alignment = Alignment.Left
     , fullwidth = False
     }
 
@@ -95,8 +84,8 @@ defaultInternals =
 
 {-| Create tabs with all of Bulmas modifiers
 -}
-tabs : List (LinkOrButton msg) -> Tabs msg
-tabs linkOrButtons =
+create : List (LinkOrButton msg) -> Tabs msg
+create linkOrButtons =
     Tabs defaultInternals linkOrButtons
 
 
@@ -129,16 +118,16 @@ internalsToClasses ({ size, style, alignment, fullwidth } as internals) =
 sizeToClass : Size -> String
 sizeToClass size =
     case size of
-        Normal ->
+        Control.Regular ->
             ""
 
-        Small ->
+        Control.Small ->
             "is-small"
 
-        Medium ->
+        Control.Medium ->
             "is-medium"
 
-        Large ->
+        Control.Large ->
             "is-large"
 
 
@@ -158,13 +147,13 @@ styleToClass style =
 alignmentToClass : Alignment -> String
 alignmentToClass alignment =
     case alignment of
-        Left ->
+        Alignment.Left ->
             ""
 
-        Centered ->
+        Alignment.Centered ->
             "is-centered"
 
-        Right ->
+        Alignment.Right ->
             "is-right"
 
 
@@ -224,21 +213,21 @@ withSize size (Tabs internals links) =
 -}
 isSmall : Tabs msg -> Tabs msg
 isSmall =
-    withSize Small
+    withSize Control.Small
 
 
 {-| Add .is-medium to ul
 -}
 isMedium : Tabs msg -> Tabs msg
 isMedium =
-    withSize Medium
+    withSize Control.Medium
 
 
 {-| Add .is-large to ul
 -}
 isLarge : Tabs msg -> Tabs msg
 isLarge =
-    withSize Large
+    withSize Control.Large
 
 
 withStyle : Style -> Tabs msg -> Tabs msg
@@ -269,14 +258,14 @@ withAlignment alignment (Tabs internals links) =
 -}
 isCentered : Tabs msg -> Tabs msg
 isCentered =
-    withAlignment Centered
+    withAlignment Alignment.Centered
 
 
 {-| Add .is-right to ul
 -}
 isRight : Tabs msg -> Tabs msg
 isRight =
-    withAlignment Right
+    withAlignment Alignment.Right
 
 
 {-| Add .is-fullwidth to ul
