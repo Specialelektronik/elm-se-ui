@@ -6,7 +6,15 @@ module SE.UI.Pagination.V2 exposing
 {-| Bulmas Pagination component
 see <https://bulma.io/documentation/components/pagination/>
 
+
+# Container
+
 @docs Pagination, create, toHtml
+
+
+# With\* pattern (pron. With start pattern)
+
+The inspiration to this module and its API comes from Brian Hicks talk about Robot Buttons from Mars (<https://youtu.be/PDyWP-0H4Zo?t=1467>). (Please view the entire talk).
 
 
 # Modifiers
@@ -27,6 +35,8 @@ import SE.UI.Font as Font
 import SE.UI.Utils as Utils
 
 
+{-| This opaque type is only exposed to facilitate type annotations outside of the module
+-}
 type Pagination msg
     = Pagination (Internals msg)
 
@@ -86,16 +96,22 @@ create { currentPage, lastPage, nextPageLabel, previousPageLabel, msg } =
         }
 
 
+{-| Add .is-left to the pagination element
+-}
 isLeft : Pagination msg -> Pagination msg
 isLeft =
     withAlignment Alignment.Left
 
 
+{-| Add .is-centered to the pagination element
+-}
 isCentered : Pagination msg -> Pagination msg
 isCentered =
     withAlignment Alignment.Centered
 
 
+{-| Add .is-right to the pagination element
+-}
 isRight : Pagination msg -> Pagination msg
 isRight =
     withAlignment Alignment.Right
@@ -106,21 +122,21 @@ withAlignment alignment (Pagination internals) =
     Pagination { internals | alignment = alignment }
 
 
-{-| Add .is-small to ul
+{-| Add .is-small to the pagination element
 -}
 isSmall : Pagination msg -> Pagination msg
 isSmall =
     withSize Control.Small
 
 
-{-| Add .is-medium to ul
+{-| Add .is-medium to the pagination element
 -}
 isMedium : Pagination msg -> Pagination msg
 isMedium =
     withSize Control.Medium
 
 
-{-| Add .is-large to ul
+{-| Add .is-large to the pagination element
 -}
 isLarge : Pagination msg -> Pagination msg
 isLarge =
@@ -132,6 +148,8 @@ withSize size (Pagination internals) =
     Pagination { internals | size = size }
 
 
+{-| Turn the Pagination type into Html
+-}
 toHtml : Pagination msg -> Html msg
 toHtml (Pagination internals) =
     styled Html.nav
