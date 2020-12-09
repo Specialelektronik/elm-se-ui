@@ -45,7 +45,7 @@ https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-script
  - [x] Refactor Image, add alt text and improve dimensions (figure tag, width and height optional and is should be responsive)
 
 # Maybe TODO
- - [ ] Consider using [NoRedInks Versioning policy](https://package.elm-lang.org/packages/NoRedInk/noredink-ui/latest/)
+ - [x] Consider using [NoRedInks Versioning policy](https://package.elm-lang.org/packages/NoRedInk/noredink-ui/latest/)
  - [ ] Message (can be useful to insert into a product listing to announce stuff)
  - [ ] Modal card (do we need the card option?)
  - [ ] Box (different styling from Bulma?)
