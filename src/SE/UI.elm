@@ -92,9 +92,9 @@ type alias TableModel =
 
 
 type alias TabsModel =
-    { size : TabsSize
+    { size : Control.Size
     , style : TabsStyle
-    , alignment : TabsAlignment
+    , alignment : Alignment
     , isFullwidth : Bool
     }
 
@@ -225,9 +225,9 @@ defaultTableModel =
 
 defaultTabsModel : TabsModel
 defaultTabsModel =
-    { size = Normal
+    { size = Control.Regular
     , style = Unstyled
-    , alignment = Left
+    , alignment = Alignment.Left
     , isFullwidth = False
     }
 
@@ -301,9 +301,9 @@ type TableMsg
 
 
 type TabsMsg
-    = ToggledTabsSize TabsSize
+    = ToggledTabsSize Control.Size
     | ToggledTabsStyle TabsStyle
-    | ToggledTabsAlignment TabsAlignment
+    | ToggledTabsAlignment Alignment
     | ToggledTabsFullwidth
 
 
@@ -1885,7 +1885,7 @@ viewTabs model =
             [ Title.title1 "Tabs V2"
             , Form.field []
                 [ Form.label "Sizes"
-                , Form.control False (List.map (viewTabsSize model.size) allTabsSizes)
+                , Form.control False (List.map (viewTabsSize model.size) allControlSizes)
                 ]
             , Form.field []
                 [ Form.label "Styles"
@@ -1893,7 +1893,7 @@ viewTabs model =
                 ]
             , Form.field []
                 [ Form.label "Alignment"
-                , Form.control False (List.map (viewTabsAlignment model.alignment) allTabsAlignments)
+                , Form.control False (List.map (viewTabsAlignment model.alignment) allAlignments)
                 ]
             , Form.field []
                 [ Form.label "Fullwidth"
@@ -1915,7 +1915,7 @@ viewTabs model =
             , Colors.backgroundColor Colors.lightBlue
             ]
             []
-            [ Tabs.tabs
+            [ Tabs.create
                 [ Tabs.link True "#" [ Html.text "One" ]
                 , Tabs.link False "#" [ Html.text "Two" ]
                 , Tabs.button False NoOp [ Html.text "Three" ]
@@ -1944,18 +1944,9 @@ viewTabs model =
         ]
 
 
-allTabsSizes : List ( TabsSize, String )
-allTabsSizes =
-    [ ( Normal, "Normal" )
-    , ( Small, "Small" )
-    , ( Medium, "Medium" )
-    , ( Large, "Large" )
-    ]
-
-
-viewTabsSize : TabsSize -> ( TabsSize, String ) -> Html Msg
+viewTabsSize : Control.Size -> ( Control.Size, String ) -> Html Msg
 viewTabsSize =
-    viewTabsOption (GotTabsMsg << ToggledTabsSize)
+    viewOption (GotTabsMsg << ToggledTabsSize)
 
 
 allTabsStyles : List ( TabsStyle, String )
@@ -1968,33 +1959,19 @@ allTabsStyles =
 
 viewTabsStyle : TabsStyle -> ( TabsStyle, String ) -> Html Msg
 viewTabsStyle =
-    viewTabsOption (GotTabsMsg << ToggledTabsStyle)
+    viewOption (GotTabsMsg << ToggledTabsStyle)
 
 
-allTabsAlignments : List ( TabsAlignment, String )
-allTabsAlignments =
-    [ ( Left, "Left" )
-    , ( Centered, "Centered" )
-    , ( Right, "Right" )
-    ]
-
-
-viewTabsAlignment : TabsAlignment -> ( TabsAlignment, String ) -> Html Msg
+viewTabsAlignment : Alignment -> ( Alignment, String ) -> Html Msg
 viewTabsAlignment =
-    viewTabsOption (GotTabsMsg << ToggledTabsAlignment)
-
-
-viewTabsOption : (a -> Msg) -> a -> ( a, String ) -> Html Msg
-viewTabsOption msg activeValue ( value, label ) =
-    Input.radio (msg value) label (activeValue == value)
-        |> Input.toHtml
+    viewOption (GotTabsMsg << ToggledTabsAlignment)
 
 
 tabsModifiersToCodeString : TabsModel -> String
 tabsModifiersToCodeString model =
-    [ tabsSizeToFuncCall model.size
+    [ controlSizeToFuncCall model.size
     , tabsStyleToFuncCall model.style
-    , tabsAlignmentToFuncCall model.alignment
+    , alignmentToFuncCall model.alignment
     , if model.isFullwidth then
         "isFullwidth"
 
@@ -2003,22 +1980,6 @@ tabsModifiersToCodeString model =
     ]
         |> List.filter (not << String.isEmpty)
         |> List.foldl (\v acc -> acc ++ "|> SE.UI.Tabs.V2." ++ v ++ "\n") ""
-
-
-tabsSizeToFuncCall : TabsSize -> String
-tabsSizeToFuncCall size =
-    case size of
-        Normal ->
-            ""
-
-        Small ->
-            "isSmall"
-
-        Medium ->
-            "isMedium"
-
-        Large ->
-            "isLarge"
 
 
 tabsStyleToFuncCall : TabsStyle -> String
@@ -2034,30 +1995,17 @@ tabsStyleToFuncCall style =
             "isBoxed"
 
 
-tabsAlignmentToFuncCall : TabsAlignment -> String
-tabsAlignmentToFuncCall alignment =
-    case alignment of
-        Left ->
-            ""
-
-        Centered ->
-            "isCentered"
-
-        Right ->
-            "isRight"
-
-
 tabsModifiersToCode : TabsModel -> Tabs msg -> Tabs msg
 tabsModifiersToCode model tabs =
     tabs
         |> (case model.size of
-                Small ->
+                Control.Small ->
                     Tabs.isSmall
 
-                Medium ->
+                Control.Medium ->
                     Tabs.isMedium
 
-                Large ->
+                Control.Large ->
                     Tabs.isLarge
 
                 _ ->
@@ -2074,10 +2022,10 @@ tabsModifiersToCode model tabs =
                     identity
            )
         |> (case model.alignment of
-                Centered ->
+                Alignment.Centered ->
                     Tabs.isCentered
 
-                Right ->
+                Alignment.Right ->
                     Tabs.isRight
 
                 _ ->
@@ -2147,26 +2095,9 @@ viewPagination model =
         ]
 
 
-allControlSizes : List ( Control.Size, String )
-allControlSizes =
-    [ ( Control.Regular, "Regular" )
-    , ( Control.Small, "Small" )
-    , ( Control.Medium, "Medium" )
-    , ( Control.Large, "Large" )
-    ]
-
-
 viewPaginationSize : Control.Size -> ( Control.Size, String ) -> Html Msg
 viewPaginationSize =
-    viewTabsOption (GotPaginationMsg << ToggledPaginationSize)
-
-
-allAlignments : List ( Alignment, String )
-allAlignments =
-    [ ( Alignment.Left, "Left" )
-    , ( Alignment.Centered, "Centered" )
-    , ( Alignment.Right, "Right" )
-    ]
+    viewOption (GotPaginationMsg << ToggledPaginationSize)
 
 
 viewPaginationAlignment : Alignment -> ( Alignment, String ) -> Html Msg
@@ -2187,35 +2118,6 @@ paginationModifiersToCodeString model =
     ]
         |> List.filter (not << String.isEmpty)
         |> List.foldl (\v acc -> acc ++ "|> SE.UI.Pagination.V2." ++ v ++ "\n") ""
-
-
-controlSizeToFuncCall : Control.Size -> String
-controlSizeToFuncCall size =
-    case size of
-        Control.Regular ->
-            ""
-
-        Control.Small ->
-            "isSmall"
-
-        Control.Medium ->
-            "isMedium"
-
-        Control.Large ->
-            "isLarge"
-
-
-alignmentToFuncCall : Alignment -> String
-alignmentToFuncCall alignment =
-    case alignment of
-        Alignment.Left ->
-            ""
-
-        Alignment.Centered ->
-            "isCentered"
-
-        Alignment.Right ->
-            "isRight"
 
 
 paginationModifiersToCode : PaginationModel -> Pagination msg -> Pagination msg
@@ -2244,6 +2146,52 @@ paginationModifiersToCode model pagination =
                 _ ->
                     identity
            )
+
+
+allControlSizes : List ( Control.Size, String )
+allControlSizes =
+    [ ( Control.Regular, "Regular" )
+    , ( Control.Small, "Small" )
+    , ( Control.Medium, "Medium" )
+    , ( Control.Large, "Large" )
+    ]
+
+
+controlSizeToFuncCall : Control.Size -> String
+controlSizeToFuncCall size =
+    case size of
+        Control.Regular ->
+            ""
+
+        Control.Small ->
+            "isSmall"
+
+        Control.Medium ->
+            "isMedium"
+
+        Control.Large ->
+            "isLarge"
+
+
+allAlignments : List ( Alignment, String )
+allAlignments =
+    [ ( Alignment.Left, "Left" )
+    , ( Alignment.Centered, "Centered" )
+    , ( Alignment.Right, "Right" )
+    ]
+
+
+alignmentToFuncCall : Alignment -> String
+alignmentToFuncCall alignment =
+    case alignment of
+        Alignment.Left ->
+            ""
+
+        Alignment.Centered ->
+            "isCentered"
+
+        Alignment.Right ->
+            "isRight"
 
 
 viewIf : Bool -> Html msg -> Html msg
