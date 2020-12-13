@@ -1,6 +1,6 @@
 {
   "name": "special-elektronik-elm-ui",
-  "version": "9.0.0",
+  "version": "9.1.0",
   "description": "Elm UI library for beautiful, coherent, SE flavored UI.",
   "repository": "bitbucket:carlfredrikherose/se-elm-style",
   "main": "index.js",
