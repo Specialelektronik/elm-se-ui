@@ -1699,6 +1699,7 @@ allIcons =
     , ( "pdf", Icon.pdf )
     , ( "percentage", Icon.percentage )
     , ( "phone", Icon.phone )
+    , ( "playCircle", Icon.playCircle )
     , ( "satelliteDish", Icon.satelliteDish )
     , ( "search", Icon.search )
     , ( "slidersH", Icon.slidersH )

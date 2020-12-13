@@ -1,5 +1,5 @@
 module SE.UI.Icon exposing
-    ( angleDown, angleUp, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+    ( angleDown, angleUp, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, playCircle, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
     , angleDownCssBackground, tick, circle
     )
 
@@ -12,7 +12,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 # Available icons
 
-@docs angleDown, angleUp, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+@docs angleDown, angleUp, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, playCircle, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
 
 
 # Css Backgrounds
@@ -377,6 +377,13 @@ percentage size =
 phone : Control.Size -> Html msg
 phone size =
     internalIcon size (viewBox 512 512) [ Svg.path [ d "M493.4 24.6l-104-24c-11.3-2.6-22.9 3.3-27.5 13.9l-48 112c-4.2 9.8-1.4 21.3 6.9 28l60.6 49.6c-36 76.7-98.9 140.5-177.2 177.2l-49.6-60.6c-6.8-8.3-18.2-11.1-28-6.9l-112 48C3.9 366.5-2 378.1.6 389.4l24 104C27.1 504.2 36.7 512 48 512c256.1 0 464-207.5 464-464 0-11.2-7.7-20.9-18.6-23.4z" ] [] ]
+
+
+{-| <https://fontawesome.com/icons/play-circle?style=solid>
+-}
+playCircle : Control.Size -> Html msg
+playCircle size =
+    internalIcon size (viewBox 512 512) [ Svg.path [ d "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z" ] [] ]
 
 
 {-| <https://fontawesome.com/icons/satellite-dish?style=solid>
