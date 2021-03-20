@@ -5,8 +5,10 @@ import Css exposing (Style)
 import Css.Global
 import Css.Transitions
 import Html.Styled as Html exposing (Html, div, styled, toUnstyled)
-import Html.Styled.Attributes as Attributes
+import Html.Styled.Attributes as Attributes exposing (class)
 import Html.Styled.Events as Events
+import Html.Styled.Keyed as Keyed
+import Html.Styled.Lazy as Lazy
 import SE.UI.Alignment as Alignment exposing (Alignment)
 import SE.UI.Buttons as Buttons
 import SE.UI.Card as Card
@@ -59,6 +61,7 @@ type alias Model =
     , panasonic : PanasonicModel
     , snackbar : Snackbar.Model
     , pagination : PaginationModel
+    , gridStyle : String
     }
 
 
@@ -193,6 +196,7 @@ initialModel =
       , panasonic = defaultPanasonicLogo
       , snackbar = Snackbar.init
       , pagination = defaultPaginationModel
+      , gridStyle = "grid"
       }
     , Cmd.none
     )
@@ -279,6 +283,7 @@ type Msg
     | ToggledModal
     | ToggledDropdown
     | ClosedDropdown
+    | SelectedGrid String
 
 
 type ButtonMsg
@@ -414,6 +419,9 @@ update msg model =
 
         ClosedDropdown ->
             ( { model | showDropdown = False }, Cmd.none )
+
+        SelectedGrid style ->
+            ( { model | gridStyle = style }, Cmd.none )
 
 
 updateButton : ButtonMsg -> ButtonModel -> ButtonModel
@@ -627,7 +635,8 @@ view model =
         , Navbar.view (navbarConfig model.navbarBrand) search model.navbar
         , Html.article
             []
-            [ viewNavbar model.navbarBrand
+            [ viewProducts model.gridStyle
+            , viewNavbar model.navbarBrand
             , viewSnackbarInfo
             , viewLogo
             , viewCrestronLogo model.crestron
@@ -850,6 +859,343 @@ searchInput styles attrs =
         styles
         attrs
         []
+
+
+type alias Product =
+    { name : String
+    , productCode : String
+    , brand : String
+    , img : String
+    }
+
+
+products : List Product
+products =
+    [ Product "Självhäftande vinyletiketter 25.40 x25.40mm BULK" "BM71-19-427" "BRADY" "a640e733041141156fe3668a96bd04df6f69871c.jpg"
+    , Product "Flex MTR-system för mindre mötesrum, UC-SB1-CAM, styrpanel för vägg Flex MTR-system för mindre mötesrum, UC-SB1-CAM, styrpanel för vägg" "UC-B30-T-WM-KIT" "CRESTRON" "675c06c6a2651d4001c46e31e484665b62b95a73.webp"
+    , Product "USB 3.0 2-portars Industriell Hub" "FIRENEX-UHUB-2PN" "NEWNEX" "54547fb78a8c10f792d7dd8c4a64200cda864633.jpg"
+    , Product "USGXT² 12G-SDI + gigabit fiberoptisk extender: TX + RX" "BLM-USGXT2" "BELRAM" "998a533bb4145fa4d436eca7e66dda8b342b3a38.webp"
+    ]
+
+
+
+-- https://partnerzon.specialelektronik.se/storage/images/products/
+
+
+productsStyles : List Style
+productsStyles =
+    [ -- GLOBAL
+      Font.bodySizeRem -2
+    , Css.property "display" "grid"
+    , Css.property "grid-gap" "1.5rem"
+    , Colors.backgroundColor Colors.background
+    , Css.padding (Css.rem 1.5)
+    , Css.Global.descendants
+        -- HEADER
+        [ Css.Global.class "header"
+            [ Css.property "grid-area" "header"
+            ]
+        , Css.Global.class "brand"
+            [ Colors.color Colors.base
+            , Font.bodySizeEm -1
+            ]
+        , Css.Global.class "title"
+            [ Css.fontWeight (Css.int 600)
+            ]
+        , Css.Global.class "sku"
+            [ Colors.color Colors.primary
+            ]
+
+        -- IMAGE
+        , Css.Global.class "image"
+            [ Css.property "grid-area" "image" ]
+
+        -- ATTRIBUTES
+        , Css.Global.class "attributes"
+            [ Css.property "grid-area" "attributes"
+            , Colors.color Colors.base
+            , Css.listStyle Css.disc
+            , Css.paddingLeft (Css.rem 0.75)
+            , Font.bodySizeEm -1
+            , Css.display Css.none
+            , Utils.desktop
+                [ Css.display Css.unset
+                ]
+            ]
+
+        -- ADD TO CART
+        , Css.Global.class "add-to-cart"
+            [ Css.property "grid-area" "add-to-cart" ]
+
+        -- PRICE
+        , Css.Global.class "price"
+            [ Css.property "grid-area" "price"
+            , Css.Global.descendants
+                [ Css.Global.class "price-tag"
+                    [ Font.bodySizeEm 4
+                    , Css.fontWeight (Css.int 600)
+                    ]
+                , Css.Global.class "price-vat"
+                    [ Font.bodySizeEm -1
+                    , Colors.color Colors.base
+                    , Css.paddingLeft (Css.ch 1)
+                    ]
+                , Css.Global.class "base-price"
+                    [ Font.bodySizeEm -1
+                    , Colors.color Colors.base
+                    ]
+                , Css.Global.class "discount"
+                    [ Css.paddingLeft (Css.ch 1)
+                    , Font.bodySizeEm -1
+                    , Colors.color Colors.base
+                    ]
+                ]
+            ]
+
+        -- STOCK
+        , Css.Global.class "stock"
+            [ Css.property "grid-area" "stock" ]
+        ]
+
+    -- LAYOUT GRID
+    , Css.Global.withClass "layout-grid"
+        [ Css.property "grid-template-columns" "repeat(auto-fill, minmax(320px , 1fr))"
+        , Css.Global.descendants
+            [ gridImageStyles
+            , gridAddToCartStyles
+
+            -- .grid .product
+            , Css.Global.class "product"
+                [ Css.property "grid-template-rows" "auto auto auto 1fr auto auto"
+                , Css.property "grid-template-areas" """
+"image"
+"header"
+"attributes"
+"price"
+"add-to-cart"
+"stock"
+        """
+                , Css.Global.descendants
+                    [ Css.Global.each
+                        [ Css.Global.class "price"
+                        ]
+                        [ Css.property "align-self" "end"
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+    -- LAYOUT LIST
+    , Css.Global.withClass "layout-list"
+        [ Css.alignItems Css.center
+        , Css.Global.descendants
+            [ listImageStyles
+
+            -- .list .product
+            , Css.Global.class "product"
+                [ Css.property "grid-template-columns" "auto minmax(25%, 1fr) auto auto auto"
+                , Css.property "grid-template-rows" "auto"
+                , Css.property "grid-template-areas" """
+"image header attributes stock price"
+"image header attributes stock add-to-cart"
+        """
+                , Css.property "justify-content" "start"
+                , Css.property "align-items" "center"
+                , Css.Global.descendants
+                    [ Css.Global.each
+                        [ Css.Global.class "stock"
+                        ]
+                        [ Css.property "justify-self" "end"
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    , Css.Global.children
+        [ Css.Global.class "product"
+            [ Css.property "box-shadow" "0 4px 10px hsl(0deg 0% 0% / 15%)"
+            , Colors.backgroundColor Colors.white
+            , Css.borderRadius (Css.px 2)
+            , Css.padding (Css.rem 0.75)
+            , Css.property "display" "grid"
+            , Css.property "grid-gap" "0.75rem"
+            ]
+        ]
+    ]
+
+
+gridImageStyles : Css.Global.Snippet
+gridImageStyles =
+    Css.Global.class "image"
+        [ Css.property "grid-area" "image"
+        , Css.position Css.relative
+        , Css.property "aspect-ratio" "16 / 9"
+        , Css.width (Css.pct 100)
+        , Css.Global.descendants
+            [ Css.Global.selector "img.cover"
+                [ Css.property "object-fit" "contain"
+                , Css.width (Css.pct 100)
+                , Css.height (Css.pct 100)
+                ]
+            , Css.Global.class "thumbnails"
+                [ Css.position Css.absolute
+                , Css.bottom Css.zero
+                , Css.displayFlex
+                , Css.property "gap" "0.25rem"
+                , Css.padding2 (Css.rem 0.25) Css.zero
+                , Css.justifyContent Css.center
+                , Colors.backgroundColor (Colors.black |> Colors.mapAlpha (always 0.5))
+                , Css.margin2 Css.zero (Css.rem -0.75)
+                , Css.width (Css.calc (Css.pct 100) Css.plus (Css.rem 1.5))
+                , Css.Global.children
+                    [ Css.Global.img
+                        [ Css.width (Css.rem 1.5)
+                        , Css.property "aspect-ratio" "1 / 1"
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+
+gridAddToCartStyles : Css.Global.Snippet
+gridAddToCartStyles =
+    Css.Global.class "add-to-cart"
+        [ Css.Global.children
+            [ Css.Global.button
+                [ Css.width (Css.pct 100)
+                ]
+            ]
+        ]
+
+
+listImageStyles : Css.Global.Snippet
+listImageStyles =
+    Css.Global.class "image"
+        [ Css.position Css.relative
+        , Css.property "aspect-ratio" "1 / 1"
+        , Css.width (Css.rem 4)
+        , Css.Global.descendants
+            [ Css.Global.selector "img.cover"
+                [ Css.property "object-fit" "contain"
+                , Css.width (Css.pct 100)
+                , Css.height (Css.pct 100)
+                ]
+            , Css.Global.class "thumbnails"
+                [ Css.display Css.none
+                ]
+            ]
+        ]
+
+
+viewProducts : String -> Html Msg
+viewProducts gridStyle =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Products"
+            , Buttons.buttons [ Buttons.Attached ]
+                [ viewGridChooserButton "grid" gridStyle
+                , viewGridChooserButton "list" gridStyle
+                ]
+            , Keyed.node "div"
+                [ Attributes.css productsStyles, Attributes.classList [ ( "products", True ), ( "layout-" ++ gridStyle, True ) ] ]
+                (List.map viewKeyedProduct products)
+            ]
+        ]
+
+
+viewGridChooserButton : String -> String -> Html Msg
+viewGridChooserButton label currentLabel =
+    Buttons.button
+        [ Buttons.Color
+            (if label == currentLabel then
+                Colors.Link
+
+             else
+                Colors.Light
+            )
+        ]
+        (Just (SelectedGrid label))
+        [ Html.text label ]
+
+
+viewKeyedProduct : Product -> ( String, Html Msg )
+viewKeyedProduct product =
+    ( product.productCode, viewProduct product )
+
+
+viewProduct : Product -> Html Msg
+viewProduct product =
+    Html.div [ class "product" ]
+        [ viewImage product.img
+        , viewHeader product
+        , viewAttributes
+        , viewPrice
+        , viewAddToCart
+        , viewStock
+        ]
+
+
+viewImage : String -> Html Msg
+viewImage name =
+    let
+        url =
+            "https://partnerzon.specialelektronik.se/storage/images/products/" ++ name
+    in
+    Html.div [ class "image" ]
+        [ Html.img [ class "cover", Attributes.src url, Attributes.width 320, Attributes.height 320 ] []
+        , Html.div [ class "thumbnails" ]
+            [ Html.img [ Attributes.src url ] []
+            , Html.img [ Attributes.src url ] []
+            , Html.img [ Attributes.src url ] []
+            , Html.img [ Attributes.src url ] []
+            ]
+        ]
+
+
+viewHeader : Product -> Html Msg
+viewHeader product =
+    Html.div [ class "header" ]
+        [ Html.p [ class "brand" ]
+            [ Html.text product.brand ]
+        , Html.p
+            [ class "title" ]
+            [ Html.text product.name ]
+        , Html.p
+            [ class "sku" ]
+            [ Html.text product.productCode ]
+        ]
+
+
+viewAttributes : Html Msg
+viewAttributes =
+    Html.ul [ class "attributes" ]
+        [ Html.li [] [ Html.text "Frekvensomfång: 40 Hz - 40 kHz" ]
+        , Html.li [] [ Html.text "Impedans: Nominell 6 Ohm" ]
+        , Html.li [] [ Html.text "Högtalarelement: 4 x 5\" (LF), 1 x 5\" (MF), 1 x 1\" (HF)" ]
+        ]
+
+
+viewPrice : Html Msg
+viewPrice =
+    Html.div [ class "price" ]
+        [ Html.p [] [ Html.span [ class "price-tag" ] [ Html.text "37\u{202F}050\u{202F}kr" ], Html.span [ class "price-vat" ] [ Html.text "Exkl. moms" ] ]
+        , Html.p [] [ Html.span [ class "base-price" ] [ Html.text "Listpris 37\u{202F}050\u{202F}kr" ], Html.span [ class "discount" ] [ Html.text "0%" ] ]
+        ]
+
+
+viewAddToCart : Html Msg
+viewAddToCart =
+    Html.div [ class "add-to-cart" ]
+        [ Buttons.button [ Buttons.Color Colors.Buy ] (Just NoOp) [ Html.text "Lägg i varukorg" ]
+        ]
+
+
+viewStock : Html Msg
+viewStock =
+    Html.div [ class "stock" ]
+        [ Html.text "10-11 dagar in på vårt lager" ]
 
 
 viewNavbar : Navbar.Brand -> Html Msg
