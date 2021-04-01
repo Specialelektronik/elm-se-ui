@@ -3,10 +3,8 @@ module SE.UI exposing (main)
 import Browser
 import Css exposing (Style)
 import Css.Global
-import Css.Transitions
 import Html.Styled as Html exposing (Html, div, styled, toUnstyled)
 import Html.Styled.Attributes as Attributes
-import Html.Styled.Events as Events
 import SE.UI.Alignment as Alignment exposing (Alignment)
 import SE.UI.Buttons as Buttons
 import SE.UI.Card as Card
@@ -21,6 +19,7 @@ import SE.UI.Form as Form
 import SE.UI.Form.Input as Input
 import SE.UI.Global as Global
 import SE.UI.Icon as Icon
+import SE.UI.Image.V2 as Image
 import SE.UI.Level as Level
 import SE.UI.Logo as Logo
 import SE.UI.Logos.Crestron as Crestron
@@ -628,6 +627,7 @@ view model =
         , Html.article
             []
             [ viewNavbar model.navbarBrand
+            , viewImage
             , viewSnackbarInfo
             , viewLogo
             , viewCrestronLogo model.crestron
@@ -866,6 +866,65 @@ viewNavbar brand =
                 [ Buttons.button [ Buttons.Color Colors.DarkGreen ] (Just ToggleNavbarBrand) [ Html.text "Toggle brand" ]
                 ]
             , Html.code [] [ Html.text (Debug.toString brand) ]
+            ]
+        ]
+
+
+
+-- IMAGE
+
+
+viewImage : Html Msg
+viewImage =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Image"
+            , Content.content []
+                [ Html.p []
+                    [ Html.text "There are 2 options, either the full picture element with multiple formats, or a simple img element."
+                    ]
+                , Html.p [] [ Html.text "The width and height must always be specified and you can force the image into an aspect ratio with \"withAspectRatio\" function." ]
+                , Html.p [] [ Html.text "The settings comes first to make it possible for you to prepare lots of images with the same settings and then apply the alt text and src at the end." ]
+                , Html.p [] [ Html.text "The image will allways maintain its original ratio since we use object-fit: contain." ]
+                ]
+            , Columns.columns
+                [ Columns.defaultColumn
+                    [ Image.create { width = 300, height = 100 }
+                        |> Image.withAspectRatio ( 16, 9 )
+                        |> Image.toHtml "Testbild"
+                            [ Image.source
+                                [ Image.srcset "https://picsum.photos/300/100" 1
+                                ]
+                            ]
+                    , Html.pre []
+                        [ Html.code []
+                            [ Html.text """
+Image.create { width = 300, height = 100 }
+    |> Image.withAspectRatio ( 16, 9 )
+    |> Image.toHtml "Testbild"
+        [ Image.source
+            [ Image.srcset "https://picsum.photos/300/100" 1
+            ]
+        ]
+"""
+                            ]
+                        ]
+                    ]
+                , Columns.defaultColumn
+                    [ Image.create { width = 300, height = 300 }
+                        |> Image.withAspectRatio ( 16, 9 )
+                        |> Image.toSimpleHtml { alt = "Testbild", src = "https://picsum.photos/300/300" }
+                    , Html.pre []
+                        [ Html.code []
+                            [ Html.text """
+Image.create { width = 300, height = 300 }
+    |> Image.withAspectRatio ( 16, 9 )
+    |> Image.toSimpleHtml { alt = "Testbild", src = "https://picsum.photos/300/300" }
+"""
+                            ]
+                        ]
+                    ]
+                ]
             ]
         ]
 
