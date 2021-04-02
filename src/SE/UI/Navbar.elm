@@ -51,7 +51,7 @@ import SE.UI.Container as Container
 import SE.UI.Control as Control
 import SE.UI.Dropdown as Dropdown
 import SE.UI.Font as Font
-import SE.UI.Icon as Icon
+import SE.UI.Icon.V2 as Icon
 import SE.UI.Logo as Logo
 import SE.UI.Utils as Utils
 
@@ -74,7 +74,7 @@ type alias Config msg =
     , ribbon : List (Link msg)
     , mainNav : List (Item msg)
     , megaNav : List (MegaItem msg)
-    , socialMedia : List (SocialMedia msg)
+    , socialMedia : List SocialMedia
     , transform : Msg -> msg
     }
 
@@ -121,7 +121,7 @@ type Item msg
 type alias Link msg =
     { href : Attribute msg
     , label : String
-    , icon : Maybe (Control.Size -> Html msg)
+    , icon : Maybe Icon.Icon
     }
 
 
@@ -144,9 +144,9 @@ type alias MegaItem msg =
 
 {-| An icon and url
 -}
-type alias SocialMedia msg =
+type alias SocialMedia =
     { url : Url
-    , icon : Control.Size -> Html msg
+    , icon : Icon.Icon
     }
 
 
@@ -419,7 +419,7 @@ mobileNavStyles =
 -- VIEW SOCIAL MEDIA
 
 
-viewSocialMedia : List (SocialMedia msg) -> Html msg
+viewSocialMedia : List SocialMedia -> Html msg
 viewSocialMedia items =
     styled Html.nav
         [ Css.padding (Css.rem 1.33333333)
@@ -431,9 +431,9 @@ viewSocialMedia items =
         (List.map viewSocialMediaItem items)
 
 
-viewSocialMediaItem : SocialMedia msg -> Html msg
+viewSocialMediaItem : SocialMedia -> Html msg
 viewSocialMediaItem item =
-    styled Html.a [ Colors.color Colors.darker ] [ Attributes.href item.url ] [ item.icon Control.Large ]
+    styled Html.a [ Colors.color Colors.darker ] [ Attributes.href item.url ] [ item.icon |> Icon.withContainerSize Control.Large |> Icon.withSize Control.Large |> Icon.toHtml ]
 
 
 
@@ -599,11 +599,13 @@ viewMegaItem config model index item =
             id == model.activeDropdownId
 
         icon =
-            if isActive then
-                Icon.angleUp
+            Icon.angleDown
+                |> (if isActive then
+                        Icon.withTransform Icon.FlipY
 
-            else
-                Icon.angleDown
+                    else
+                        identity
+                   )
     in
     styled Html.li
         []
@@ -612,7 +614,7 @@ viewMegaItem config model index item =
             megaItemStyles
             [ Events.onClick (config.transform (ToggledDropdown id)) ]
             [ Html.span [] [ Html.text item.label ]
-            , icon Control.Small
+            , icon |> Icon.withContainerSize Control.Small |> Icon.withSize Control.Small |> Icon.toHtml
             ]
         , styled Html.div
             [ Css.pseudoClass "not([hidden])"
@@ -798,16 +800,18 @@ viewDropdownButton : List Style -> Config msg -> Bool -> String -> String -> Htm
 viewDropdownButton styles config isActive id label =
     let
         icon =
-            if isActive then
-                Icon.angleUp
+            Icon.angleDown
+                |> (if isActive then
+                        Icon.withTransform Icon.FlipY
 
-            else
-                Icon.angleDown
+                    else
+                        identity
+                   )
     in
     styled Html.div
         styles
         [ Events.onClick (config.transform (ToggledDropdown id)), Attributes.attribute "role" "button" ]
-        [ Html.span [] [ Html.text label ], icon Control.Small ]
+        [ Html.span [] [ Html.text label ], icon |> Icon.withContainerSize Control.Small |> Icon.withSize Control.Small |> Icon.toHtml ]
 
 
 
@@ -876,7 +880,7 @@ viewLinkHelper styles link =
                     Html.text ""
 
                 Just i ->
-                    i Control.Regular
+                    Icon.toHtml i
     in
     styled Html.a
         styles

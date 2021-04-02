@@ -3,7 +3,9 @@ module SE.UI.Icon exposing
     , angleDownCssBackground, tick, circle
     )
 
-{-| Creates a Bulma Icon element set.
+{-| Deprecated, use V2 instead
+
+Creates a Bulma Icon element set.
 
 We use more or less the same styles for the icon container but We use plain inline svgs for icons instead of FontAwesome. This gives us the flexibility and speed that we want (FontAwesome is a 500kb js file to begin with).
 
