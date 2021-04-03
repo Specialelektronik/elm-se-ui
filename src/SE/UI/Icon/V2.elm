@@ -1,9 +1,8 @@
 module SE.UI.Icon.V2 exposing
-    ( toHtml, toDataUri, withContainerSize, withSize
+    ( Icon, toHtml, toDataUri, withContainerSize, withSize
     , Transform(..), withTransform
     , angleDown, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, playCircle, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
     , tick, circle
-    , Icon
     )
 
 {-| Version 2 of Icons, mimics Bulma Icon element set.
@@ -14,7 +13,7 @@ We use more or less the same styles for the icon container but We use plain inli
 
 Version 2 uses withStar-pattern to allow transformation and support both icon containers and all icons as DataUris (to use as Css backgrounds)
 
-@docs toHtml, toDataUri, withContainerSize, withSize
+@docs Icon, toHtml, toDataUri, withContainerSize, withSize
 
 
 # Transformations
@@ -24,7 +23,7 @@ Version 2 uses withStar-pattern to allow transformation and support both icon co
 
 # Available icons
 
-@docs angleDown, angleUp, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, playCircle, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+@docs angleDown, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, playCircle, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
 
 
 # Special purpose icons
