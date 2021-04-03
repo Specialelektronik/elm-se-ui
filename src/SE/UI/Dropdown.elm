@@ -1,7 +1,7 @@
 module SE.UI.Dropdown exposing
     ( dropdown
     , button, customButton
-    , Item, link, content, hr
+    , Item, link, msgLink, content, hr
     )
 
 {-| Bulmas Dropdown component
@@ -29,17 +29,18 @@ The Elm Arcitecture makes it a little difficult to listen to clicks on the entir
 
 # Content
 
-@docs Item, link, content, hr
+@docs Item, link, msgLink, content, hr
 
 -}
 
-import Css exposing (Style, absolute, block, focus, hover, inlineFlex, int, left, noWrap, none, num, pct, px, relative, rem, top, zero)
+import Css exposing (Style)
 import Html.Styled as Html exposing (Html, styled)
 import Html.Styled.Attributes as Attributes
-import SE.UI.Buttons as Buttons exposing (button)
-import SE.UI.Colors as Colors exposing (black, darker, link, white)
+import Html.Styled.Events as Events
+import SE.UI.Buttons as Buttons
+import SE.UI.Colors as Colors
 import SE.UI.OuterClick exposing (withId)
-import SE.UI.Utils exposing (radius)
+import SE.UI.Utils
 
 
 type alias Url =
@@ -50,6 +51,7 @@ type alias Url =
 -}
 type Item msg
     = Link Url (List (Html msg))
+    | MsgLink msg (List (Html msg))
     | Content (List (Html msg))
     | Hr
 
@@ -61,7 +63,7 @@ type Button msg
 
 dropdownContentOffset : Css.Px
 dropdownContentOffset =
-    px 4
+    Css.px 4
 
 
 dropdownContentShadow : Style
@@ -122,6 +124,13 @@ link =
     Link
 
 
+{-| Renders a dropdown item, but with a custom msg instead of a url
+-}
+msgLink : msg -> List (Html msg) -> Item msg
+msgLink =
+    MsgLink
+
+
 {-| Renders a dropdown content tag
 -}
 content : List (Html msg) -> Item msg
@@ -141,6 +150,9 @@ itemToHtml item =
     case item of
         Link url html ->
             styled Html.a (itemStyles ++ linkStyles) [ Attributes.href url ] html
+
+        MsgLink msg html ->
+            styled Html.span (itemStyles ++ linkStyles) [ Events.onClick msg ] html
 
         Content html ->
             styled Html.div itemStyles [] html
@@ -166,11 +178,11 @@ buttonToHtml btn =
 
 dropdownStyles : List Style
 dropdownStyles =
-    [ Css.display inlineFlex
-    , Css.position relative
-    , Css.verticalAlign top
-    , focus
-        [ Css.outline none
+    [ Css.display Css.inlineFlex
+    , Css.position Css.relative
+    , Css.verticalAlign Css.top
+    , Css.focus
+        [ Css.outline Css.none
         ]
     ]
 
@@ -180,49 +192,50 @@ menuStyles isOpen =
     let
         displayStyle =
             if isOpen then
-                Css.display block
+                Css.display Css.block
 
             else
-                Css.display none
+                Css.display Css.none
     in
     [ displayStyle
-    , Css.left zero
-    , Css.minWidth (rem 12)
+    , Css.left Css.zero
+    , Css.minWidth (Css.rem 12)
     , Css.paddingTop dropdownContentOffset
-    , Css.position absolute
-    , Css.top (pct 100)
-    , Css.zIndex (int 20)
+    , Css.position Css.absolute
+    , Css.top (Css.pct 100)
+    , Css.zIndex (Css.int 20)
     ]
 
 
 contentStyles : List Style
 contentStyles =
     [ Colors.backgroundColor Colors.white
-    , Css.borderRadius radius
+    , Css.borderRadius SE.UI.Utils.radius
     , dropdownContentShadow
-    , Css.paddingBottom (rem 0.5)
-    , Css.paddingTop (rem 0.5)
+    , Css.paddingBottom (Css.rem 0.5)
+    , Css.paddingTop (Css.rem 0.5)
     ]
 
 
 itemStyles : List Style
 itemStyles =
     [ Colors.color Colors.text
-    , Css.display block
-    , Css.fontSize (rem 0.875)
-    , Css.lineHeight (num 1.5)
-    , Css.padding2 (rem 0.375) (rem 1)
-    , Css.position relative
+    , Css.display Css.block
+    , Css.fontSize (Css.rem 0.875)
+    , Css.lineHeight (Css.num 1.5)
+    , Css.padding2 (Css.rem 0.375) (Css.rem 1)
+    , Css.position Css.relative
     ]
 
 
 linkStyles : List Style
 linkStyles =
-    [ Css.paddingRight (rem 3)
-    , Css.textAlign left
-    , Css.whiteSpace noWrap
-    , Css.width (pct 100)
-    , hover
+    [ Css.paddingRight (Css.rem 3)
+    , Css.textAlign Css.left
+    , Css.whiteSpace Css.noWrap
+    , Css.width (Css.pct 100)
+    , Css.cursor Css.pointer
+    , Css.hover
         [ Colors.backgroundColor Colors.background
         , Colors.color Colors.black
         ]
@@ -232,8 +245,8 @@ linkStyles =
 hrStyles : List Style
 hrStyles =
     [ Colors.backgroundColor Colors.border
-    , Css.borderStyle none
-    , Css.display block
-    , Css.height (px 1)
-    , Css.margin2 (rem 0.5) zero
+    , Css.borderStyle Css.none
+    , Css.display Css.block
+    , Css.height (Css.px 1)
+    , Css.margin2 (Css.rem 0.5) Css.zero
     ]

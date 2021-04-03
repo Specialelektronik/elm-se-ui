@@ -1699,6 +1699,7 @@ viewDropdown isOpen =
         isOpen
         (Dropdown.button [] (Just ToggledDropdown) [ Html.text "Dropdown menu", icon |> Icon.toHtml ])
         [ Dropdown.link "https://google.com" [ Html.text "Google.com" ]
+        , Dropdown.msgLink AddSnackbar [ Html.text "Add Snackbar" ]
         , Dropdown.hr
         , Dropdown.content [ Html.text "Any content you like can go into the dropdown." ]
         ]
