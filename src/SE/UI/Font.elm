@@ -173,7 +173,10 @@ bodySizeHelper fn factor =
         Font.textButtonStyles
         [ Html.Attributes.href "/url" ]
         [ Html.text "Visa mer"
-        , SE.UI.Icon.angleDown Control.Small
+        , SE.UI.Icon.V2.angleDown
+            |> SE.UI.Icon.V2.withContainerSize Control.Small
+            |> SE.UI.Icon.V2.withSize Control.Small
+            |> SE.UI.Icon.V2.toHtml
         ]
 
 -}

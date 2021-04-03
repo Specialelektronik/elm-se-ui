@@ -3,7 +3,6 @@ module SE.UI exposing (main)
 import Browser
 import Css exposing (Style)
 import Css.Global
-import Css.Transitions
 import Html.Styled as Html exposing (Html, div, styled, toUnstyled)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
@@ -20,7 +19,8 @@ import SE.UI.Font as Font
 import SE.UI.Form as Form
 import SE.UI.Form.Input as Input
 import SE.UI.Global as Global
-import SE.UI.Icon as Icon
+import SE.UI.Icon.V2 as Icon
+import SE.UI.Image.V2 as Image
 import SE.UI.Level as Level
 import SE.UI.Logo as Logo
 import SE.UI.Logos.Crestron as Crestron
@@ -59,6 +59,7 @@ type alias Model =
     , panasonic : PanasonicModel
     , snackbar : Snackbar.Model
     , pagination : PaginationModel
+    , icons : IconsModel
     }
 
 
@@ -155,6 +156,14 @@ type alias PaginationModel =
     }
 
 
+type alias IconsModel =
+    { activeId : Maybe Int
+    , size : Control.Size
+    , containerSize : Control.Size
+    , transform : Maybe Icon.Transform
+    }
+
+
 colorToNotification : NotificationColor -> ( String, Maybe msg -> List (Html msg) -> Html msg )
 colorToNotification color =
     case color of
@@ -193,6 +202,7 @@ initialModel =
       , panasonic = defaultPanasonicLogo
       , snackbar = Snackbar.init
       , pagination = defaultPaginationModel
+      , icons = defaultIconsModel
       }
     , Cmd.none
     )
@@ -255,6 +265,15 @@ defaultPaginationModel =
     }
 
 
+defaultIconsModel : IconsModel
+defaultIconsModel =
+    { activeId = Maybe.Nothing
+    , size = Control.Regular
+    , containerSize = Control.Regular
+    , transform = Nothing
+    }
+
+
 
 -- UPDATE
 
@@ -279,6 +298,7 @@ type Msg
     | ToggledModal
     | ToggledDropdown
     | ClosedDropdown
+    | GotIconsMsg IconsMsg
 
 
 type ButtonMsg
@@ -321,6 +341,13 @@ type PaginationMsg
     = ToggledPaginationSize Control.Size
     | ToggledPaginationAlignment Alignment
     | ChangedPage Int
+
+
+type IconsMsg
+    = ToggledSize Control.Size
+    | ToggledContainerSize Control.Size
+    | SelectedTransform Icon.Transform
+    | SelectedIndex Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -414,6 +441,9 @@ update msg model =
 
         ClosedDropdown ->
             ( { model | showDropdown = False }, Cmd.none )
+
+        GotIconsMsg subMsg ->
+            ( { model | icons = updateIcons subMsg model.icons }, Cmd.none )
 
 
 updateButton : ButtonMsg -> ButtonModel -> ButtonModel
@@ -516,6 +546,35 @@ updatePagination msg model =
 
         ChangedPage page ->
             { model | currentPage = page }
+
+
+updateIcons : IconsMsg -> IconsModel -> IconsModel
+updateIcons msg model =
+    case msg of
+        ToggledSize size ->
+            { model | size = size }
+
+        ToggledContainerSize size ->
+            { model | containerSize = size }
+
+        SelectedTransform transform ->
+            { model | transform = Just transform }
+
+        SelectedIndex key ->
+            let
+                newKey =
+                    case model.activeId of
+                        Nothing ->
+                            Just key
+
+                        Just oldKey ->
+                            if oldKey == key then
+                                Nothing
+
+                            else
+                                Just key
+            in
+            { model | activeId = newKey }
 
 
 
@@ -628,6 +687,7 @@ view model =
         , Html.article
             []
             [ viewNavbar model.navbarBrand
+            , viewImage
             , viewSnackbarInfo
             , viewLogo
             , viewCrestronLogo model.crestron
@@ -642,7 +702,7 @@ view model =
             , viewForm model
             , viewNotification model.notification
             , viewModal model.showModal
-            , viewIcons
+            , viewIcons model.icons
             , viewCard
             , viewTable model.table
             , viewTabs model.tabs
@@ -669,7 +729,7 @@ viewLoginIcon =
             ]
         ]
         [ Attributes.href "/login" ]
-        [ Icon.user Control.Medium
+        [ Icon.user |> Icon.withSize Control.Medium |> Icon.toHtml
         , styled Html.span
             [ Css.fontWeight (Css.int 600)
             , Utils.desktop
@@ -723,7 +783,7 @@ viewCartIcon =
             ]
         ]
         [ Attributes.href "/cart", Attributes.attribute "data-badge" "33" ]
-        [ Icon.cart Control.Medium
+        [ Icon.cart |> Icon.withSize Control.Medium |> Icon.toHtml
         , styled Html.span
             [ Css.fontWeight (Css.int 600)
             , Utils.desktop
@@ -751,7 +811,7 @@ viewContactAndOpeningHours =
         , Css.borderRadius Utils.radius
         ]
         []
-        [ Icon.phone Control.Regular
+        [ Icon.phone |> Icon.toHtml
         , styled Html.p
             [ Css.paddingLeft (Css.em 0.75)
             ]
@@ -809,7 +869,7 @@ search =
                         ]
                     ]
                     [ Attributes.type_ "submit" ]
-                    [ Utils.visuallyHidden Html.span [] [ Html.text "Sök" ], Icon.search Control.Medium ]
+                    [ Utils.visuallyHidden Html.span [] [ Html.text "Sök" ], Icon.search |> Icon.withSize Control.Medium |> Icon.toHtml ]
                 ]
 
             -- , Form.control False
@@ -866,6 +926,65 @@ viewNavbar brand =
                 [ Buttons.button [ Buttons.Color Colors.DarkGreen ] (Just ToggleNavbarBrand) [ Html.text "Toggle brand" ]
                 ]
             , Html.code [] [ Html.text (Debug.toString brand) ]
+            ]
+        ]
+
+
+
+-- IMAGE
+
+
+viewImage : Html Msg
+viewImage =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "Image"
+            , Content.content []
+                [ Html.p []
+                    [ Html.text "There are 2 options, either the full picture element with multiple formats, or a simple img element."
+                    ]
+                , Html.p [] [ Html.text "The width and height must always be specified and you can force the image into an aspect ratio with \"withAspectRatio\" function." ]
+                , Html.p [] [ Html.text "The settings comes first to make it possible for you to prepare lots of images with the same settings and then apply the alt text and src at the end." ]
+                , Html.p [] [ Html.text "The image will allways maintain its original ratio since we use object-fit: contain." ]
+                ]
+            , Columns.columns
+                [ Columns.defaultColumn
+                    [ Image.create { width = 300, height = 100 }
+                        |> Image.withAspectRatio ( 16, 9 )
+                        |> Image.toHtml "Testbild"
+                            [ Image.source
+                                [ Image.srcset "https://picsum.photos/300/100" 1
+                                ]
+                            ]
+                    , Html.pre []
+                        [ Html.code []
+                            [ Html.text """
+Image.create { width = 300, height = 100 }
+    |> Image.withAspectRatio ( 16, 9 )
+    |> Image.toHtml "Testbild"
+        [ Image.source
+            [ Image.srcset "https://picsum.photos/300/100" 1
+            ]
+        ]
+"""
+                            ]
+                        ]
+                    ]
+                , Columns.defaultColumn
+                    [ Image.create { width = 300, height = 300 }
+                        |> Image.withAspectRatio ( 16, 9 )
+                        |> Image.toSimpleHtml { alt = "Testbild", src = "https://picsum.photos/300/300" }
+                    , Html.pre []
+                        [ Html.code []
+                            [ Html.text """
+Image.create { width = 300, height = 300 }
+    |> Image.withAspectRatio ( 16, 9 )
+    |> Image.toSimpleHtml { alt = "Testbild", src = "https://picsum.photos/300/300" }
+"""
+                            ]
+                        ]
+                    ]
+                ]
             ]
         ]
 
@@ -1151,7 +1270,7 @@ viewTypography =
                         Font.textButtonStyles
                         []
                         [ Html.text "Visa mer"
-                        , Icon.angleDown Control.Small
+                        , Icon.angleDown |> Icon.withSize Control.Small |> Icon.toHtml
                         ]
                     ]
                 , Html.p [] [ Html.code [] [ Html.text "styled Html.a Font.textButtonStyles [] [ Html.text \"Visa mer\" , Icon.angleDown Control.Small ]" ] ]
@@ -1345,7 +1464,7 @@ viewButtons model =
                     (List.map (viewButtonModifier model.mods) allOtherMods)
                 ]
             , Buttons.buttons []
-                [ Buttons.button model.mods (Just ClickedButton) [ Icon.cart Control.Medium, Html.span [] [ Html.text "Add to cart" ] ]
+                [ Buttons.button model.mods (Just ClickedButton) [ Icon.cart |> Icon.withSize Control.Medium |> Icon.toHtml, Html.span [] [ Html.text "Add to cart" ] ]
                 ]
             , Html.pre []
                 [ Html.code []
@@ -1567,16 +1686,18 @@ viewDropdown : Bool -> Html Msg
 viewDropdown isOpen =
     let
         icon =
-            if isOpen then
-                Icon.angleUp
+            Icon.angleDown
+                |> (if isOpen then
+                        Icon.withTransform Icon.FlipY
 
-            else
-                Icon.angleDown
+                    else
+                        identity
+                   )
     in
     Dropdown.dropdown "example-dropdown"
         ClosedDropdown
         isOpen
-        (Dropdown.button [] (Just ToggledDropdown) [ Html.text "Dropdown menu", icon Control.Regular ])
+        (Dropdown.button [] (Just ToggledDropdown) [ Html.text "Dropdown menu", icon |> Icon.toHtml ])
         [ Dropdown.link "https://google.com" [ Html.text "Google.com" ]
         , Dropdown.hr
         , Dropdown.content [ Html.text "Any content you like can go into the dropdown." ]
@@ -1697,8 +1818,8 @@ viewModal visible =
         ]
 
 
-viewIcons : Html Msg
-viewIcons =
+viewIcons : IconsModel -> Html Msg
+viewIcons model =
     Section.section []
         [ Container.container []
             [ Title.title1 "Icons"
@@ -1706,28 +1827,62 @@ viewIcons =
                 [ Html.p [] [ Html.text "For now we use some of the free icons from Font Awesome, we bundle the icons we need in Elm and then inline them into the html." ]
                 , Html.p [] [ Html.text "The icons have be displayed in 4 different sizes: Regular, Small, Medium, Large" ]
                 ]
+            , Form.field []
+                [ Form.label "Sizes"
+                , Form.control False (List.map (viewIconsSize model.size) allControlSizes)
+                ]
+            , Form.field []
+                [ Form.label "Transforms"
+                , Form.control False (List.map (viewIconsTransform model.transform) allIconTransforms)
+                ]
             , styled Html.div
                 [ Css.displayFlex
                 , Css.flexWrap Css.wrap
+                , Css.alignItems Css.center
                 ]
                 []
-                (List.map viewIcon allIcons)
+                (List.indexedMap (viewIcon model) allIcons)
             , Html.code []
-                [ Html.text "Icon.angleDown Control.Large"
+                [ Html.text "SE.UI.Icon.V2.angleDown |> SE.UI.Icon.V2.toHtml"
                 ]
             ]
         ]
 
 
-viewIcon : ( String, Control.Size -> Html msg ) -> Html msg
-viewIcon ( label, icon ) =
-    div [ Attributes.title label ] [ icon Control.Large ]
+viewIconsSize : Control.Size -> ( Control.Size, String ) -> Html Msg
+viewIconsSize =
+    viewOption (GotIconsMsg << ToggledSize)
 
 
-allIcons : List ( String, Control.Size -> Html msg )
+viewIcon : IconsModel -> Int -> ( String, Icon.Icon ) -> Html Msg
+viewIcon model index ( label, icon ) =
+    let
+        ( backgroundColor, currentIcon ) =
+            if Maybe.withDefault -1 model.activeId == index then
+                ( Colors.dark
+                , icon
+                    |> Icon.withSize model.size
+                    -- |> Icon.withContainerSize model.containerSize
+                    |> (Maybe.map Icon.withTransform model.transform |> Maybe.withDefault identity)
+                )
+
+            else
+                ( Colors.white, icon )
+    in
+    styled div
+        [ Colors.backgroundColor backgroundColor
+        , Colors.color (backgroundColor |> Colors.invert)
+        , Css.cursor Css.pointer
+        ]
+        [ Attributes.title label, Events.onClick (GotIconsMsg (SelectedIndex index)) ]
+        [ currentIcon
+            |> Icon.toHtml
+        ]
+
+
+allIcons : List ( String, Icon.Icon )
 allIcons =
     [ ( "angleDown", Icon.angleDown )
-    , ( "angleUp", Icon.angleUp )
     , ( "ban", Icon.ban )
     , ( "bargain", Icon.bargain )
     , ( "bid", Icon.bid )
@@ -1772,6 +1927,65 @@ allIcons =
     , ( "user", Icon.user )
     , ( "wifi", Icon.wifi )
     ]
+
+
+allIconTransforms : List ( String, Icon.Transform )
+allIconTransforms =
+    [ ( "Rotate 90deg", Icon.Rotate 90 )
+    , ( "FlipX", Icon.FlipX )
+    , ( "FlipY", Icon.FlipY )
+    , ( "Spin", Icon.Spin )
+    ]
+
+
+viewIconsTransform : Maybe Icon.Transform -> ( String, Icon.Transform ) -> Html Msg
+viewIconsTransform activeValue ( label, value ) =
+    let
+        isActive =
+            case activeValue of
+                Nothing ->
+                    False
+
+                Just currentValue ->
+                    currentValue == value
+    in
+    Input.radio (GotIconsMsg (SelectedTransform value)) label isActive
+        |> Input.toHtml
+
+
+
+-- viewIconV2 : Html Msg
+-- viewIconV2 =
+--     Section.section []
+--         [ Container.container []
+--             [ Title.title1 "Icons version 2"
+--             , Content.content []
+--                 [ Html.p []
+--                     [ Html.text "Better icons"
+--                     ]
+--                 ]
+--             -- , Form.field []
+--             --     [ Buttons.button [ Buttons.Color Colors.DarkGreen ] (Just ToggleNavbarBrand) [ Html.text "Toggle brand" ]
+--             --     ]
+--             , Html.div []
+--                 [ IconV2.angleDown
+--                     |> IconV2.withContainerSize Control.Large
+--                     |> IconV2.withSize Control.Large
+--                     -- |> IconV2.withTransform IconV2.Spin
+--                     |> IconV2.toHtml
+--                 ]
+--             , styled Html.div
+--                 [ Css.property "background-image" ("url(\"" ++ (IconV2.angleDown |> IconV2.toDataUri) ++ "\"), linear-gradient(to bottom, hsla(0, 0%, 96%, 1) 0%,hsla(0, 0%, 96%, 1) 100%)")
+--                 , Css.property "background-repeat" "no-repeat, repeat"
+--                 , Css.property "background-position" "right 0.75em top 50%, 0, 0"
+--                 , Css.property "background-size" "0.75em auto, 100%"
+--                 ]
+--                 []
+--                 [ Html.text "Här har vi en ikon som bakgrund"
+--                 ]
+--             , Html.code [] [ Html.text "Code is coming" ]
+--             ]
+--         ]
 
 
 viewCard : Html Msg

@@ -55,7 +55,7 @@ import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events exposing (onInput)
 import SE.UI.Colors as Colors
 import SE.UI.Control as Control exposing (controlStyle)
-import SE.UI.Icon as Icon
+import SE.UI.Icon.V2 as Icon
 import SE.UI.Utils as Utils
 import Svg.Styled.Attributes exposing (height, width)
 
@@ -1169,7 +1169,7 @@ selectStyle mods =
            , Css.cursor pointer
            , Css.outline none
            , Colors.backgroundColor Colors.white
-           , Css.property "background-image" ("url(\"" ++ Icon.angleDownCssBackground ++ "\"), linear-gradient(to bottom, hsla(0, 0%, 96%, 1) 0%,hsla(0, 0%, 96%, 1) 100%)")
+           , Css.property "background-image" ("url(\"" ++ Icon.toDataUri Icon.angleDown ++ "\"), linear-gradient(to bottom, hsla(0, 0%, 96%, 1) 0%,hsla(0, 0%, 96%, 1) 100%)")
            , Css.property "background-repeat" "no-repeat, repeat"
            , Css.property "background-position" "right 0.75em top 50%, 0, 0"
            , Css.property "background-size" "0.75em auto, 100%"
