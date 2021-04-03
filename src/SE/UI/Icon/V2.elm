@@ -37,7 +37,7 @@ import Css exposing (Style)
 import Css.Animations
 import Css.Global
 import Html.Styled as Html exposing (Html, styled)
-import Html.Styled.Attributes exposing (attribute, classList)
+import Html.Styled.Attributes exposing (attribute)
 import SE.UI.Control as Control
 import Svg.Styled as Svg exposing (Attribute, Svg)
 import Svg.Styled.Attributes exposing (d, height, viewBox, width)
