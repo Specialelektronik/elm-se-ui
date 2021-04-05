@@ -433,7 +433,7 @@ viewSocialMedia items =
 
 viewSocialMediaItem : SocialMedia -> Html msg
 viewSocialMediaItem item =
-    styled Html.a [ Colors.color Colors.darker ] [ Attributes.href item.url ] [ item.icon |> Icon.withContainerSize Control.Large |> Icon.withSize Control.Large |> Icon.toHtml ]
+    styled Html.a [ Colors.color Colors.darker ] [ Attributes.href item.url ] [ item.icon |> Icon.withSize Control.Large |> Icon.toHtml ]
 
 
 
@@ -614,7 +614,7 @@ viewMegaItem config model index item =
             megaItemStyles
             [ Events.onClick (config.transform (ToggledDropdown id)) ]
             [ Html.span [] [ Html.text item.label ]
-            , icon |> Icon.withContainerSize Control.Small |> Icon.withSize Control.Small |> Icon.toHtml
+            , icon |> Icon.withSize Control.Small |> Icon.toHtml
             ]
         , styled Html.div
             [ Css.pseudoClass "not([hidden])"
@@ -626,6 +626,8 @@ viewMegaItem config model index item =
                 , Css.justifyContent Css.spaceBetween
                 , Css.borderBottomLeftRadius Utils.radius
                 , Css.borderBottomRightRadius Utils.radius
+                , Css.maxHeight (Css.calc (Css.vh 100) Css.minus (Css.px (ribbonHeight config + brandHeight + ledHeight + megaHeight config)))
+                , Css.overflowY Css.auto
                 ]
             ]
             [ Attributes.hidden (not isActive) ]
@@ -668,6 +670,26 @@ brandHeight =
 brandImageHeight : Float
 brandImageHeight =
     48
+
+
+ribbonHeight : Config msg -> Float
+ribbonHeight config =
+    case config.ribbon of
+        [] ->
+            0
+
+        _ ->
+            32
+
+
+megaHeight : Config msg -> Float
+megaHeight config =
+    case config.megaNav of
+        [] ->
+            0
+
+        _ ->
+            50
 
 
 viewBrand : Config msg -> Bool -> Html msg
@@ -811,7 +833,7 @@ viewDropdownButton styles config isActive id label =
     styled Html.div
         styles
         [ Events.onClick (config.transform (ToggledDropdown id)), Attributes.attribute "role" "button" ]
-        [ Html.span [] [ Html.text label ], icon |> Icon.withContainerSize Control.Small |> Icon.withSize Control.Small |> Icon.toHtml ]
+        [ Html.span [] [ Html.text label ], icon |> Icon.withSize Control.Small |> Icon.toHtml ]
 
 
 
@@ -894,29 +916,12 @@ viewLinkHelper styles link =
 
 global : Config msg -> Bool -> Html msg
 global config isOpen =
-    let
-        ribbonHeight =
-            case config.ribbon of
-                [] ->
-                    0
-
-                _ ->
-                    32
-
-        megaHeight =
-            case config.megaNav of
-                [] ->
-                    0
-
-                _ ->
-                    50
-    in
     Css.Global.global
         [ Css.Global.body
             [ Css.marginTop
                 (Css.px (brandHeight + ledHeight + mobileSearchHeight))
             , Utils.widescreen
-                [ Css.marginTop (Css.px (ribbonHeight + brandHeight + ledHeight + megaHeight))
+                [ Css.marginTop (Css.px (ribbonHeight config + brandHeight + ledHeight + megaHeight config))
                 ]
             ]
         , Css.Global.html

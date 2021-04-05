@@ -636,7 +636,37 @@ navbarConfig brand =
           }
         , { label = "Belysning"
           , href = Attributes.href "/av-teknik"
-          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          , content =
+                Html.div []
+                    [ Html.ul []
+                        [ Html.li [] [ Html.text "Länk 1" ]
+                        , Html.li [] [ Html.text "Länk 2" ]
+                        , Html.li [] [ Html.text "Länk 3" ]
+                        , Html.li [] [ Html.text "Länk 4" ]
+                        , Html.li [] [ Html.text "Länk 5" ]
+                        , Html.li [] [ Html.text "Länk 6" ]
+                        , Html.li [] [ Html.text "Länk 2" ]
+                        , Html.li [] [ Html.text "Länk 3" ]
+                        , Html.li [] [ Html.text "Länk 4" ]
+                        , Html.li [] [ Html.text "Länk 5" ]
+                        , Html.li [] [ Html.text "Länk 6" ]
+                        , Html.li [] [ Html.text "Länk 2" ]
+                        , Html.li [] [ Html.text "Länk 3" ]
+                        , Html.li [] [ Html.text "Länk 4" ]
+                        , Html.li [] [ Html.text "Länk 5" ]
+                        , Html.li [] [ Html.text "Länk 6" ]
+                        , Html.li [] [ Html.text "Länk 2" ]
+                        , Html.li [] [ Html.text "Länk 3" ]
+                        , Html.li [] [ Html.text "Länk 4" ]
+                        , Html.li [] [ Html.text "Länk 5" ]
+                        , Html.li [] [ Html.text "Länk 6" ]
+                        , Html.li [] [ Html.text "Länk 2" ]
+                        , Html.li [] [ Html.text "Länk 3" ]
+                        , Html.li [] [ Html.text "Länk 4" ]
+                        , Html.li [] [ Html.text "Länk 5" ]
+                        , Html.li [] [ Html.text "Länk 6" ]
+                        ]
+                    ]
           }
         , { label = "IP / IT"
           , href = Attributes.href "/av-teknik"
