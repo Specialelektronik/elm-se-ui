@@ -2414,7 +2414,7 @@ viewPagination model =
                 , Form.control False (List.map (viewPaginationAlignment model.alignment) allAlignments)
                 ]
             , Content.content []
-                [ Html.p [] [ Html.text "The Pagionation component originates from Bulmas equivalent. The first version of Pagination is deprecated and should not be used." ]
+                [ Html.p [] [ Html.text "The Pagination component originates from Bulmas equivalent. The first version of Pagination is deprecated and should not be used." ]
                 ]
             ]
         , styled Html.div
