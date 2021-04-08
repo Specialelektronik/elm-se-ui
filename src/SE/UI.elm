@@ -966,50 +966,158 @@ viewNavbar brand =
 
 viewImage : Html Msg
 viewImage =
-    Section.section []
+    Section.section
+        [ Attributes.css
+            [ Css.Global.descendants
+                [ Css.Global.selector "figure"
+                    [ Css.property "background-color" "lightyellow"
+                    ]
+                ]
+            ]
+        ]
         [ Container.container []
             [ Title.title1 "Image"
             , Content.content []
                 [ Html.p []
-                    [ Html.text "There are 2 options, either the full picture element with multiple formats, or a simple img element."
+                    [ Html.text "The image component has some similarities to the bulma component but has evolved beyond it. There are 3 options:"
                     ]
-                , Html.p [] [ Html.text "The width and height must always be specified and you can force the image into an aspect ratio with \"withAspectRatio\" function." ]
+                , Html.ul []
+                    [ Html.li [] [ Html.text "the full ", Html.code [] [ Html.text "picture" ], Html.text " tag with multiple formats" ]
+                    , Html.li [] [ Html.text "a single ", Html.code [] [ Html.text "img" ], Html.text " tag" ]
+                    , Html.li [] [ Html.text "or a \"missing image\" icon to indicate that there is no image" ]
+                    ]
+                , Html.p [] [ Html.text "The width and height must always be specified and you can force the image into an aspect ratio with ", Html.code [] [ Html.text "withAspectRatio" ], Html.text " function." ]
                 , Html.p [] [ Html.text "The settings comes first to make it possible for you to prepare lots of images with the same settings and then apply the alt text and src at the end." ]
-                , Html.p [] [ Html.text "The image will allways maintain its original ratio since we use object-fit: contain." ]
+                , Html.p [] [ Html.text "The image will always maintain its original ratio since we use object-fit: contain." ]
                 ]
-            , Columns.columns
-                [ Columns.defaultColumn
-                    [ Image.create { width = 300, height = 100 }
-                        |> Image.withAspectRatio ( 16, 9 )
-                        |> Image.toHtml "Testbild"
-                            [ Image.source
-                                [ Image.srcset "https://picsum.photos/300/100" 1
+            , Notification.link Nothing [ Html.strong [] [ Html.text "Note: " ], Html.text "The yellow tinted background is only for demostration purposes, to highlight the <figure> area." ]
+            , Columns.multilineColumns
+                [ Columns.column [ ( Columns.Desktop, Columns.Half ) ]
+                    [ styled Html.p
+                        [ Utils.block ]
+                        []
+                        [ Image.create { width = 300, height = 100 }
+                            |> Image.withAspectRatio ( 16, 9 )
+                            |> Image.toHtml "Testbild"
+                                [ Image.source
+                                    [ Image.srcset "https://picsum.photos/300/100" 1
+                                    ]
                                 ]
-                            ]
+                        ]
+                    , styled Html.p
+                        [ Utils.block ]
+                        []
+                        [ Html.text "The "
+                        , Html.code [] [ Html.text "<figure>" ]
+                        , Html.text " tag will always keep a 16 / 9 aspect ratio and grow with the container. The "
+                        , Html.code [] [ Html.text "picture" ]
+                        , Html.text " tag will contain all sizes specified as the last argument of \"toHtml\"."
+                        ]
                     , Html.pre []
                         [ Html.code []
-                            [ Html.text """
-Image.create { width = 300, height = 100 }
+                            [ Html.text """Image.create { width = 300, height = 100 }
     |> Image.withAspectRatio ( 16, 9 )
     |> Image.toHtml "Testbild"
         [ Image.source
             [ Image.srcset "https://picsum.photos/300/100" 1
             ]
-        ]
+        ]"""
+                            ]
+                        ]
+                    ]
+                , Columns.column [ ( Columns.Desktop, Columns.Half ) ]
+                    [ styled Html.p
+                        [ Utils.block ]
+                        []
+                        [ Image.create { width = 300, height = 300 }
+                            |> Image.withAspectRatio ( 16, 9 )
+                            |> Image.toSimpleHtml { alt = "Testbild", src = "https://picsum.photos/300/300" }
+                        ]
+                    , styled Html.p
+                        [ Utils.block ]
+                        []
+                        [ Html.text "The "
+                        , Html.code [] [ Html.text "<figure>" ]
+                        , Html.text " tag will always keep a 16 / 9 aspect ratio and grow with the container. It only only contain one "
+                        , Html.code [] [ Html.text "img" ]
+                        , Html.text " tag."
+                        ]
+                    , Html.pre []
+                        [ Html.code []
+                            [ Html.text """
+-- The <figure> tag will always keep a 16 / 9 aspect ratio and grow with the container.
+Image.create { width = 300, height = 300 }
+    |> Image.withAspectRatio ( 16, 9 )
+    |> Image.toSimpleHtml { alt = "Testbild", src = "https://picsum.photos/300/300" }
 """
                             ]
                         ]
                     ]
-                , Columns.defaultColumn
-                    [ Image.create { width = 300, height = 300 }
-                        |> Image.withAspectRatio ( 16, 9 )
-                        |> Image.toSimpleHtml { alt = "Testbild", src = "https://picsum.photos/300/300" }
+                , Columns.column [ ( Columns.Desktop, Columns.Half ) ]
+                    [ styled Html.p
+                        [ Utils.block ]
+                        []
+                        [ Image.create { width = 300, height = 300 }
+                            |> Image.toSimpleHtml { alt = "Testbild", src = "https://picsum.photos/300/300" }
+                        ]
+                    , styled Html.p
+                        [ Utils.block ]
+                        []
+                        [ Html.text "The "
+                        , Html.code [] [ Html.text "<figure>" ]
+                        , Html.text " tag will grow with the container and keep the image centered. It only only contain one "
+                        , Html.code [] [ Html.text "img" ]
+                        , Html.text " tag."
+                        ]
+                    , Html.pre []
+                        [ Html.code []
+                            [ Html.text """
+Image.create { width = 300, height = 300 }
+    |> Image.toSimpleHtml { alt = "Testbild", src = "https://picsum.photos/300/300" }
+"""
+                            ]
+                        ]
+                    ]
+                , Columns.column [ ( Columns.Desktop, Columns.Half ) ]
+                    [ styled Html.p
+                        [ Utils.block ]
+                        []
+                        [ Image.create { width = 300, height = 300 }
+                            |> Image.toHtml "Testbild" []
+                        ]
+                    , styled Html.p
+                        [ Utils.block ]
+                        []
+                        [ Html.text "If the source list is empty, the figure will contain the \"missing image\" icon"
+                        ]
+                    , Html.pre []
+                        [ Html.code []
+                            [ Html.text """
+Image.create { width = 300, height = 300 }
+    |> Image.toHtml  "Testbild" []
+"""
+                            ]
+                        ]
+                    ]
+                , Columns.column [ ( Columns.Desktop, Columns.Half ) ]
+                    [ styled Html.p
+                        [ Utils.block ]
+                        []
+                        [ Image.create { width = 300, height = 300 }
+                            |> Image.withAspectRatio ( 16, 9 )
+                            |> Image.toMissingHtml
+                        ]
+                    , styled Html.p
+                        [ Utils.block ]
+                        []
+                        [ Html.text "You can force the missing image icon using \"toMissingHtml\". The icon will adhere the same aspect ratio settings as an image."
+                        ]
                     , Html.pre []
                         [ Html.code []
                             [ Html.text """
 Image.create { width = 300, height = 300 }
     |> Image.withAspectRatio ( 16, 9 )
-    |> Image.toSimpleHtml { alt = "Testbild", src = "https://picsum.photos/300/300" }
+    |> Image.toMissingHtml
 """
                             ]
                         ]
