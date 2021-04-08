@@ -1,7 +1,6 @@
 module SE.UI.Image.V2 exposing
-    ( Image, create, toSimpleHtml, toHtml, source, srcset
+    ( Image, create, toSimpleHtml, toHtml, source, srcset, toMissingHtml
     , withAspectRatio, withoutLazyLoading, withoutAsyncDecoding
-    , toMissingHtml
     )
 
 {-| Image component version 2
@@ -9,7 +8,26 @@ module SE.UI.Image.V2 exposing
 Much of the inspiration comes from this article:
 <https://www.industrialempathy.com/posts/image-optimizations/>
 
-@docs Image, create, toSimpleHtml, toHtml, source, srcset
+
+# Example
+
+    SE.UI.Image.V2.create { width = 300, height = 100 }
+        |> SE.UI.Image.V2.withAspectRatio ( 16, 9 )
+        |> SE.UI.Image.V2.toHtml "Testbild"
+            [ SE.UI.Image.V2.source
+                [ SE.UI.Image.V2.srcset "https://picsum.photos/300/100" 1
+                ]
+            ]
+    ==
+
+    <figure class="has-aspect-ratio _5e31eb7b">
+        <picture>
+            <source srcset="https://picsum.photos/300/100 1x">
+            <img alt="Testbild" src="https://picsum.photos/300/100" width="300" height="100" decoding="async" loading="lazy">
+        </picture>
+    </figure>
+
+@docs Image, create, toSimpleHtml, toHtml, source, srcset, toMissingHtml
 
 
 # Modifiers
@@ -228,6 +246,13 @@ lazyAttribute =
     boolAttribute (Attributes.attribute "loading" "lazy")
 
 
+{-| Turn the Image into an svg icon, with a container figure tag, Produces
+
+    <figure>
+        <span class "icon"><svg...></svg></span>
+    </figure>
+
+-}
 toMissingHtml : Image -> Html msg
 toMissingHtml (Image internals) =
     figure internals [ icon ]
