@@ -1,6 +1,7 @@
 module SE.UI.Image.V2 exposing
     ( Image, create, toSimpleHtml, toHtml, source, srcset
     , withAspectRatio, withoutLazyLoading, withoutAsyncDecoding
+    , toMissingHtml
     )
 
 {-| Image component version 2
@@ -18,8 +19,12 @@ Much of the inspiration comes from this article:
 -}
 
 import Css exposing (Style)
+import Css.Global
 import Html.Styled exposing (Attribute, Html, styled)
-import Html.Styled.Attributes
+import Html.Styled.Attributes as Attributes
+import List
+import SE.UI.Colors as Colors
+import SE.UI.Icon.V2 as Icon
 
 
 {-| The internal type, it is exposed to help with type annotations
@@ -131,25 +136,33 @@ srcset =
 -}
 toHtml : String -> List Source -> Image -> Html msg
 toHtml alt sources (Image internals) =
-    let
-        sortedSources =
-            sortSources sources
+    (case sources of
+        [] ->
+            icon
 
-        fallbackImg =
-            sortedSources
-                |> List.reverse
-                |> List.head
-                |> Maybe.andThen (\(Source srcsets) -> List.head srcsets)
-                |> Maybe.map
-                    (\srcset_ ->
-                        img { alt = alt, src = srcset_.url } internals
-                    )
+        sources_ ->
+            let
+                sortedSources =
+                    sortSources sources
 
-        sourceEls =
-            List.map sourceToHtml sortedSources
-                ++ (Maybe.map List.singleton fallbackImg |> Maybe.withDefault [])
-    in
-    styled (Html.Styled.node "figure") (figureStyles internals.aspectRatio) [] [ Html.Styled.node "picture" [] sourceEls ]
+                fallbackImg =
+                    sortedSources
+                        |> List.reverse
+                        |> List.head
+                        |> Maybe.andThen (\(Source srcsets) -> List.head srcsets)
+                        |> Maybe.map
+                            (\srcset_ ->
+                                img { alt = alt, src = srcset_.url } internals
+                            )
+
+                sourceEls =
+                    List.map sourceToHtml sortedSources
+                        ++ (Maybe.map List.singleton fallbackImg |> Maybe.withDefault [])
+            in
+            Html.Styled.node "picture" [] sourceEls
+    )
+        |> List.singleton
+        |> figure internals
 
 
 {-| Turn the Image into an img tag, with a container figure tag, provide an alt string and a list is sources. Produces
@@ -163,19 +176,35 @@ Use this if you only have an image with a single resolution and file type
 -}
 toSimpleHtml : { alt : String, src : String } -> Image -> Html msg
 toSimpleHtml altAndSrc (Image internals) =
-    styled (Html.Styled.node "figure") (figureStyles internals.aspectRatio) [] [ img altAndSrc internals ]
+    figure internals [ img altAndSrc internals ]
+
+
+figure : Internals -> List (Html msg) -> Html msg
+figure internals =
+    let
+        hasAspectRatio =
+            case internals.aspectRatio of
+                Nothing ->
+                    False
+
+                Just _ ->
+                    True
+    in
+    Html.Styled.node "figure"
+        [ Attributes.classList [ ( "has-aspect-ratio", hasAspectRatio ) ]
+        , Attributes.css (figureStyles internals)
+        ]
 
 
 img : { alt : String, src : String } -> Internals -> Html msg
 img { alt, src } { width, height, async, lazy, aspectRatio } =
     Html.Styled.img
-        [ Html.Styled.Attributes.alt alt
-        , Html.Styled.Attributes.src src
-        , Html.Styled.Attributes.width width
-        , Html.Styled.Attributes.height height
+        [ Attributes.alt alt
+        , Attributes.src src
+        , Attributes.width width
+        , Attributes.height height
         , asyncAttribute async
         , lazyAttribute lazy
-        , Html.Styled.Attributes.css (imgStyles aspectRatio)
         ]
         []
 
@@ -186,50 +215,90 @@ boolAttribute attr bool =
         attr
 
     else
-        Html.Styled.Attributes.class ""
+        Attributes.class ""
 
 
 asyncAttribute : Bool -> Attribute msg
 asyncAttribute =
-    boolAttribute (Html.Styled.Attributes.attribute "decoding" "async")
+    boolAttribute (Attributes.attribute "decoding" "async")
 
 
 lazyAttribute : Bool -> Attribute msg
 lazyAttribute =
-    boolAttribute (Html.Styled.Attributes.attribute "loading" "lazy")
+    boolAttribute (Attributes.attribute "loading" "lazy")
 
 
-imgStyles : Maybe ( Int, Int ) -> List Style
-imgStyles maybeAspectRatio =
-    Css.property "content-visibility" "auto"
-        :: (Maybe.map imgAspectRatioStyles maybeAspectRatio |> Maybe.withDefault [])
+toMissingHtml : Image -> Html msg
+toMissingHtml (Image internals) =
+    figure internals [ icon ]
 
 
-figureStyles : Maybe ( Int, Int ) -> List Style
-figureStyles maybeAspectRatio =
-    Maybe.map aspectRatioStyles maybeAspectRatio |> Maybe.withDefault []
+icon : Html msg
+icon =
+    Icon.images
+        |> Icon.toHtml
 
 
-aspectRatioStyles : ( Int, Int ) -> List Style
-aspectRatioStyles ( width, height ) =
-    [ Css.maxWidth (Css.pct 100)
-    , Css.position Css.relative
-    , Css.display Css.block
-    , Css.overflow Css.hidden
-    , Css.paddingBottom (Css.pct (toFloat height / toFloat width * 100))
-    ]
+figureStyles : Internals -> List Style
+figureStyles { width, height, aspectRatio } =
+    [ Css.textAlign Css.center
+    , Css.Global.descendants
+        -- figure img
+        [ Css.Global.img
+            [ Css.property "content-visibility" "auto"
+            , Css.display Css.inlineBlock
+            ]
 
+        -- figure .icon (without aspect-ratio)
+        , Css.Global.class "icon"
+            [ Css.width (Css.px (toFloat width))
+            , Css.height (Css.px (toFloat height))
+            , Colors.color Colors.lighter
+            , Css.Global.children
+                -- figure .icon > svg
+                [ Css.Global.selector "svg"
+                    [ Css.width (Css.pct 80)
+                    , Css.height (Css.pct 80)
+                    ]
+                ]
+            ]
+        ]
 
-imgAspectRatioStyles : ( Int, Int ) -> List Style
-imgAspectRatioStyles _ =
-    [ Css.width (Css.pct 100)
-    , Css.height (Css.pct 100)
-    , Css.property "object-fit" "contain"
-    , Css.left Css.zero
-    , Css.right Css.zero
-    , Css.top Css.zero
-    , Css.bottom Css.zero
-    , Css.position Css.absolute
+    -- figure.has-aspect-ratio
+    , Css.Global.withClass "has-aspect-ratio"
+        [ Css.Global.descendants
+            -- figure.has-aspect-ratio img, figure.has-aspect-ratio .icon
+            [ Css.Global.each [ Css.Global.img, Css.Global.class "icon" ]
+                [ Css.width (Css.pct 100)
+                , Css.height (Css.pct 100)
+                , Css.left Css.zero
+                , Css.right Css.zero
+                , Css.top Css.zero
+                , Css.bottom Css.zero
+                , Css.position Css.absolute
+                ]
+
+            -- figure.has-aspect-ratio img
+            , Css.Global.img
+                [ Css.property "object-fit" "contain"
+                ]
+            ]
+        ]
+
+    -- optionally apply aspect ratio styles
+    , Css.batch
+        (case aspectRatio of
+            Nothing ->
+                []
+
+            Just ( widthRatio, heightRatio ) ->
+                [ Css.maxWidth (Css.pct 100)
+                , Css.position Css.relative
+                , Css.display Css.block
+                , Css.overflow Css.hidden
+                , Css.paddingBottom (Css.pct (toFloat heightRatio / toFloat widthRatio * 100))
+                ]
+        )
     ]
 
 
@@ -290,7 +359,7 @@ sourceToHtml (Source srcsets) =
                         |> Maybe.map List.singleton
                         |> Maybe.withDefault []
             in
-            Html.Styled.source (Html.Styled.Attributes.attribute "srcset" (srcsetsToString srcsets) :: attrs) []
+            Html.Styled.source (Attributes.attribute "srcset" (srcsetsToString srcsets) :: attrs) []
 
 
 srcsetsToString : List Srcset -> String
@@ -347,7 +416,7 @@ mimeTypeToAttribute mimeType =
                 Avif ->
                     "avif"
     in
-    Html.Styled.Attributes.type_ ("image/" ++ ext)
+    Attributes.type_ ("image/" ++ ext)
 
 
 
