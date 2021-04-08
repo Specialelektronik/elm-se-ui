@@ -26,8 +26,8 @@ modal closeMsg c =
     styled Html.Styled.div
         modalStyles
         [ Attributes.classList [ ( "modal", True ) ] ]
-        [ styled Html.Styled.div modalBackgroundStyles [ Events.onClick closeMsg ] []
-        , styled Html.Styled.div modalContentStyles [] c
+        [ styled Html.Styled.div modalBackgroundStyles [ Events.onClick closeMsg, Attributes.classList [ ( "modal-background", True ) ] ] []
+        , styled Html.Styled.div modalContentStyles [ Attributes.classList [ ( "modal-content", True ) ] ] c
         , Delete.large closeStyles closeMsg
         ]
 

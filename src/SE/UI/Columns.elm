@@ -40,6 +40,7 @@ The `column` function takes a `Sizes` parameter, a List (Device, Width)
 import Css exposing (Style, block, calc, int, minus, none, pct, pseudoClass, rem, wrap)
 import Css.Global exposing (children, typeSelector)
 import Html.Styled exposing (Html, styled)
+import Html.Styled.Attributes as Attributes
 import SE.UI.Utils exposing (desktop, fullhd, mobile, tablet, widescreen)
 
 
@@ -197,8 +198,8 @@ internalColumns gap isMultiline cols =
             isMobileColumns cols
     in
     styled Html.Styled.div
-        (columnsStyles gap isMultiline isMobile)
-        []
+        (columnsStyles gap)
+        [ Attributes.classList [ ( "columns", True ), ( "is-multiline", isMultiline ), ( "is-mobile", isMobile ) ] ]
         (List.map toHtml cols)
 
 
@@ -214,8 +215,8 @@ isMobileColumn (Column sizes _) =
         |> List.member Mobile
 
 
-columnsStyles : Gap -> IsMultiline -> IsMobile -> List Style
-columnsStyles gap isMultiline isMobile =
+columnsStyles : Gap -> List Style
+columnsStyles gap =
     [ Css.marginLeft (negativeColumnGap gap)
     , Css.marginRight (negativeColumnGap gap)
     , Css.marginTop (negativeColumnGap gap)
@@ -231,16 +232,12 @@ columnsStyles gap isMultiline isMobile =
             [ Css.padding (columnGap gap)
             ]
         ]
-    , if isMultiline then
-        Css.flexWrap wrap
-
-      else
-        Css.batch []
-    , if isMobile then
-        Css.displayFlex
-
-      else
-        Css.batch []
+    , Css.Global.withClass "is-multiline"
+        [ Css.flexWrap wrap
+        ]
+    , Css.Global.withClass "is-mobile"
+        [ Css.displayFlex
+        ]
     ]
 
 
