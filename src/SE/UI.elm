@@ -2056,6 +2056,7 @@ allIcons =
     , ( "search", Icon.search )
     , ( "slidersH", Icon.slidersH )
     , ( "star", Icon.star )
+    , ( "sync", Icon.sync )
     , ( "table", Icon.table )
     , ( "th", Icon.th )
     , ( "thLarge", Icon.thLarge )
@@ -2289,7 +2290,7 @@ viewTabs model =
                 [ Html.code []
                     [ Html.text ""
                     , Html.text """
-    SE.UI.Tabs.V2.tabs [
+    SE.UI.Tabs.V2.create [
         Tabs.link True "#" [ Html.text "One" ]
         , Tabs.link False "#" [ Html.text "Two" ]
         , Tabs.link False "#" [ Html.text "Three" ]

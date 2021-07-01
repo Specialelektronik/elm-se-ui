@@ -3,6 +3,7 @@ module SE.UI.Icon.V2 exposing
     , Transform(..), withTransform
     , angleDown, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, playCircle, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
     , tick, circle
+    , sync
     )
 
 {-| Version 2 of Icons, mimics Bulma Icon element set.
@@ -335,6 +336,13 @@ slidersH =
 star : Icon
 star =
     Icon (initInternals ( 576, 512, [ "M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z" ] ))
+
+
+{-| <https://fontawesome.com/v5.15/icons/sync-alt?style=solid>
+-}
+sync : Icon
+sync =
+    Icon (initInternals ( 512, 512, [ "M370.72 133.28C339.458 104.008 298.888 87.962 255.848 88c-77.458.068-144.328 53.178-162.791 126.85-1.344 5.363-6.122 9.15-11.651 9.15H24.103c-7.498 0-13.194-6.807-11.807-14.176C33.933 94.924 134.813 8 256 8c66.448 0 126.791 26.136 171.315 68.685L463.03 40.97C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.749zM32 296h134.059c21.382 0 32.09 25.851 16.971 40.971l-41.75 41.75c31.262 29.273 71.835 45.319 114.876 45.28 77.418-.07 144.315-53.144 162.787-126.849 1.344-5.363 6.122-9.15 11.651-9.15h57.304c7.498 0 13.194 6.807 11.807 14.176C478.067 417.076 377.187 504 256 504c-66.448 0-126.791-26.136-171.315-68.685L48.97 471.03C33.851 486.149 8 475.441 8 454.059V320c0-13.255 10.745-24 24-24z" ] ))
 
 
 {-| Custom icon to mediate a tight product view table
