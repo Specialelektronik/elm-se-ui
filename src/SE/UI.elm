@@ -9,7 +9,7 @@ import Html.Styled.Events as Events
 import SE.UI.Alignment as Alignment exposing (Alignment)
 import SE.UI.Buttons as Buttons
 import SE.UI.Card as Card
-import SE.UI.Colors as Colors
+import SE.UI.Colors as Colors exposing (Color)
 import SE.UI.Columns as Columns
 import SE.UI.Container as Container
 import SE.UI.Content as Content
@@ -19,7 +19,7 @@ import SE.UI.Font as Font
 import SE.UI.Form as Form
 import SE.UI.Form.Input as Input
 import SE.UI.Global as Global
-import SE.UI.Icon.V2 as Icon
+import SE.UI.Icon.V2 as Icon exposing (Icon)
 import SE.UI.Image.V2 as Image
 import SE.UI.Level as Level
 import SE.UI.Logo as Logo
@@ -58,6 +58,7 @@ type alias Model =
     , crestron : CrestronModel
     , panasonic : PanasonicModel
     , snackbar : Snackbar.Model
+    , snackbarSettings : SnackbarSettings
     , pagination : PaginationModel
     , icons : IconsModel
     }
@@ -164,6 +165,12 @@ type alias IconsModel =
     }
 
 
+type alias SnackbarSettings =
+    { duration : Int
+    , iconWithColor : Maybe ( Int, Color )
+    }
+
+
 colorToNotification : NotificationColor -> ( String, Maybe msg -> List (Html msg) -> Html msg )
 colorToNotification color =
     case color of
@@ -201,6 +208,7 @@ initialModel =
       , crestron = defaultCrestronLogo
       , panasonic = defaultPanasonicLogo
       , snackbar = Snackbar.init
+      , snackbarSettings = { duration = 3500, iconWithColor = Nothing }
       , pagination = defaultPaginationModel
       , icons = defaultIconsModel
       }
@@ -288,6 +296,9 @@ type Msg
     | GotNavbarMsg Navbar.Msg
     | GotSnackbarMsg Snackbar.Msg
     | AddSnackbar
+    | GotSnackbarDuration String
+    | GotSnackbarIcon Int
+    | ClickedSnackbarColor Colors.Color
     | ToggleNavbarBrand
     | GotTableMsg TableMsg
     | GotTabsMsg TabsMsg
@@ -391,9 +402,78 @@ update msg model =
                                     , styled Html.span [ Colors.color Colors.base ] [] [ Html.text " - Kontrollprocessor 3-serie, LAN, 1HE/19tum" ]
                                     ]
                             }
+                            |> Snackbar.withDuration model.snackbarSettings.duration
+                            |> (\snckbr ->
+                                    case model.snackbarSettings.iconWithColor of
+                                        Just ( iconIndex, color ) ->
+                                            case find iconIndex allIcons of
+                                                Just ( label, icon ) ->
+                                                    Snackbar.withIcon icon color snckbr
+
+                                                Nothing ->
+                                                    snckbr
+
+                                        Nothing ->
+                                            snckbr
+                               )
                         )
             in
             ( { model | snackbar = newSnackbar }, cmds )
+
+        GotSnackbarDuration stringDuration ->
+            case String.toInt stringDuration of
+                Nothing ->
+                    ( model, Cmd.none )
+
+                Just duration ->
+                    let
+                        oldSettings =
+                            model.snackbarSettings
+
+                        newSettings =
+                            { oldSettings | duration = duration }
+                    in
+                    ( { model | snackbarSettings = newSettings }, Cmd.none )
+
+        GotSnackbarIcon index ->
+            let
+                oldSettings =
+                    model.snackbarSettings
+
+                newValue =
+                    case oldSettings.iconWithColor of
+                        Just ( oldIndex, color ) ->
+                            if oldIndex == index then
+                                Nothing
+
+                            else
+                                Just ( index, color )
+
+                        Nothing ->
+                            Just ( index, Colors.Buy )
+
+                newSettings =
+                    { oldSettings | iconWithColor = newValue }
+            in
+            ( { model | snackbarSettings = newSettings }, Cmd.none )
+
+        ClickedSnackbarColor color ->
+            let
+                oldSettings =
+                    model.snackbarSettings
+
+                newValue =
+                    case oldSettings.iconWithColor of
+                        Just ( oldIndex, oldColor ) ->
+                            Just ( oldIndex, color )
+
+                        Nothing ->
+                            Nothing
+
+                newSettings =
+                    { oldSettings | iconWithColor = newValue }
+            in
+            ( { model | snackbarSettings = newSettings }, Cmd.none )
 
         GotNavbarMsg subMsg ->
             ( { model | navbar = Navbar.update subMsg model.navbar }, Cmd.none )
@@ -718,7 +798,7 @@ view model =
             []
             [ viewNavbar model.navbarBrand
             , viewImage
-            , viewSnackbarInfo
+            , viewSnackbarInfo model.snackbarSettings
             , viewLogo
             , viewCrestronLogo model.crestron
             , viewPanasonicLogo model.panasonic
@@ -1131,8 +1211,8 @@ Image.create { width = 300, height = 300 }
 -- SNACKBAR
 
 
-viewSnackbarInfo : Html Msg
-viewSnackbarInfo =
+viewSnackbarInfo : { duration : Int, iconWithColor : Maybe ( Int, Color ) } -> Html Msg
+viewSnackbarInfo settings =
     Section.section []
         [ Container.container []
             [ Title.title1 "Snackbar"
@@ -1146,11 +1226,88 @@ viewSnackbarInfo =
                     ]
                 ]
             , Form.field []
+                [ Form.label "Duration"
+                , Form.control False
+                    [ Input.number GotSnackbarDuration (String.fromInt settings.duration)
+                        |> Input.toHtml
+                    ]
+                ]
+            , Form.field []
+                [ Form.label "Icon and color"
+                , Form.control False
+                    [ viewSnackbarIcons settings.iconWithColor ]
+                ]
+            , case settings.iconWithColor of
+                Nothing ->
+                    Html.text ""
+
+                Just ( iconIndex, color ) ->
+                    Form.field
+                        []
+                        [ Form.label "Color"
+                        , Form.control False (List.map (viewColorRadioButton ClickedSnackbarColor color) (greys ++ colors))
+                        ]
+            , Form.field []
                 [ Form.label "Add snackbar"
                 , Form.control False
                     [ Buttons.button [ Buttons.Color Colors.Primary ] (Just AddSnackbar) [ Html.text "Add snackbar" ] ]
                 ]
+            , Content.content []
+                [ Html.pre []
+                    [ Html.code []
+                        [ Html.text ("""Snackbar.add
+    snackbarConfig
+    model.snackbar
+    (Snackbar.create
+        { label = "A short text label"
+        , message = Html.text "A longer Html message"
+        }
+        |> Snackbar.withDuration """ ++ String.fromInt settings.duration)
+                        , case settings.iconWithColor of
+                            Nothing ->
+                                Html.text ""
+
+                            Just ( iconIndex, color ) ->
+                                Html.text ("\n        |> Snackbar.withIcon SE.UI.Icon.V2." ++ (find iconIndex allIcons |> Maybe.map Tuple.first |> Maybe.withDefault "") ++ " SE.UI.Colors." ++ Debug.toString color)
+                        , Html.text "\n    )"
+                        ]
+                    ]
+                ]
             ]
+        ]
+
+
+viewSnackbarIcons : Maybe ( Int, Color ) -> Html Msg
+viewSnackbarIcons maybeIconWithColor =
+    styled Html.div [ Css.displayFlex ] [] (List.indexedMap (viewSnackbarIcon maybeIconWithColor) allIcons)
+
+
+viewSnackbarIcon : Maybe ( Int, Color ) -> Int -> ( String, Icon ) -> Html Msg
+viewSnackbarIcon maybeIconWithColor index ( label, icon ) =
+    let
+        activeIndex =
+            maybeIconWithColor |> Maybe.map Tuple.first |> Maybe.withDefault -1
+
+        activeColor =
+            maybeIconWithColor |> Maybe.map Tuple.second |> Maybe.withDefault Colors.Black
+
+        backgroundColor =
+            Colors.toHsla
+                (if activeIndex == index then
+                    activeColor
+
+                 else
+                    Colors.White
+                )
+    in
+    styled div
+        [ Colors.backgroundColor backgroundColor
+        , Colors.color (backgroundColor |> Colors.invert)
+        , Css.cursor Css.pointer
+        ]
+        [ Attributes.title label, Events.onClick (GotSnackbarIcon index) ]
+        [ icon
+            |> Icon.toHtml
         ]
 
 
@@ -1478,29 +1635,29 @@ viewColumn index =
         ]
 
 
-greys : List ( Colors.Color, String )
+greys : List ( String, Colors.Color )
 greys =
-    [ ( Colors.White, "White" )
-    , ( Colors.Lightest, "Lightest" )
-    , ( Colors.Lighter, "Lighter" )
-    , ( Colors.Light, "Light" )
-    , ( Colors.Base, "Base" )
-    , ( Colors.Dark, "Dark" )
-    , ( Colors.Darker, "Darker" )
-    , ( Colors.Darkest, "Darkest" )
-    , ( Colors.Black, "Black" )
+    [ ( "White", Colors.White )
+    , ( "Lightest", Colors.Lightest )
+    , ( "Lighter", Colors.Lighter )
+    , ( "Light", Colors.Light )
+    , ( "Base", Colors.Base )
+    , ( "Dark", Colors.Dark )
+    , ( "Darker", Colors.Darker )
+    , ( "Darkest", Colors.Darkest )
+    , ( "Black", Colors.Black )
     ]
 
 
-colors : List ( Colors.Color, String )
+colors : List ( String, Colors.Color )
 colors =
-    [ ( Colors.Primary, "Primary" )
-    , ( Colors.Link, "Link" )
-    , ( Colors.Buy, "Buy" )
-    , ( Colors.Danger, "Danger" )
-    , ( Colors.Bargain, "Bargain" )
-    , ( Colors.DarkGreen, "DarkGreen" )
-    , ( Colors.LightBlue, "LightBlue" )
+    [ ( "Primary", Colors.Primary )
+    , ( "Link", Colors.Link )
+    , ( "Buy", Colors.Buy )
+    , ( "Danger", Colors.Danger )
+    , ( "Bargain", Colors.Bargain )
+    , ( "DarkGreen", Colors.DarkGreen )
+    , ( "LightBlue", Colors.LightBlue )
     ]
 
 
@@ -1519,8 +1676,8 @@ viewColors =
         ]
 
 
-viewColorBox : ( Colors.Color, String ) -> Html Msg
-viewColorBox ( color, label ) =
+viewColorBox : ( String, Colors.Color ) -> Html Msg
+viewColorBox ( label, color ) =
     styled Html.div
         [ Css.displayFlex
         , Css.alignItems Css.center
@@ -1876,7 +2033,7 @@ viewNotification model =
                 (Form.field
                     []
                     [ Form.label "Custom color"
-                    , Form.control False (List.map (viewNotificationCustomColor customColor) (greys ++ colors))
+                    , Form.control False (List.map (viewColorRadioButton (GotNotificationMsg << ClickedCustomColor) customColor) (greys ++ colors))
                     ]
                 )
             , Form.field []
@@ -1893,8 +2050,8 @@ viewNotification model =
         ]
 
 
-viewNotificationColor : NotificationColor -> ( NotificationColor, String ) -> Html Msg
-viewNotificationColor activeColor ( color, label ) =
+viewNotificationColor : NotificationColor -> ( String, NotificationColor ) -> Html Msg
+viewNotificationColor activeColor ( label, color ) =
     let
         isSame =
             case ( activeColor, color ) of
@@ -1908,19 +2065,19 @@ viewNotificationColor activeColor ( color, label ) =
         |> Input.toHtml
 
 
-viewNotificationCustomColor : Colors.Color -> ( Colors.Color, String ) -> Html Msg
-viewNotificationCustomColor activeColor ( color, label ) =
-    Input.radio (GotNotificationMsg (ClickedCustomColor color)) label (activeColor == color)
+viewColorRadioButton : (Colors.Color -> msg) -> Colors.Color -> ( String, Colors.Color ) -> Html msg
+viewColorRadioButton msg activeColor ( label, color ) =
+    Input.radio (msg color) label (activeColor == color)
         |> Input.toHtml
 
 
-allNotificationColors : Colors.Color -> List ( NotificationColor, String )
+allNotificationColors : Colors.Color -> List ( String, NotificationColor )
 allNotificationColors customColor =
-    [ ( Regular, "Regular" )
-    , ( Primary, "Primary" )
-    , ( Link, "Link" )
-    , ( Danger, "Danger" )
-    , ( Custom customColor, "Custom" )
+    [ ( "Regular", Regular )
+    , ( "Primary", Primary )
+    , ( "Link", Link )
+    , ( "Danger", Danger )
+    , ( "Custom", Custom customColor )
     ]
 
 
@@ -2577,3 +2734,18 @@ main =
         , init = always initialModel
         , subscriptions = always Sub.none
         }
+
+
+find : Int -> List a -> Maybe a
+find index items =
+    List.foldl
+        (\a ( b, currentIndex ) ->
+            if currentIndex == index then
+                ( Just a, currentIndex + 1 )
+
+            else
+                ( b, currentIndex + 1 )
+        )
+        ( Nothing, 0 )
+        items
+        |> Tuple.first

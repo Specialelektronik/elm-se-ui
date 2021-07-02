@@ -3,6 +3,7 @@ module SE.UI.Snackbar exposing
     , Model, init, Config
     , Msg, update
     , view
+    , withIcon
     )
 
 {-| A Snackbar component for displaying short, unintrusive messages to the user.
@@ -64,11 +65,10 @@ import Dict exposing (Dict)
 import Html.Styled as Html exposing (Attribute, Html, styled)
 import Html.Styled.Attributes as Attributes
 import Process
-import SE.UI.Colors as Colors
-import SE.UI.Control as Control
+import SE.UI.Colors as Colors exposing (Color)
 import SE.UI.Delete as Delete
 import SE.UI.Font as Font
-import SE.UI.Icon as Icon
+import SE.UI.Icon.V2 as Icon exposing (Icon)
 import SE.UI.Utils as Utils
 import Task
 
@@ -116,6 +116,7 @@ type alias Internals =
     , message : Html Never
     , state : State
     , duration : Int
+    , iconWithColor : Maybe ( Icon, Color )
     }
 
 
@@ -180,6 +181,7 @@ create { label, message } =
         , message = message
         , state = Entered
         , duration = defaultDuration
+        , iconWithColor = Nothing
         }
 
 
@@ -220,6 +222,13 @@ withDuration duration (Snackbar internals) =
     Snackbar { internals | duration = duration }
 
 
+{-| Add icon with background color. In version 10.1.0 and below the standard icon and color was Icon.cart Colors.Buy.
+-}
+withIcon : Icon -> Color -> Snackbar -> Snackbar
+withIcon icon color (Snackbar internals) =
+    Snackbar { internals | iconWithColor = Just ( icon, color ) }
+
+
 containerHtml : List (Attribute msg) -> List (Html msg) -> Html msg
 containerHtml =
     styled Html.div containerStyles
@@ -230,7 +239,7 @@ toHtml config ( index, Snackbar internals ) =
     styled Html.div
         snackbarStyles
         [ Attributes.classList [ ( "snackbar", True ), ( "is-leaving", internals.state == Leaving ) ] ]
-        [ iconToHtml Colors.Buy
+        [ Maybe.map iconToHtml internals.iconWithColor |> Maybe.withDefault (Html.text "")
         , styled Html.div
             contentStyles
             [ Attributes.classList [ ( "snackbar-content", True ) ] ]
@@ -245,8 +254,8 @@ toHtml config ( index, Snackbar internals ) =
         ]
 
 
-iconToHtml : Colors.Color -> Html msg
-iconToHtml color =
+iconToHtml : ( Icon, Color ) -> Html msg
+iconToHtml ( icon, color ) =
     styled Html.div
         [ Colors.backgroundColor (color |> Colors.toHsla)
         , Colors.color (color |> Colors.toHsla |> Colors.invert)
@@ -258,7 +267,7 @@ iconToHtml color =
         , Css.justifyContent Css.center
         ]
         []
-        [ Icon.cart Control.Regular
+        [ icon |> Icon.toHtml
         ]
 
 
