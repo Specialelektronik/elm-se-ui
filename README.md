@@ -23,7 +23,13 @@ A good example is the [Dropdown](/SE-Framework-Dropdown) and [Table](/SE-Framewo
 
 You need elm-live installed globally.
 
+Unix style terminal:
+
 `elm-live -s .\docs\index.html .\src\SE\UI.elm -- --output=app.js`
+
+Powershell:
+
+`elm-live -s .\docs\index.html .\src\SE\UI.elm "--" --output=app.js`
 
 More information to come
 
