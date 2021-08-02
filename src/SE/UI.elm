@@ -1118,7 +1118,7 @@ viewImage =
                         []
                         [ Html.text "The "
                         , Html.code [] [ Html.text "<figure>" ]
-                        , Html.text " tag will always keep a 16 / 9 aspect ratio and grow with the container. It only only contain one "
+                        , Html.text " tag will always keep a 16 / 9 aspect ratio and grow with the container. It only contains one "
                         , Html.code [] [ Html.text "img" ]
                         , Html.text " tag."
                         ]
@@ -1279,7 +1279,7 @@ viewSnackbarInfo settings =
 
 viewSnackbarIcons : Maybe ( Int, Color ) -> Html Msg
 viewSnackbarIcons maybeIconWithColor =
-    styled Html.div [ Css.displayFlex ] [] (List.indexedMap (viewSnackbarIcon maybeIconWithColor) allIcons)
+    styled Html.div [ Css.displayFlex, Css.flexWrap Css.wrap ] [] (List.indexedMap (viewSnackbarIcon maybeIconWithColor) allIcons)
 
 
 viewSnackbarIcon : Maybe ( Int, Color ) -> Int -> ( String, Icon ) -> Html Msg
