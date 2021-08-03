@@ -199,14 +199,13 @@ withFoot rows (Table internals) =
 wrapper : Html msg -> Html msg
 wrapper kids =
     styled Html.div
-        []
-        -- [ Utils.block
-        -- , Utils.overflowTouch
-        -- , Css.overflow Css.auto
-        -- , Css.overflowY Css.hidden
-        -- , Css.maxWidth (Css.pct 100)
-        -- ]
-        []
+        [ Utils.block
+        , Utils.overflowTouch
+        , Css.overflow Css.auto
+        , Css.overflowY Css.hidden
+        , Css.maxWidth (Css.pct 100)
+        ]
+        [ Attributes.class "table-container" ]
         [ kids ]
 
 
