@@ -265,6 +265,7 @@ iconToHtml ( icon, color ) =
         , Css.displayFlex
         , Css.alignItems Css.center
         , Css.justifyContent Css.center
+        , Css.flexShrink Css.zero
         ]
         []
         [ icon |> Icon.toHtml

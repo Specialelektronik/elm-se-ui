@@ -689,7 +689,9 @@ navbarConfig brand =
           }
         ]
     , mainNav =
-        [ Navbar.LinkItem
+        [ Navbar.CustomItem
+            [ viewContactAndOpeningHours ]
+        , Navbar.LinkItem
             { href = Attributes.href "/"
             , label = "Webbshop"
             , icon = Nothing
@@ -702,12 +704,9 @@ navbarConfig brand =
             { label = "Om oss"
             , items = [ Dropdown.link "https://google.com" [ Html.text "Google.com" ] ]
             }
-        , Navbar.CustomItem
-            [ viewLoginIcon ]
+        , viewLoginLinkItem
         , Navbar.CustomItem
             [ viewCartIcon ]
-        , Navbar.CustomItem
-            [ viewContactAndOpeningHours ]
         ]
     , megaNav =
         [ { label = "AV-Teknik"
@@ -752,11 +751,11 @@ navbarConfig brand =
           , href = Attributes.href "/av-teknik"
           , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
           }
-        , { label = "Säkerhet"
+        , { label = "CATV"
           , href = Attributes.href "/av-teknik"
           , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
           }
-        , { label = "CATV"
+        , { label = "CCTV"
           , href = Attributes.href "/av-teknik"
           , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
           }
@@ -822,50 +821,31 @@ view model =
         ]
 
 
-viewLoginIcon : Html Msg
-viewLoginIcon =
-    styled Html.a
-        [ Colors.color Colors.text
-        , Css.displayFlex
-        , Css.padding (Css.rem 1)
-        , Css.width (Css.pct 100)
-        , Utils.desktop
-            [ Css.flexDirection Css.column
-            , Css.alignItems Css.center
-            , Css.padding Css.zero
-            ]
-        , Css.hover
-            [ Colors.color Colors.primary
-            ]
-        ]
-        [ Attributes.href "/login" ]
-        [ Icon.user |> Icon.withSize Control.Medium |> Icon.toHtml
-        , styled Html.span
-            [ Css.fontWeight (Css.int 600)
-            , Utils.desktop
-                [ Colors.color Colors.base
-                , Font.bodySizeRem -3
-                , Css.fontWeight Css.normal
-                ]
-            ]
-            []
-            [ Html.text "Logga in"
-            ]
-        ]
+viewLoginLinkItem : Navbar.Item msg
+viewLoginLinkItem =
+    Navbar.LinkItem
+        { href = Attributes.href "/"
+        , label = "Logga in"
+        , icon = Just Icon.user
+        }
 
 
 viewCartIcon : Html Msg
 viewCartIcon =
-    styled Html.a
+    let
+        attribs =
+            [ Attributes.href "/", Attributes.attribute "data-badge" "33" ]
+    in
+    styled
+        Html.a
         [ Colors.color Colors.text
-        , Css.position Css.relative
+        , Css.fontWeight (Css.int 600)
         , Css.displayFlex
-        , Css.padding (Css.rem 1)
-        , Css.width (Css.pct 100)
-        , Utils.desktop
+        , Font.bodySizeRem -1
+        , Css.padding2 (Css.rem 1) Css.zero
+        , Utils.widescreen
             [ Css.flexDirection Css.column
             , Css.alignItems Css.center
-            , Css.padding Css.zero
             ]
         , Css.hover
             [ Colors.color Colors.primary
@@ -875,36 +855,40 @@ viewCartIcon =
                 [ Colors.backgroundColor Colors.primary
                 , Colors.color Colors.white
                 , Css.borderRadius (Css.pct 50)
-                , Css.position Css.absolute
-                , Css.top Css.zero
-                , Css.right Css.zero
-                , Css.bottom Css.auto
-                , Css.left Css.auto
                 , Css.minWidth (Css.em 2)
-                , Css.minHeight (Css.em 2)
-                , Css.textAlign Css.center
+                , Css.height (Css.em 2)
                 , Css.lineHeight (Css.num 1)
-                , Css.padding2 (Css.em 0.5) (Css.em 0.5)
+                , Css.padding (Css.em 0.5)
                 , Font.bodySizeEm -4
                 , Css.property "content" "attr(data-badge)"
                 , Css.boxShadow5 Css.zero Css.zero Css.zero (Css.px 2) (Colors.white |> Colors.toCss)
                 , Css.transform (Css.translate2 (Css.pct -25) (Css.pct 25))
+                , Css.displayFlex
+                , Css.alignItems Css.center
+                , Css.justifyContent Css.center
+                , Css.marginLeft (Css.px 10)
+                , Utils.widescreen
+                    [ Css.position Css.absolute
+                    , Css.top Css.zero
+                    , Css.right Css.zero
+                    , Css.bottom Css.auto
+                    , Css.left Css.auto
+                    , Css.marginLeft Css.unset
+                    ]
                 ]
             ]
         ]
-        [ Attributes.href "/cart", Attributes.attribute "data-badge" "33" ]
-        [ Icon.cart |> Icon.withSize Control.Medium |> Icon.toHtml
+        attribs
+        [ Icon.toHtml Icon.cart
         , styled Html.span
-            [ Css.fontWeight (Css.int 600)
-            , Utils.desktop
-                [ Colors.color Colors.base
-                , Font.bodySizeRem -3
-                , Css.fontWeight Css.normal
+            [ Utils.widescreen
+                [ Css.fontWeight Css.normal
+                , Css.fontSize (Css.rem 0.6667)
+                , Colors.color Colors.base
                 ]
             ]
             []
-            [ Html.text "Varukorg"
-            ]
+            [ Html.text "Varukorg" ]
         ]
 
 
@@ -914,11 +898,11 @@ viewContactAndOpeningHours =
         [ Css.displayFlex
         , Font.bodySizeRem -3
         , Css.alignItems Css.center
-        , Css.borderStyle Css.solid
-        , Css.borderWidth (Css.px 1)
-        , Colors.borderColor Colors.border
-        , Css.padding (Css.em 0.75)
+        , Css.padding2 (Css.rem 1) Css.zero
         , Css.borderRadius Utils.radius
+        , Utils.widescreen
+            [ Css.padding Css.zero
+            ]
         ]
         []
         [ Icon.phone |> Icon.toHtml

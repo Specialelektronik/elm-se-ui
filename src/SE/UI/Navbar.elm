@@ -364,7 +364,6 @@ mobileBasicItemStyles isActive =
     , Font.bodySizeRem -1
     , Css.padding (Css.rem 1)
     , Css.displayFlex
-    , Css.justifyContent Css.spaceBetween
     , Css.position Css.relative
     ]
 
@@ -394,6 +393,11 @@ mobileNavStyles =
             , Css.Global.children
                 [ Css.Global.a
                     [ Css.width (Css.pct 100)
+                    ]
+                , Css.Global.div
+                    [ Css.Global.withAttribute "role=button"
+                        [ Css.justifyContent Css.spaceBetween
+                        ]
                     ]
 
                 -- dropdown content
@@ -937,7 +941,7 @@ global config isOpen =
 globalDropdownOverrideStyles : Style
 globalDropdownOverrideStyles =
     -- Css.batch []
-    Utils.tablet
+    Utils.widescreen
         [ Css.Global.descendants
             -- Override regular dropdown styles
             [ Css.Global.class "dropdown"
