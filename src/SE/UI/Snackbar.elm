@@ -68,7 +68,7 @@ import Process
 import SE.UI.Colors as Colors exposing (Color)
 import SE.UI.Delete as Delete
 import SE.UI.Font as Font
-import SE.UI.Icon.V2 as Icon exposing (Icon)
+import SE.UI.Icon.V3 as Icon exposing (Icon)
 import SE.UI.Utils as Utils
 import Task
 

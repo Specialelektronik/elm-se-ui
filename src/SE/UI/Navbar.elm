@@ -51,7 +51,7 @@ import SE.UI.Container as Container
 import SE.UI.Control as Control
 import SE.UI.Dropdown as Dropdown
 import SE.UI.Font as Font
-import SE.UI.Icon.V2 as Icon
+import SE.UI.Icon.V3 as Icon
 import SE.UI.Logo as Logo
 import SE.UI.Utils as Utils
 

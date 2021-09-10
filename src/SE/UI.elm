@@ -19,7 +19,7 @@ import SE.UI.Font as Font
 import SE.UI.Form as Form
 import SE.UI.Form.Input as Input
 import SE.UI.Global as Global
-import SE.UI.Icon.V2 as Icon exposing (Icon)
+import SE.UI.Icon.V3 as Icon exposing (Icon)
 import SE.UI.Image.V2 as Image
 import SE.UI.Level as Level
 import SE.UI.Logo as Logo
@@ -2165,48 +2165,59 @@ allIcons =
     [ ( "angleDown", Icon.angleDown )
     , ( "ban", Icon.ban )
     , ( "bargain", Icon.bargain )
-    , ( "bid", Icon.bid )
+
+    -- , ( "bid", Icon.bid )
     , ( "box", Icon.box )
-    , ( "boxes", Icon.boxes )
-    , ( "calendar", Icon.calendar )
+
+    -- , ( "boxes", Icon.boxes )
+    -- , ( "calendar", Icon.calendar )
     , ( "campaign", Icon.campaign )
     , ( "cart", Icon.cart )
     , ( "category", Icon.category )
     , ( "checkCircle", Icon.checkCircle )
     , ( "clock", Icon.clock )
-    , ( "dolly", Icon.dolly )
+
+    -- , ( "dolly", Icon.dolly )
     , ( "envelope", Icon.envelope )
-    , ( "ethernet", Icon.ethernet )
-    , ( "eye", Icon.eye )
+
+    -- , ( "ethernet", Icon.ethernet )
+    -- , ( "eye", Icon.eye )
     , ( "facebook", Icon.facebook )
     , ( "file", Icon.file )
     , ( "history", Icon.history )
-    , ( "home", Icon.home )
-    , ( "images", Icon.images )
-    , ( "laptop", Icon.laptop )
+
+    -- , ( "home", Icon.home )
+    -- , ( "images", Icon.images )
+    -- , ( "laptop", Icon.laptop )
     , ( "lightbulb", Icon.lightbulb )
     , ( "linkedin", Icon.linkedin )
-    , ( "mapMarker", Icon.mapMarker )
-    , ( "new", Icon.new )
-    , ( "notification", Icon.notification )
-    , ( "pdf", Icon.pdf )
-    , ( "percentage", Icon.percentage )
+
+    -- , ( "mapMarker", Icon.mapMarker )
+    -- , ( "new", Icon.new )
+    -- , ( "notification", Icon.notification )
+    -- , ( "pdf", Icon.pdf )
+    -- , ( "percentage", Icon.percentage )
     , ( "phone", Icon.phone )
     , ( "playCircle", Icon.playCircle )
-    , ( "satelliteDish", Icon.satelliteDish )
+
+    -- , ( "satelliteDish", Icon.satelliteDish )
     , ( "search", Icon.search )
-    , ( "slidersH", Icon.slidersH )
+
+    -- , ( "slidersH", Icon.slidersH )
     , ( "star", Icon.star )
     , ( "sync", Icon.sync )
     , ( "table", Icon.table )
-    , ( "th", Icon.th )
-    , ( "thLarge", Icon.thLarge )
+
+    -- , ( "th", Icon.th )
+    , ( "grid", Icon.grid )
     , ( "thList", Icon.thList )
     , ( "trash", Icon.trash )
-    , ( "truck", Icon.truck )
-    , ( "tv", Icon.tv )
+
+    -- , ( "truck", Icon.truck )
+    -- , ( "tv", Icon.tv )
     , ( "user", Icon.user )
-    , ( "wifi", Icon.wifi )
+
+    -- , ( "wifi", Icon.wifi )
     ]
 
 
