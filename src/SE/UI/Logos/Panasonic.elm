@@ -2,7 +2,7 @@ module SE.UI.Logos.Panasonic exposing (onWhite, onBlack, IsMonochrome)
 
 {-| Panasonic Business logos
 
-All Panasonic Business logos are trademarks of Crestron Electronics, Inc. (<https://business.panasonic.se/terms-conditions>)
+All Panasonic Business logos are trademarks of Panasonic Corporation. (<https://business.panasonic.se/terms-conditions>)
 
 The logo comes in color (The "Business" byline is in blue) and monochrome
 
