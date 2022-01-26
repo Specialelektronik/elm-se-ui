@@ -59,12 +59,14 @@ codeFamily =
 
 {-| 18 px
 -}
+desktopBaseSize : Css.Pct
 desktopBaseSize =
     Css.pct 112.5
 
 
 {-| 16 px
 -}
+mobileBaseSize : Css.Pct
 mobileBaseSize =
     Css.pct 100
 
@@ -75,20 +77,24 @@ mobileBaseSize =
 
 {-| Base size = 18 and 2 pixels in each step
 -}
+desktopBodyScale : Float
 desktopBodyScale =
     2 / 18
 
 
 {-| Base size = 16 and 2 pixels in each step
 -}
+mobileBodyScale : Float
 mobileBodyScale =
     2 / 16
 
 
+desktopTitleScale : Float
 desktopTitleScale =
     1.2
 
 
+mobileTitleScale : Float
 mobileTitleScale =
     1.125
 
@@ -113,6 +119,7 @@ titleSizeEm =
     titleSizeHelper Css.em
 
 
+titleSizeHelper : (Float -> { a | value : String, fontSize : Css.Compatible }) -> Float -> Style
 titleSizeHelper fn exponent =
     let
         newExponent =
@@ -146,6 +153,7 @@ Factor 1 = 1em/1rem
 Factor 2 = 1.1111em/rem (1.125em/rem in mobile)
 
 -}
+bodySizeHelper : (Float -> { a | value : String, fontSize : Css.Compatible }) -> Float -> Style
 bodySizeHelper fn factor =
     let
         newFactor =

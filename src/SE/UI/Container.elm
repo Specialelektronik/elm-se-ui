@@ -10,7 +10,7 @@ see <https://bulma.io/documentation/layout/container/>
 
 -}
 
-import Css exposing (Style, auto, none, px, relative, zero)
+import Css exposing (Style, auto, none, relative, zero)
 import Html.Styled exposing (Html, styled)
 import Html.Styled.Attributes as Attributes
 

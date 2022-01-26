@@ -31,7 +31,6 @@ import Html.Styled.Events as Events
 import SE.UI.Alignment as Alignment exposing (Alignment)
 import SE.UI.Colors as Colors
 import SE.UI.Control as Control
-import SE.UI.Font as Font
 import SE.UI.Utils as Utils
 
 
@@ -258,39 +257,34 @@ list message lastPage currentPage =
 
 clipped : (Int -> msg) -> Int -> Int -> List (Html msg)
 clipped message lastPage currentPage =
-    listItem message (currentPage == 1) 1
-        :: (if currentPage > 3 then
-                listEllipsis
+    [ listItem message (currentPage == 1) 1
+    , if currentPage > 3 then
+        listEllipsis
 
-            else
-                Html.text ""
-           )
-        :: (if currentPage > 2 then
-                listItem message False (currentPage - 1)
+      else
+        Html.text ""
+    , if currentPage > 2 then
+        listItem message False (currentPage - 1)
 
-            else
-                Html.text ""
-           )
-        :: (if currentPage /= 1 && currentPage /= lastPage then
-                listItem message True currentPage
+      else
+        Html.text ""
+    , if currentPage /= 1 && currentPage /= lastPage then
+        listItem message True currentPage
 
-            else
-                Html.text ""
-           )
-        :: (if currentPage < (lastPage - 1) then
-                listItem message False (currentPage + 1)
+      else
+        Html.text ""
+    , if currentPage < (lastPage - 1) then
+        listItem message False (currentPage + 1)
 
-            else
-                Html.text ""
-           )
-        :: (if currentPage < (lastPage - 2) then
-                listEllipsis
+      else
+        Html.text ""
+    , if currentPage < (lastPage - 2) then
+        listEllipsis
 
-            else
-                Html.text ""
-           )
-        :: listItem message (currentPage == lastPage) lastPage
-        :: []
+      else
+        Html.text ""
+    , listItem message (currentPage == lastPage) lastPage
+    ]
 
 
 all : (Int -> msg) -> Int -> Int -> List (Html msg)
