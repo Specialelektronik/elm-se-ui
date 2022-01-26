@@ -573,6 +573,12 @@ passwordToHtml rec =
 buttonToHtml : ButtonType -> CheckboxRecord msg -> Html msg
 buttonToHtml buttonType rec =
     let
+        isLoading =
+            List.member Loading rec.modifiers
+
+        isDisabled =
+            isLoading || rec.disabled
+
         { type_, bg, radius } =
             case buttonType of
                 Checkbox ->
@@ -582,7 +588,7 @@ buttonToHtml buttonType rec =
                     { type_ = "radio", bg = Icon.circle, radius = Css.borderRadius (Css.pct 100) }
 
         cursor =
-            if rec.disabled then
+            if isDisabled then
                 Css.notAllowed
 
             else
@@ -595,6 +601,21 @@ buttonToHtml buttonType rec =
 
                 Custom styles _ ->
                     styles
+
+        loadingStyles =
+            if isLoading then
+                [ Css.pointerEvents none
+                , Css.after
+                    [ Utils.loader
+                    , Utils.centerEm 1 1
+                    ]
+                , Css.checked
+                    [ Css.backgroundImage Css.none
+                    ]
+                ]
+
+            else
+                []
     in
     styled Html.label
         ([ Css.display Css.inlineFlex
@@ -636,11 +657,12 @@ buttonToHtml buttonType rec =
                         [ Css.opacity (Css.num 0.7)
                         ]
                    ]
+                ++ loadingStyles
             )
             ([ Attributes.type_ type_, Utils.onChange (always rec.msg) ]
                 |> boolAttribute Attributes.checked rec.checked
                 |> boolAttribute Attributes.required rec.required
-                |> boolAttribute Attributes.disabled rec.disabled
+                |> boolAttribute Attributes.disabled isDisabled
                 |> boolAttribute Attributes.readonly rec.readonly
                 |> noneEmptyAttribute Attributes.name rec.name
             )
