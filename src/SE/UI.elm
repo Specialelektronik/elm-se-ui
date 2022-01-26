@@ -816,6 +816,7 @@ view model =
             , viewTable model.table
             , viewTabs model.tabs
             , viewPagination model.pagination
+            , viewFormInputs
             ]
         , Snackbar.view snackbarConfig model.snackbar
         ]
@@ -2649,6 +2650,28 @@ paginationModifiersToCode model pagination =
                 _ ->
                     identity
            )
+
+
+viewFormInputs : Html Msg
+viewFormInputs =
+    Section.section []
+        [ Container.container []
+            [ Title.title1 "A few form inputs examples"
+            , Form.field []
+                [ Input.checkbox NoOp "Simple string label" True
+                    |> Input.toHtml
+                ]
+            , Form.field []
+                [ Input.checkbox NoOp "Custom label" True
+                    |> Input.withCustomLabel []
+                        [ Html.strong [] [ Html.text "A bold label" ]
+                        , Html.br [] []
+                        , styled Html.small [ Colors.color Colors.dark ] [] [ Html.text "with a sub label" ]
+                        ]
+                    |> Input.toHtml
+                ]
+            ]
+        ]
 
 
 allControlSizes : List ( Control.Size, String )
