@@ -13,7 +13,7 @@ The logo comes in color (The "Business" byline is in blue) and monochrome
 import Css
 import Html.Styled exposing (Html)
 import Svg.Styled as Svg exposing (styled)
-import Svg.Styled.Attributes as Attributes exposing (class, d, fill, fillRule, height, viewBox, width, x, y)
+import Svg.Styled.Attributes exposing (d, height, viewBox, width, x, y)
 
 
 {-| Use this logo on light backgrounds

@@ -10,7 +10,7 @@ see <https://bulma.io/documentation/elements/delete/>
 
 -}
 
-import Css exposing (Style, absolute, active, after, before, block, deg, focus, hover, inlineBlock, none, pct, pointer, px, relative, rgba, rotate, top, translateX, translateY, zero)
+import Css exposing (Style, absolute, active, after, before, deg, focus, hover, inlineBlock, none, pct, pointer, px, relative, rgba, rotate, top, translateX, translateY, zero)
 import Css.Transitions
 import Html.Styled exposing (Html, styled)
 import Html.Styled.Attributes as Attributes

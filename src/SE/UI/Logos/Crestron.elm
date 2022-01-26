@@ -27,7 +27,7 @@ All Crestron logos are trademarks of Crestron Electronics, Inc. (<https://www.cr
 
 import Html.Styled exposing (Html)
 import Svg.Styled as Svg
-import Svg.Styled.Attributes as Attributes exposing (d, fill, fillRule, viewBox)
+import Svg.Styled.Attributes exposing (d, fill, viewBox)
 
 
 type Color

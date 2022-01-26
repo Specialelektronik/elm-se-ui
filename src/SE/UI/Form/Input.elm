@@ -611,8 +611,6 @@ buttonToHtml buttonType rec =
                 ++ [ Css.property "-webkit-print-color-adjust" "exact"
                    , Css.property "color-adjust" "exact"
                    , Css.display Css.inlineBlock
-
-                   --    , Css.verticalAlign Css.middle
                    , Css.backgroundOrigin Css.borderBox
                    , Css.property "-webkit-user-select" "none"
                    , Css.property "-moz-user-select" "none"
@@ -624,8 +622,6 @@ buttonToHtml buttonType rec =
                    , Css.cursor cursor
                    , Css.color (buttonColor rec.modifiers |> Colors.toCss)
                    , Colors.backgroundColor Colors.background
-
-                   --    , Css.borderWidth (Css.px 1)
                    , radius
                    , Css.padding Css.zero
                    , Css.checked

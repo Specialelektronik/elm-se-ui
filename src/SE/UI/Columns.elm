@@ -123,10 +123,6 @@ type alias IsMultiline =
     Bool
 
 
-type alias IsMobile =
-    Bool
-
-
 type Column msg
     = Column Sizes (List (Html msg))
 
