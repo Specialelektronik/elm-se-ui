@@ -1,9 +1,8 @@
 module SE.UI.Snackbar exposing
-    ( Snackbar, create, add, withDuration
+    ( Snackbar, create, add, withDuration, withIcon
     , Model, init, Config
     , Msg, update
     , view
-    , withIcon
     )
 
 {-| A Snackbar component for displaying short, unintrusive messages to the user.
@@ -39,7 +38,7 @@ How to use:
 
 # Definition
 
-@docs Snackbar, create, add, withDuration
+@docs Snackbar, create, add, withDuration, withIcon
 
 
 # Model

@@ -1,9 +1,8 @@
 module SE.UI.Icon.V2 exposing
     ( Icon, toHtml, toDataUri, withContainerSize, withSize
     , Transform(..), withTransform
-    , angleDown, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, playCircle, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+    , angleDown, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, playCircle, satelliteDish, search, slidersH, star, sync, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
     , tick, circle
-    , sync
     )
 
 {-| Version 2 of Icons, mimics Bulma Icon element set.
@@ -24,7 +23,7 @@ Version 2 uses withStar-pattern to allow transformation and support both icon co
 
 # Available icons
 
-@docs angleDown, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, playCircle, satelliteDish, search, slidersH, star, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
+@docs angleDown, ban, bargain, bid, box, boxes, calendar, campaign, cart, category, checkCircle, clock, dolly, envelope, ethernet, eye, facebook, file, history, home, images, instagram, laptop, lightbulb, linkedin, mapMarker, new, notification, pdf, percentage, phone, playCircle, satelliteDish, search, slidersH, star, sync, table, th, thLarge, thList, trash, truck, tv, user, wifi, youtube
 
 
 # Special purpose icons
