@@ -45,14 +45,11 @@ https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-script
 
  - https://github.com/dillonkearns/idiomatic-elm-package-guide
 
-# TODO
- - [ ] Form File button
- - [ ] Documentation (type that takes a label, description, code examples)
- - [x] Refactor Image, add alt text and improve dimensions (figure tag, width and height optional and is should be responsive)
+# How to release
 
-# Maybe TODO
- - [x] Consider using [NoRedInks Versioning policy](https://package.elm-lang.org/packages/NoRedInk/noredink-ui/latest/)
- - [ ] Message (can be useful to insert into a product listing to announce stuff)
- - [ ] Modal card (do we need the card option?)
- - [ ] Box (different styling from Bulma?)
- - [x] Card, or should be have Card and Box as one unified component?
+1. Run `elm make --docs=docs.json` to compile documentation
+2. Update version in `elm.json` according to semver
+3. Merge changes into `master` and checkout `master`
+4. Commit
+5. Create new tag (i.e. 10.3.0)
+6. Push it and push the tag!
