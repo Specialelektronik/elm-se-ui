@@ -119,13 +119,21 @@ toHtml (Table internals) =
             (Attributes.class "table"
                 :: bodyAttributes internals.body
             )
-            [ thead []
-                [ Html.tr [] internals.head
-                ]
+            [ if List.isEmpty internals.head then
+                Html.text ""
+
+              else
+                thead []
+                    [ Html.tr [] internals.head
+                    ]
             , bodyToHtml internals.body
-            , tfoot []
-                [ Html.tr [] internals.foot
-                ]
+            , if List.isEmpty internals.foot then
+                Html.text ""
+
+              else
+                tfoot []
+                    [ Html.tr [] internals.foot
+                    ]
             ]
         )
 
