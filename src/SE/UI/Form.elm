@@ -26,7 +26,7 @@ see <https://bulma.io/documentation/form/>
 
 -}
 
-import Css exposing (Style, absolute, block, borderBox, em, flexStart, important, int, left, pseudoClass, px, relative, rem, top, zero)
+import Css exposing (Style, absolute, block, borderBox, em, flexStart, important, int, left, pseudoClass, px, relative, rem, zero)
 import Css.Global exposing (descendants, each, typeSelector)
 import Html.Styled exposing (Html, styled, text)
 import Html.Styled.Attributes exposing (class)

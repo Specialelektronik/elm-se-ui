@@ -28,7 +28,7 @@ For some icons we need include them as a css background (example select-element 
 import Css exposing (Style, center, currentColor, inlineFlex, rem)
 import Css.Global exposing (descendants, typeSelector)
 import Html.Styled exposing (Html, styled)
-import Html.Styled.Attributes exposing (class)
+import Html.Styled.Attributes
 import SE.UI.Control as Control
 import Svg.Styled as Svg exposing (Attribute, Svg)
 import Svg.Styled.Attributes as Attributes exposing (d, height, width)

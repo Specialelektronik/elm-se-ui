@@ -177,12 +177,3 @@ headerStyles =
             ]
         ]
     ]
-
-
-titleStyles : List Style
-titleStyles =
-    [ Css.alignItems Css.center
-    , Css.displayFlex
-    , Css.flexGrow (Css.int 1)
-    , Css.padding2 (Css.rem 0.88888888) (Css.rem 0.55555555)
-    ]

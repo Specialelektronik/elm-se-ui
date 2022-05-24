@@ -38,7 +38,7 @@ Much of the inspiration comes from this article:
 
 import Css exposing (Style)
 import Css.Global
-import Html.Styled exposing (Attribute, Html, styled)
+import Html.Styled exposing (Attribute, Html)
 import Html.Styled.Attributes as Attributes
 import List
 import SE.UI.Colors as Colors
@@ -158,7 +158,7 @@ toHtml alt sources (Image internals) =
         [] ->
             icon
 
-        sources_ ->
+        _ ->
             let
                 sortedSources =
                     sortSources sources
@@ -215,7 +215,7 @@ figure internals =
 
 
 img : { alt : String, src : String } -> Internals -> Html msg
-img { alt, src } { width, height, async, lazy, aspectRatio } =
+img { alt, src } { width, height, async, lazy } =
     Html.Styled.img
         [ Attributes.alt alt
         , Attributes.src src

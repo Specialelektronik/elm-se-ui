@@ -46,7 +46,7 @@ import Css.Transitions
 import Html.Styled as Html exposing (Attribute, Html, styled)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
-import SE.UI.Colors as Colors exposing (active)
+import SE.UI.Colors as Colors
 import SE.UI.Container as Container
 import SE.UI.Control as Control
 import SE.UI.Dropdown as Dropdown
@@ -278,6 +278,7 @@ viewMobileSearch searchFn =
         [ searchFn ]
 
 
+mobileSearchHeight : Float
 mobileSearchHeight =
     48
 

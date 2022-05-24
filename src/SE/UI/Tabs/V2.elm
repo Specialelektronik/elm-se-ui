@@ -30,7 +30,7 @@ Bulma only styles anchor tags as links, but sometimes we may want to trigger a m
 
 import Css
 import Css.Global
-import Html.Styled exposing (Html, styled, text)
+import Html.Styled exposing (Html, styled)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events
 import SE.UI.Alignment as Alignment exposing (Alignment)
@@ -101,7 +101,7 @@ toHtml (Tabs internals linkOrButtons) =
 
 
 internalsToClasses : Internals -> List ( String, Bool )
-internalsToClasses ({ size, style, alignment, fullwidth } as internals) =
+internalsToClasses { size, style, alignment, fullwidth } =
     [ sizeToClass size
     , styleToClass style
     , alignmentToClass alignment

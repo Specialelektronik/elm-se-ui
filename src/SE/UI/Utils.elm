@@ -35,7 +35,7 @@ module SE.UI.Utils exposing
 
 -}
 
-import Css exposing (Style, absolute, block, calc, deg, em, minus, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
+import Css exposing (Style, absolute, calc, deg, em, minus, ms, pct, pseudoClass, px, relative, rem, rotate, solid, transparent)
 import Css.Animations exposing (Keyframes, keyframes)
 import Css.Media as Media exposing (maxWidth, minWidth, only, screen)
 import Html.Styled as Html exposing (Attribute, Html)

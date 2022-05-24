@@ -1,7 +1,7 @@
 module SE.UI.Form.Input exposing
-    ( text, textarea, select, Option, checkbox, radio, number, date, email, password, tel, toHtml
+    ( text, textarea, select, Option, checkbox, radio, CheckboxLabel, number, date, email, password, tel, toHtml
     , withTrigger, Trigger(..)
-    , withPlaceholder, withName, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword, withValue
+    , withPlaceholder, withName, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword, withCustomLabel, withValue
     , withModifier, withModifiers, Modifier(..)
     , inputStyle
     )
@@ -20,7 +20,7 @@ Example:
         |> Input.withModifier Input.Primary
         |> Input.toHtml
 
-@docs text, textarea, select, Option, checkbox, radio, number, date, email, password, tel, toHtml
+@docs text, textarea, select, Option, checkbox, radio, CheckboxLabel, number, date, email, password, tel, toHtml
 
 
 # Triggers
@@ -34,7 +34,7 @@ To allow the programmer to specify _when_ a message should trigger, the inputs h
 
 # With\*
 
-@docs withPlaceholder, withName, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword, withValue
+@docs withPlaceholder, withName, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword, withCustomLabel, withValue
 
 
 ## Modifiers
@@ -162,7 +162,7 @@ type alias Option =
 
 
 type alias CheckboxRecord msg =
-    { label : String
+    { label : CheckboxLabel
     , msg : msg
     , checked : Bool
     , modifiers : List Modifier
@@ -172,6 +172,14 @@ type alias CheckboxRecord msg =
     , name : String
     , value : String
     }
+
+
+{-| Style checkbox and radio labels.
+Each checkbox and radio is encapsulated in a label element with default styling. If you want to include anything else than a simple String label, use Custom and include styling to determine how the label show align your content. Preferably `Css.alignItems`.
+-}
+type CheckboxLabel
+    = Simple String
+    | Custom (List Style) (List (Html Never))
 
 
 {-| Available input modifiers
@@ -274,7 +282,7 @@ option val o =
 checkbox : msg -> String -> Bool -> Input msg
 checkbox msg label checked =
     Button Checkbox
-        { label = label
+        { label = Simple label
         , msg = msg
         , checked = checked
         , modifiers = []
@@ -295,7 +303,7 @@ checkbox msg label checked =
 radio : msg -> String -> Bool -> Input msg
 radio msg label checked =
     Button Radio
-        { label = label
+        { label = Simple label
         , msg = msg
         , checked = checked
         , modifiers = []
@@ -568,6 +576,12 @@ passwordToHtml rec =
 buttonToHtml : ButtonType -> CheckboxRecord msg -> Html msg
 buttonToHtml buttonType rec =
     let
+        isLoading =
+            List.member Loading rec.modifiers
+
+        isDisabled =
+            isLoading || rec.disabled
+
         { type_, bg, radius } =
             case buttonType of
                 Checkbox ->
@@ -577,27 +591,50 @@ buttonToHtml buttonType rec =
                     { type_ = "radio", bg = Icon.circle, radius = Css.borderRadius (Css.pct 100) }
 
         cursor =
-            if rec.disabled then
+            if isDisabled then
                 Css.notAllowed
 
             else
                 Css.pointer
+
+        labelStyles =
+            case rec.label of
+                Simple _ ->
+                    [ Css.alignItems Css.center ]
+
+                Custom styles _ ->
+                    styles
+
+        loadingStyles =
+            if isLoading then
+                [ Css.pointerEvents none
+                , Css.after
+                    [ Utils.loader
+                    , Utils.centerEm 1 1
+                    ]
+                , Css.checked
+                    [ Css.backgroundImage Css.none
+                    ]
+                ]
+
+            else
+                []
     in
     styled Html.label
-        [ Css.display Css.inlineFlex
-        , Css.alignItems Css.center
-        , Css.cursor cursor
-        , Css.marginLeft (Css.rem 0.5)
-        , Css.firstChild [ Css.marginLeft Css.zero ]
-        ]
+        ([ Css.display Css.inlineFlex
+         , Css.property "gap" "0.5em"
+         , Css.cursor cursor
+         , Css.marginLeft (Css.rem 0.5)
+         , Css.firstChild [ Css.marginLeft Css.zero ]
+         ]
+            ++ labelStyles
+        )
         []
         [ styled Html.input
             (inputStyle rec.modifiers
                 ++ [ Css.property "-webkit-print-color-adjust" "exact"
                    , Css.property "color-adjust" "exact"
                    , Css.display Css.inlineBlock
-
-                   --    , Css.verticalAlign Css.middle
                    , Css.backgroundOrigin Css.borderBox
                    , Css.property "-webkit-user-select" "none"
                    , Css.property "-moz-user-select" "none"
@@ -609,8 +646,6 @@ buttonToHtml buttonType rec =
                    , Css.cursor cursor
                    , Css.color (buttonColor rec.modifiers |> Colors.toCss)
                    , Colors.backgroundColor Colors.background
-
-                   --    , Css.borderWidth (Css.px 1)
                    , radius
                    , Css.padding Css.zero
                    , Css.checked
@@ -624,25 +659,30 @@ buttonToHtml buttonType rec =
                    , Css.disabled
                         [ Css.opacity (Css.num 0.7)
                         ]
-
-                   -- ]
                    ]
+                ++ loadingStyles
             )
             ([ Attributes.type_ type_, Utils.onChange (always rec.msg) ]
                 |> boolAttribute Attributes.checked rec.checked
                 |> boolAttribute Attributes.required rec.required
-                |> boolAttribute Attributes.disabled rec.disabled
+                |> boolAttribute Attributes.disabled isDisabled
                 |> boolAttribute Attributes.readonly rec.readonly
                 |> noneEmptyAttribute Attributes.name rec.name
                 |> noneEmptyAttribute Attributes.value rec.value
             )
             []
-        , styled Html.span
-            [ Css.marginLeft (Css.em 0.5)
-            ]
-            []
-            [ Html.text rec.label ]
+        , Html.map never (checkboxLabelToHtml rec.label)
         ]
+
+
+checkboxLabelToHtml : CheckboxLabel -> Html Never
+checkboxLabelToHtml label =
+    case label of
+        Simple str ->
+            Html.text str
+
+        Custom _ kids ->
+            Html.div [] kids
 
 
 buttonColor : List Modifier -> Colors.Hsla
@@ -1044,6 +1084,18 @@ withModifiers mods input =
 
         Button type_ rec ->
             Button type_ (newRec rec)
+
+
+{-| A custom checkbox label gives you control over the label and the placement. Include multi line labels with bold styling or any other styling you'd like. The label cannot have any click behaviour since the label itself will check/uncheck the checkbox if clicked. The first argument is given to `Css.alignItems`, possible values are Css.center, Css.baseline, Css.flexStart etc.
+-}
+withCustomLabel : List Style -> List (Html Never) -> Input msg -> Input msg
+withCustomLabel styles kids input =
+    case input of
+        Button type_ rec ->
+            Button type_ { rec | label = Custom styles kids }
+
+        _ ->
+            input
 
 
 triggerToAttribute : Trigger -> (String -> msg) -> Attribute msg

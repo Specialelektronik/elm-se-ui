@@ -25,7 +25,7 @@ see <https://bulma.io/documentation/elements/button/>
 
 -}
 
-import Css exposing (Style, absolute, calc, center, disabled, em, flexEnd, flexStart, focus, important, minus, noWrap, none, num, pct, pointer, pseudoClass, px, rem, transparent, underline, wrap, zero)
+import Css exposing (Style, calc, center, disabled, em, flexEnd, flexStart, important, minus, noWrap, none, num, pct, pointer, pseudoClass, px, rem, transparent, wrap, zero)
 import Css.Global exposing (children, descendants, typeSelector)
 import Css.Transitions
 import Html.Styled exposing (Html, styled, text)
