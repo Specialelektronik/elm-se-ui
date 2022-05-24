@@ -1,7 +1,7 @@
 module SE.UI.Form.Input exposing
     ( text, textarea, select, Option, checkbox, radio, CheckboxLabel, number, date, email, password, tel, toHtml
     , withTrigger, Trigger(..)
-    , withPlaceholder, withName, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword, withCustomLabel
+    , withPlaceholder, withName, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword, withCustomLabel, withValue
     , withModifier, withModifiers, Modifier(..)
     , inputStyle
     )
@@ -34,7 +34,7 @@ To allow the programmer to specify _when_ a message should trigger, the inputs h
 
 # With\*
 
-@docs withPlaceholder, withName, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword, withCustomLabel
+@docs withPlaceholder, withName, withRequired, withDisabled, withReadonly, withStep, withRange, withRows, withMinDate, withMaxDate, withNewPassword, withCustomLabel, withValue
 
 
 ## Modifiers
@@ -170,6 +170,7 @@ type alias CheckboxRecord msg =
     , disabled : Bool
     , readonly : Bool
     , name : String
+    , value : String
     }
 
 
@@ -289,6 +290,7 @@ checkbox msg label checked =
         , disabled = False
         , readonly = False
         , name = ""
+        , value = ""
         }
 
 
@@ -309,6 +311,7 @@ radio msg label checked =
         , disabled = False
         , readonly = False
         , name = ""
+        , value = ""
         }
 
 
@@ -665,6 +668,7 @@ buttonToHtml buttonType rec =
                 |> boolAttribute Attributes.disabled isDisabled
                 |> boolAttribute Attributes.readonly rec.readonly
                 |> noneEmptyAttribute Attributes.name rec.name
+                |> noneEmptyAttribute Attributes.value rec.value
             )
             []
         , Html.map never (checkboxLabelToHtml rec.label)
@@ -734,6 +738,23 @@ withName name_ input =
 
         Button type_ rec ->
             Button type_ { rec | name = name_ }
+
+
+{-| Add value to checkbox and radio buttons
+
+It's very unlikely that you will need this function since the value attribute is not normally needed for checkboxes and radios in Elm forms.
+
+Note: All other inputs have other way to populate the value attribute and this function will be ignore by other inputs.
+
+-}
+withValue : String -> Input msg -> Input msg
+withValue value_ input =
+    case input of
+        Button type_ rec ->
+            Button type_ { rec | value = value_ }
+
+        _ ->
+            input
 
 
 {-| Add placeholder to the input

@@ -25,11 +25,11 @@ You need elm-live installed globally.
 
 Unix style terminal:
 
-`elm-live -s .\docs\index.html .\src\SE\UI.elm -- --output=app.js`
+`elm-live -s ./docs/index.html ./src/SE/UI.elm -- --output=app.js --debug`
 
 Powershell:
 
-`elm-live -s .\docs\index.html .\src\SE\UI.elm "--" --output=app.js`
+`elm-live -s .\docs\index.html .\src\SE\UI.elm "--" --output=app.js --debug`
 
 More information to come
 
