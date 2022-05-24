@@ -1,6 +1,6 @@
 {
   "name": "special-elektronik-elm-ui",
-  "version": "10.4.0",
+  "version": "10.4.1",
   "description": "Elm UI library for beautiful, coherent, SE flavored UI.",
   "repository": "git@github.com:Specialelektronik/elm-se-ui.git",
   "main": "index.js",
