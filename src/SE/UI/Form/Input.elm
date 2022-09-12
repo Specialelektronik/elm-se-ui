@@ -53,6 +53,7 @@ import Css.Global exposing (withAttribute)
 import Html.Styled as Html exposing (Attribute, Html, styled)
 import Html.Styled.Attributes as Attributes
 import Html.Styled.Events as Events exposing (onInput)
+import Json.Decode as Decode
 import SE.UI.Colors as Colors
 import SE.UI.Control as Control exposing (controlStyle)
 import SE.UI.Icon.V2 as Icon
@@ -82,6 +83,7 @@ type ButtonType
 type Trigger
     = OnInput
     | OnChange
+    | OnBlur
 
 
 type alias InputRecord msg =
@@ -346,7 +348,7 @@ date msg value =
         , placeholder = ""
         , modifiers = []
         , msg = msg
-        , trigger = OnChange
+        , trigger = OnBlur
         , min = ""
         , max = ""
         , required = False
@@ -1106,6 +1108,14 @@ triggerToAttribute trigger =
 
         OnChange ->
             Utils.onChange
+
+        OnBlur ->
+            onBlurWithTargetValue
+
+
+onBlurWithTargetValue : (String -> msg) -> Html.Attribute msg
+onBlurWithTargetValue tagger =
+    Events.on "blur" (Decode.map tagger Events.targetValue)
 
 
 maybeAttribute : (a -> Attribute msg) -> Maybe a -> List (Attribute msg) -> List (Attribute msg)
