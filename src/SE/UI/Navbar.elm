@@ -923,10 +923,10 @@ global : Config msg -> Bool -> Html msg
 global config isOpen =
     Css.Global.global
         [ Css.Global.body
-            [ Css.marginTop
+            [ Css.paddingTop
                 (Css.px (brandHeight + ledHeight + mobileSearchHeight))
             , Utils.widescreen
-                [ Css.marginTop (Css.px (ribbonHeight config + brandHeight + ledHeight + megaHeight config))
+                [ Css.paddingTop (Css.px (ribbonHeight config + brandHeight + ledHeight + megaHeight config))
                 ]
             ]
         , Css.Global.html
