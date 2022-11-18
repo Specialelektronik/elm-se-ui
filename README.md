@@ -14,8 +14,8 @@ This library has the same goals. We focus on type checked and correct components
 
 Let these 2 mottos guide you:
 
- - "Don't make me think!" - Steve Krug (Me beeing the developer using this library, but also the end user)
- - "Let's go for the ambitious approach!" - Richard Feldman (Us beeing the developers working on this library)
+- "Don't make me think!" - Steve Krug (Me beeing the developer using this library, but also the end user)
+- "Let's go for the ambitious approach!" - Richard Feldman (Us beeing the developers working on this library)
 
 A good example is the [Dropdown](/SE-Framework-Dropdown) and [Table](/SE-Framework-Table) components where each content type has it's own (Opaque) type and constructor function in order to force the developer to supply everything that is needed for the component to work properly.
 
@@ -43,7 +43,7 @@ https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-script
 
 ## Other resources
 
- - https://github.com/dillonkearns/idiomatic-elm-package-guide
+- https://github.com/dillonkearns/idiomatic-elm-package-guide
 
 # How to release
 
@@ -51,5 +51,5 @@ https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-script
 2. Update version in `elm.json` according to semver
 3. Merge changes into `master` and checkout `master`
 4. Commit
-5. Create new tag (i.e. 10.3.0)
+5. Create new tag (i.e. 10.3.0) `git tag -a 10.3.0 -m "Version 10.3.0"`
 6. Push it and push the tag!
