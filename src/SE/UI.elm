@@ -26,7 +26,7 @@ import SE.UI.Logo as Logo
 import SE.UI.Logos.Crestron as Crestron
 import SE.UI.Logos.Panasonic as Panasonic
 import SE.UI.Modal as Modal
-import SE.UI.Navbar as Navbar
+import SE.UI.Navbar.V2 as Navbar
 import SE.UI.Notification as Notification
 import SE.UI.Pagination.V2 as Pagination exposing (Pagination)
 import SE.UI.Section as Section
@@ -711,57 +711,63 @@ navbarConfig brand =
     , megaNav =
         [ { label = "AV-Teknik"
           , href = Attributes.href "/av-teknik"
-          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          , content = Just (Html.div [] [ Html.text "Här kommer alla underkategorier" ])
           }
         , { label = "Belysning"
           , href = Attributes.href "/av-teknik"
           , content =
-                Html.div []
-                    [ Html.ul []
-                        [ Html.li [] [ Html.text "Länk 1" ]
-                        , Html.li [] [ Html.text "Länk 2" ]
-                        , Html.li [] [ Html.text "Länk 3" ]
-                        , Html.li [] [ Html.text "Länk 4" ]
-                        , Html.li [] [ Html.text "Länk 5" ]
-                        , Html.li [] [ Html.text "Länk 6" ]
-                        , Html.li [] [ Html.text "Länk 2" ]
-                        , Html.li [] [ Html.text "Länk 3" ]
-                        , Html.li [] [ Html.text "Länk 4" ]
-                        , Html.li [] [ Html.text "Länk 5" ]
-                        , Html.li [] [ Html.text "Länk 6" ]
-                        , Html.li [] [ Html.text "Länk 2" ]
-                        , Html.li [] [ Html.text "Länk 3" ]
-                        , Html.li [] [ Html.text "Länk 4" ]
-                        , Html.li [] [ Html.text "Länk 5" ]
-                        , Html.li [] [ Html.text "Länk 6" ]
-                        , Html.li [] [ Html.text "Länk 2" ]
-                        , Html.li [] [ Html.text "Länk 3" ]
-                        , Html.li [] [ Html.text "Länk 4" ]
-                        , Html.li [] [ Html.text "Länk 5" ]
-                        , Html.li [] [ Html.text "Länk 6" ]
-                        , Html.li [] [ Html.text "Länk 2" ]
-                        , Html.li [] [ Html.text "Länk 3" ]
-                        , Html.li [] [ Html.text "Länk 4" ]
-                        , Html.li [] [ Html.text "Länk 5" ]
-                        , Html.li [] [ Html.text "Länk 6" ]
+                Just
+                    (Html.div []
+                        [ Html.ul []
+                            [ Html.li [] [ Html.text "Länk 1" ]
+                            , Html.li [] [ Html.text "Länk 2" ]
+                            , Html.li [] [ Html.text "Länk 3" ]
+                            , Html.li [] [ Html.text "Länk 4" ]
+                            , Html.li [] [ Html.text "Länk 5" ]
+                            , Html.li [] [ Html.text "Länk 6" ]
+                            , Html.li [] [ Html.text "Länk 2" ]
+                            , Html.li [] [ Html.text "Länk 3" ]
+                            , Html.li [] [ Html.text "Länk 4" ]
+                            , Html.li [] [ Html.text "Länk 5" ]
+                            , Html.li [] [ Html.text "Länk 6" ]
+                            , Html.li [] [ Html.text "Länk 2" ]
+                            , Html.li [] [ Html.text "Länk 3" ]
+                            , Html.li [] [ Html.text "Länk 4" ]
+                            , Html.li [] [ Html.text "Länk 5" ]
+                            , Html.li [] [ Html.text "Länk 6" ]
+                            , Html.li [] [ Html.text "Länk 2" ]
+                            , Html.li [] [ Html.text "Länk 3" ]
+                            , Html.li [] [ Html.text "Länk 4" ]
+                            , Html.li [] [ Html.text "Länk 5" ]
+                            , Html.li [] [ Html.text "Länk 6" ]
+                            , Html.li [] [ Html.text "Länk 2" ]
+                            , Html.li [] [ Html.text "Länk 3" ]
+                            , Html.li [] [ Html.text "Länk 4" ]
+                            , Html.li [] [ Html.text "Länk 5" ]
+                            , Html.li [] [ Html.text "Länk 6" ]
+                            ]
                         ]
-                    ]
+                    )
           }
         , { label = "IP / IT"
           , href = Attributes.href "/av-teknik"
-          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          , content = Just (Html.div [] [ Html.text "Här kommer alla underkategorier" ])
           }
         , { label = "CATV"
           , href = Attributes.href "/av-teknik"
-          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
-          }
-        , { label = "CCTV"
-          , href = Attributes.href "/av-teknik"
-          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          , content = Just (Html.div [] [ Html.text "Här kommer alla underkategorier" ])
           }
         , { label = "Fiberoptik"
           , href = Attributes.href "/av-teknik"
-          , content = Html.div [] [ Html.text "Här kommer alla underkategorier" ]
+          , content = Just (Html.div [] [ Html.text "Här kommer alla underkategorier" ])
+          }
+        , { label = "CCTV"
+          , href = Attributes.href "/av-teknik"
+          , content = Just (Html.div [] [ Html.text "Här kommer alla underkategorier" ])
+          }
+        , { label = "Varumärken"
+          , href = Attributes.href "/brands"
+          , content = Nothing
           }
         ]
     , socialMedia =
